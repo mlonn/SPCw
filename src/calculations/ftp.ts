@@ -1,0 +1,70 @@
+import { Activity, PowerUnit, DurationUnit, CALCULATOION_ERRORS } from "../types";
+import regression from "regression";
+import { timeToSeconds } from "../util";
+
+const standardizeActivity = (activity: Activity, weight?: number) => {
+  if (!activity.power.value) {
+    throw Error(CALCULATOION_ERRORS.NO_POWER);
+  }
+  if (activity.duration.unit === DurationUnit.SECONDS && !activity.duration.value) {
+    throw Error(CALCULATOION_ERRORS.NO_DURATION);
+  }
+  let power = activity.power;
+  let duration = activity.duration;
+  if (activity.power.unit === PowerUnit.WATTS_KG) {
+    if (!weight) {
+      throw Error(CALCULATOION_ERRORS.NO_WEIGHT);
+    }
+    power = {
+      value: activity.power.value * weight,
+      unit: PowerUnit.WATTS
+    };
+  }
+  if (activity.duration.unit === DurationUnit.HH_MM_SS) {
+    duration = timeToSeconds(activity.duration);
+  }
+  return {
+    ...activity,
+    power,
+    duration
+  };
+};
+export const calculateFTP = (activities: Activity[], weight?: number) => {
+  const convertedActivities = activities.map(activity => standardizeActivity(activity, weight));
+  const constantRegression = regression.linear(
+    convertedActivities.map(a => {
+      if (a.duration.unit !== DurationUnit.SECONDS) {
+        throw Error(CALCULATOION_ERRORS.EXPEXTED_SECONDS);
+      } else {
+        return [Math.log(a.duration.value || 0), Math.log(a.power.value || 0)];
+      }
+    })
+  );
+  const valuesRegression = regression.linear(
+    convertedActivities.map(a => {
+      if (a.duration.unit !== DurationUnit.SECONDS) {
+        throw Error(CALCULATOION_ERRORS.EXPEXTED_SECONDS);
+      } else {
+        const duration = a.duration.value || 0;
+        const power = a.power.value || 0;
+        return [duration, duration * power];
+      }
+    })
+  );
+
+  const reigel = constantRegression.equation[0];
+  const ftp = valuesRegression.equation[0];
+  const ftpkg = weight ? Math.round((valuesRegression.equation[0] / weight) * 100) / 100 : undefined;
+  const awc = Math.round(valuesRegression.equation[1]) / 1000;
+  const r2 = valuesRegression.r2;
+  if (isNaN(r2)) {
+    throw Error(CALCULATOION_ERRORS.TOO_SIMILAR);
+  }
+  return {
+    reigel,
+    ftp,
+    ftpkg,
+    awc,
+    r2
+  };
+};
