@@ -10,7 +10,7 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }: Props) => {
+const DurationFormField = ({ duration, setDuration, ref, name = "duration", label = "Duration", ...rest }: Props) => {
   const [durationString, setDurationString] = useState("");
   const prevUnitRef = useRef<DurationUnit>();
 
@@ -33,10 +33,10 @@ const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }:
   }, [duration, prevUnit]);
   return (
     <Box fill>
-      <FormField name="duration" label="Duration" required {...rest}>
+      <FormField name={name} label={label} required {...rest}>
         {duration?.unit === DurationUnit.SECONDS ? (
           <TextInput
-            name="duration"
+            name={name}
             plain
             type="number"
             value={duration.value ? duration.value : ""}
@@ -47,7 +47,7 @@ const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }:
         ) : (
           <MaskedInput
             plain
-            name="duration"
+            name={name}
             mask={[
               {
                 length: [1, 2],

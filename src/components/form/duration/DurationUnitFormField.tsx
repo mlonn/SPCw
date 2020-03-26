@@ -10,12 +10,12 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }: Props) => {
+const DurationFormField = ({ duration, setDuration, ref, name = "timeunit", label = "Time unit", ...rest }: Props) => {
   return (
     <Box justify="end">
-      <FormField label="Time unit" name="timeunit" {...rest}>
+      <FormField {...rest} label={label} name={name}>
         <Select
-          name="timeunit"
+          name={name}
           value={duration?.unit}
           onChange={({ option }) => {
             if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {

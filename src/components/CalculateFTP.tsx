@@ -1,4 +1,4 @@
-import { Box, Button, DataTable, Form, Grid, Heading, Layer, Text } from "grommet";
+import { Box, Button, DataTable, Form, Grid, Heading, Layer, Text, ThemeContext } from "grommet";
 import { Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
 import React, { Fragment, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -47,129 +47,145 @@ const CalculateFTP = (props: Props) => {
       </Form>
       <Heading level="3">Activities</Heading>
       {activities.length > 0 && (
-        <DataTable
-          primaryKey="id"
-          columns={[
-            {
-              property: "power",
-              header: "Power",
-              render: (datum: Activity) =>
-                edit === datum.id ? (
-                  <PowerValueFormField
-                    power={datum.power}
-                    setPower={newPower =>
-                      setActivities(
-                        activities.map(activity =>
-                          activity.id === datum.id ? { ...activity, power: newPower } : activity
-                        )
-                      )
-                    }
-                    weight={weight}
-                  />
-                ) : (
-                  <Box width="100%">
-                    <Text>{datum.power.value}</Text>
-                  </Box>
-                )
+        <ThemeContext.Extend
+          value={{
+            textInput: {
+              extend: `padding: 11px 0`
             },
-            {
-              property: "powerUnit",
-              render: (datum: Activity) =>
-                edit === datum.id ? (
-                  <PowerUnitFormField
-                    power={datum.power}
-                    setPower={newPower =>
-                      setActivities(
-                        activities.map(activity =>
-                          activity.id === datum.id ? { ...activity, power: newPower } : activity
-                        )
-                      )
-                    }
-                    weight={weight}
-                  />
-                ) : datum.power.unit === PowerUnit.WATTS ? (
-                  <Box fill>
-                    <Text>Watts</Text>
-                  </Box>
-                ) : (
-                  <Box fill>
-                    <Text>Watts/kgs</Text>
-                  </Box>
-                )
-            },
-            {
-              property: "duration",
-              header: "Duration",
-              render: (datum: Activity) =>
-                edit === datum.id ? (
-                  <DurationValueFormField
-                    duration={datum.duration}
-                    setDuration={newDuration =>
-                      setActivities(
-                        activities.map(activity =>
-                          activity.id === datum.id ? { ...activity, duration: newDuration } : activity
-                        )
-                      )
-                    }
-                  />
-                ) : datum.duration.unit === DurationUnit.SECONDS ? (
-                  <Box fill>
-                    <Text>{datum.duration.value} seconds</Text>
-                  </Box>
-                ) : (
-                  <Box fill>
-                    <Text>{durationToString(datum.duration)}</Text>
-                  </Box>
-                )
-            },
-            {
-              property: "durationUnit",
-              render: (datum: Activity) =>
-                edit === datum.id ? (
-                  <DurationUnitFormField
-                    duration={datum.duration}
-                    setDuration={newDuration =>
-                      setActivities(
-                        activities.map(activity =>
-                          activity.id === datum.id ? { ...activity, duration: newDuration } : activity
-                        )
-                      )
-                    }
-                  />
-                ) : null
-            },
-            {
-              property: "edit",
-              render: (datum: Activity) => (
-                <Box fill align="center" justify="center">
-                  <Button
-                    plain
-                    icon={<Edit />}
-                    onClick={() => {
-                      edit === datum.id ? setEdit("") : setEdit(datum.id);
-                    }}
-                  />
-                </Box>
-              )
-            },
-            {
-              property: "delete",
-              render: (datum: Activity) => (
-                <Box fill align="center" justify="center">
-                  <Button
-                    plain
-                    alignSelf="center"
-                    icon={<Trash />}
-                    onClick={() => {
-                      setActivities(activities.filter(activity => activity.id !== datum.id));
-                    }}
-                  />
-                </Box>
-              )
+            maskedInput: {
+              extend: `padding: 11px 0`
             }
-          ]}
-          data={activities}
-        />
+          }}
+        >
+          <DataTable
+            margin={{ vertical: "medium" }}
+            primaryKey="id"
+            columns={[
+              {
+                property: "power",
+                header: "Power",
+                render: (datum: Activity) =>
+                  edit === datum.id ? (
+                    <PowerValueFormField
+                      power={datum.power}
+                      label=""
+                      setPower={newPower =>
+                        setActivities(
+                          activities.map(activity =>
+                            activity.id === datum.id ? { ...activity, power: newPower } : activity
+                          )
+                        )
+                      }
+                      weight={weight}
+                    />
+                  ) : (
+                    <Box width="100%">
+                      <Text>{datum.power.value}</Text>
+                    </Box>
+                  )
+              },
+              {
+                property: "powerUnit",
+                render: (datum: Activity) =>
+                  edit === datum.id ? (
+                    <PowerUnitFormField
+                      power={datum.power}
+                      label=""
+                      setPower={newPower =>
+                        setActivities(
+                          activities.map(activity =>
+                            activity.id === datum.id ? { ...activity, power: newPower } : activity
+                          )
+                        )
+                      }
+                      weight={weight}
+                    />
+                  ) : datum.power.unit === PowerUnit.WATTS ? (
+                    <Box fill>
+                      <Text>Watts</Text>
+                    </Box>
+                  ) : (
+                    <Box fill>
+                      <Text>Watts/kgs</Text>
+                    </Box>
+                  )
+              },
+              {
+                property: "duration",
+                header: "Duration",
+                render: (datum: Activity) =>
+                  edit === datum.id ? (
+                    <DurationValueFormField
+                      duration={datum.duration}
+                      label=""
+                      setDuration={newDuration =>
+                        setActivities(
+                          activities.map(activity =>
+                            activity.id === datum.id ? { ...activity, duration: newDuration } : activity
+                          )
+                        )
+                      }
+                    />
+                  ) : datum.duration.unit === DurationUnit.SECONDS ? (
+                    <Box fill>
+                      <Text>{datum.duration.value} seconds</Text>
+                    </Box>
+                  ) : (
+                    <Box fill>
+                      <Text>{durationToString(datum.duration)}</Text>
+                    </Box>
+                  )
+              },
+              {
+                property: "durationUnit",
+                render: (datum: Activity) =>
+                  edit === datum.id ? (
+                    <DurationUnitFormField
+                      duration={datum.duration}
+                      label=""
+                      setDuration={newDuration =>
+                        setActivities(
+                          activities.map(activity =>
+                            activity.id === datum.id ? { ...activity, duration: newDuration } : activity
+                          )
+                        )
+                      }
+                    />
+                  ) : null
+              },
+              {
+                property: "edit",
+                render: (datum: Activity) => (
+                  <Box fill align="center" justify="center">
+                    <Button
+                      plain
+                      icon={<Edit />}
+                      onClick={() => {
+                        edit === datum.id ? setEdit("") : setEdit(datum.id);
+                      }}
+                    />
+                  </Box>
+                )
+              },
+              {
+                property: "delete",
+                render: (datum: Activity) => (
+                  <Box fill align="center" justify="center">
+                    <Button
+                      plain
+                      alignSelf="center"
+                      icon={<Trash />}
+                      onClick={() => {
+                        setActivities(activities.filter(activity => activity.id !== datum.id));
+                      }}
+                    />
+                  </Box>
+                )
+              }
+            ]}
+            data={activities}
+          />
+        </ThemeContext.Extend>
       )}
       <Box>
         <Form

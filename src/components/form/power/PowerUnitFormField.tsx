@@ -11,12 +11,20 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerUnitFormField = ({ weight, power, setPower, ref, name, label, ...rest }: Props) => {
+const PowerUnitFormField = ({
+  weight,
+  power,
+  setPower,
+  ref,
+  name = "powerunit",
+  label = "Power unit",
+  ...rest
+}: Props) => {
   return (
     <Box justify="end">
-      <FormField label="Power unit" name="powerunit" {...rest}>
+      <FormField label={label} name={name} {...rest}>
         <Select
-          name="powerunit"
+          name={name}
           value={power.unit}
           onChange={({ option }) => {
             if (weight.value && power.value) {

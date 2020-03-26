@@ -10,13 +10,13 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({ weight, power, setPower, ref, name, label, ...rest }: Props) => {
+const PowerValueFormField = ({ weight, power, setPower, ref, name = "power", label = "Power", ...rest }: Props) => {
   return (
     <Box fill>
       <FormField
-        label="Power"
+        label={label}
         required
-        name="power"
+        name={name}
         validate={[
           () => {
             if (!weight && power.unit === PowerUnit.WATTS_KG) return "Please enter stryd weight if using Watts/kg";
@@ -26,7 +26,7 @@ const PowerValueFormField = ({ weight, power, setPower, ref, name, label, ...res
         {...rest}
       >
         <TextInput
-          name="power"
+          name={name}
           onChange={e => {
             setPower({ ...power, value: parseFloat(e.target.value) });
           }}
