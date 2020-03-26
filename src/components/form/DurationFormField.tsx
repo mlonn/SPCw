@@ -1,7 +1,7 @@
 import { Box, FormField, FormFieldProps, MaskedInput, Select, TextInput } from "grommet";
 import React, { useEffect, useState } from "react";
 import { Duration, DurationUnit } from "../../types";
-import { secondsToTime, timeToSeconds } from "../../util";
+import { secondsToTime, timeToSeconds, durationToString } from "../../util";
 
 interface OwnProps {
   duration: Duration;
@@ -12,16 +12,12 @@ type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "p
 
 const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }: Props) => {
   const [durationString, setDurationString] = useState("");
+  console.log(duration);
   useEffect(() => {
-    console.log(duration);
     if (duration.unit === DurationUnit.HH_MM_SS) {
-      if (!duration.hours && !duration.minutes && !duration.seconds) {
+      if (duration.hours === undefined && duration.minutes === undefined && duration.seconds === undefined) {
         setDurationString("");
       }
-    }
-    if (duration.unit === DurationUnit.SECONDS && !duration.value) {
-      setDurationString("");
-    } else {
     }
   }, [duration]);
   return (
@@ -64,6 +60,7 @@ const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }:
               value={durationString}
               onChange={e => {
                 const split = e.target.value.split(":");
+
                 if (split.length >= 1) {
                   setDuration({ ...duration, hours: parseInt(split[0]) });
                 }
@@ -86,12 +83,12 @@ const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }:
             value={duration?.unit}
             onChange={({ option }) => {
               if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {
-                // setDurationString(durationToString(duration));
                 setDuration(secondsToTime(duration));
               }
               if (option === DurationUnit.SECONDS && duration.unit === DurationUnit.HH_MM_SS) {
                 setDuration(timeToSeconds(duration));
               }
+              setDurationString(durationToString(duration));
             }}
             options={[...Object.values(DurationUnit)]}
           />

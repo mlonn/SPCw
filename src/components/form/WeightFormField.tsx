@@ -31,14 +31,15 @@ const WeightUnitFormField = ({ weight, setWeight, ref, name, label, ...rest }: P
             options={[...Object.values(WeightUnit)]}
             onChange={({ option }) => {
               if (weight.value) {
-                if (option === WeightUnit.LBS) {
+                if (option === WeightUnit.LBS && weight.unit === WeightUnit.KG) {
                   setWeight({ unit: option, value: round(kgToLbs(weight.value), 2) });
                 }
-                if (option === WeightUnit.KG) {
+                if (option === WeightUnit.KG && weight.unit === WeightUnit.LBS) {
                   setWeight({ unit: option, value: round(lbsToKg(weight.value), 2) });
                 }
+              } else {
+                setWeight({ ...weight, unit: option });
               }
-              setWeight({ ...weight, unit: option });
             }}
           />
         </FormField>
