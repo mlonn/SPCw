@@ -12,9 +12,17 @@ type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "p
 
 const WeightUnitFormField = ({ weight, setWeight, ref, name, label, ...rest }: Props) => {
   return (
-    <Box gap="small" direction="row">
+    <Box gap="small" direction="row" align="start">
       <Box fill>
-        <FormField label="Weight">
+        <FormField
+          label="Weight"
+          validate={[
+            () => {
+              if (weight.value && weight.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
+              if (weight.value && weight.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
+            }
+          ]}
+        >
           <TextInput
             value={weight.value}
             type="number"
