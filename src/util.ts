@@ -1,17 +1,28 @@
-import { TimeDuration, SecondDuration, DurationUnit } from "./types";
+import { TimeDuration, SecondDuration, DurationUnit, Duration } from "./types";
 
-export const durationToString = (duration: TimeDuration) => {
+export const round = (n: number, places: number) => {
+  const factor = Math.pow(10, places);
+  return Math.round(n * factor) / factor;
+};
+export const lbsToKg = (n: number) => {
+  return n / 2.205;
+};
+export const kgToLbs = (n: number) => {
+  return n * 2.205;
+};
+export const durationToString = (duration: Duration) => {
+  const timeDuration = duration.unit === DurationUnit.HH_MM_SS ? duration : secondsToTime(duration);
   let hoursString = "00";
   let minuteString = "00";
   let secondString = "00";
-  if (duration.hours) {
-    hoursString = duration.hours > 9 ? `${duration.hours}` : `0${duration.hours}`;
+  if (timeDuration.hours) {
+    hoursString = timeDuration.hours > 9 ? `${timeDuration.hours}` : `0${timeDuration.hours}`;
   }
-  if (duration.minutes) {
-    minuteString = duration.minutes > 9 ? `${duration.minutes}` : `0${duration.minutes}`;
+  if (timeDuration.minutes) {
+    minuteString = timeDuration.minutes > 9 ? `${timeDuration.minutes}` : `0${timeDuration.minutes}`;
   }
-  if (duration.seconds) {
-    secondString = duration.seconds > 9 ? `${duration.seconds}` : `0${duration.seconds}`;
+  if (timeDuration.seconds) {
+    secondString = timeDuration.seconds > 9 ? `${timeDuration.seconds}` : `0${timeDuration.seconds}`;
   }
 
   return `${hoursString}:${minuteString}:${secondString}`;

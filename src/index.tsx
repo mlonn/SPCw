@@ -1,12 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Grommet, grommet } from "grommet";
+import { deepMerge } from "grommet/utils";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
+import { theme } from "./theme";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Grommet theme={grommet}>
+    <Grommet theme={deepMerge(grommet, theme)}>
       <App />
     </Grommet>
   </React.StrictMode>,

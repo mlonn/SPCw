@@ -1,5 +1,5 @@
+import { Box, Header, Heading, Main } from "grommet";
 import React from "react";
-import { Main, Header, Heading, FormField, Form, TextInput, Box, Select } from "grommet";
 import CalculateFTP from "./components/CalculateFTP";
 
 function App() {

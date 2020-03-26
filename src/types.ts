@@ -17,6 +17,11 @@ export interface Activity {
   humidity?: string;
 }
 
+export interface Weight {
+  value?: number;
+  unit: WeightUnit;
+}
+
 export interface Power {
   value?: number;
   unit: PowerUnit;
