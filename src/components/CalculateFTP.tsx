@@ -21,18 +21,7 @@ const CalculateFTP = (props: Props) => {
   const [edit, setEdit] = useState<string>();
   const [weight, setWeight] = useState<Weight>({ unit: WeightUnit.KG });
   const [calculationError, setCalculationError] = useState("");
-  const [activities, setActivities] = useState<Activity[]>([
-    {
-      id: "20c45e65-b166-4f29-8227-d786b7aac508",
-      power: { unit: PowerUnit.WATTS, value: 409 },
-      duration: { unit: DurationUnit.HH_MM_SS, hours: 0, minutes: 3, seconds: 0 }
-    },
-    {
-      id: "f9413147-f25e-4a66-8551-c6e491d92f26",
-      power: { unit: PowerUnit.WATTS, value: 359 },
-      duration: { unit: DurationUnit.HH_MM_SS, hours: 0, minutes: 10, seconds: 0 }
-    }
-  ]);
+  const [activities, setActivities] = useState<Activity[]>([]);
 
   let result;
   if (activities.length > 1) {
