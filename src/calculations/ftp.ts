@@ -1,8 +1,8 @@
-import { Activity, PowerUnit, DurationUnit, CALCULATOION_ERRORS } from "../types";
+import { Activity, PowerUnit, DurationUnit, CALCULATOION_ERRORS, Weight, WeightUnit } from "../types";
 import regression from "regression";
-import { timeToSeconds } from "../util";
+import { timeToSeconds, lbsToKg } from "../util";
 
-const standardizeActivity = (activity: Activity, weight?: number) => {
+const standardizeActivity = (activity: Activity, weight: Weight) => {
   if (!activity.power.value) {
     throw Error(CALCULATOION_ERRORS.NO_POWER);
   }
@@ -12,11 +12,15 @@ const standardizeActivity = (activity: Activity, weight?: number) => {
   let power = activity.power;
   let duration = activity.duration;
   if (activity.power.unit === PowerUnit.WATTS_KG) {
-    if (!weight) {
+    if (!weight.value) {
       throw Error(CALCULATOION_ERRORS.NO_WEIGHT);
     }
+    let weightValue = weight.value;
+    if (weight.unit === WeightUnit.LBS) {
+      weightValue = lbsToKg(weight.value);
+    }
     power = {
-      value: activity.power.value * weight,
+      value: activity.power.value * weightValue,
       unit: PowerUnit.WATTS
     };
   }
@@ -29,7 +33,7 @@ const standardizeActivity = (activity: Activity, weight?: number) => {
     duration
   };
 };
-export const calculateFTP = (activities: Activity[], weight?: number) => {
+export const calculateFTP = (activities: Activity[], weight: Weight) => {
   const convertedActivities = activities.map(activity => standardizeActivity(activity, weight));
   const constantRegression = regression.linear(
     convertedActivities.map(a => {
@@ -54,7 +58,12 @@ export const calculateFTP = (activities: Activity[], weight?: number) => {
 
   const reigel = constantRegression.equation[0];
   const ftp = valuesRegression.equation[0];
-  const ftpkg = weight ? Math.round((valuesRegression.equation[0] / weight) * 100) / 100 : undefined;
+  let ftpkg;
+  let weightValue = weight.value;
+  if (weight.value && weight.unit === WeightUnit.LBS) {
+    weightValue = lbsToKg(weight.value);
+  }
+  ftpkg = weightValue ? Math.round((valuesRegression.equation[0] / weightValue) * 100) / 100 : undefined;
   const awc = Math.round(valuesRegression.equation[1]) / 1000;
   const r2 = valuesRegression.r2;
   if (isNaN(r2)) {

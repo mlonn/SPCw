@@ -26,7 +26,7 @@ const CalculateFTP = (props: Props) => {
   let result;
   if (activities.length > 1) {
     try {
-      result = calculateFTP(activities, weight.value);
+      result = calculateFTP(activities, weight);
       if (showError) {
         setShowError(false);
         setCalculationError("");
