@@ -7,7 +7,7 @@ function App() {
     <Main>
       <Box pad="medium">
         <Header alignSelf="center">
-          <Heading>FTP/CP calculator</Heading>
+          <Heading>Calculate FTP/CP and RWC (W') from a CP test</Heading>
         </Header>
         <CalculateFTP />
       </Box>
