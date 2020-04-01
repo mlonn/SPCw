@@ -1,6 +1,6 @@
 import { Activity, PowerUnit, DurationUnit, CALCULATOION_ERRORS, Weight, WeightUnit } from "../types";
 import regression from "regression";
-import { timeToSeconds, lbsToKg } from "../util";
+import { timeToSeconds, toKg } from "../util";
 
 const standardizeActivity = (activity: Activity, weight: Weight) => {
   if (!activity.power.value) {
@@ -17,7 +17,7 @@ const standardizeActivity = (activity: Activity, weight: Weight) => {
     }
     let weightValue = weight.value;
     if (weight.unit === WeightUnit.LBS) {
-      weightValue = lbsToKg(weight.value);
+      weightValue = toKg(weight).value!;
     }
     power = {
       value: activity.power.value * weightValue,
@@ -61,7 +61,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight) => {
   let ftpkg;
   let weightValue = weight.value;
   if (weight.value && weight.unit === WeightUnit.LBS) {
-    weightValue = lbsToKg(weight.value);
+    weightValue = toKg(weight).value!;
   }
   ftpkg = weightValue ? Math.round((valuesRegression.equation[0] / weightValue) * 100) / 100 : undefined;
   const rwc = Math.round(valuesRegression.equation[1]) / 1000;

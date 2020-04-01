@@ -1,6 +1,7 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight } from "../../../types";
+import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
+import { toKg } from "../../../util";
 
 interface OwnProps {
   weight: Weight;
@@ -27,8 +28,25 @@ const PowerValueFormField = ({
         required
         name={name}
         validate={[
-          () => {
-            if (!weight && power.unit === PowerUnit.WATTS_KG) return "Please enter stryd weight if using Watts/kg";
+          (value: number) => {
+            console.log(weight);
+            if (!weight.value && power.unit === PowerUnit.WATTS_KG) {
+              return "Please enter stryd weight if using Watts/kg";
+            }
+            if (power.unit === PowerUnit.WATTS_KG && (value < 1 || value > 10)) {
+              return "Please enter Watts/kg between 1 and 10";
+            }
+            if (weight.value && power.unit === PowerUnit.WATTS) {
+              const kgs = toKg(weight).value!;
+              if (value < Math.floor(kgs) || value > Math.ceil(kgs * 10)) {
+                return `Please enter watts between ${Math.floor(kgs)} and ${Math.ceil(kgs * 10)}`;
+              }
+            }
+            if (!weight.value && power.unit === PowerUnit.WATTS) {
+              if (value < 70 || value > 700) {
+                return `Please enter watts between 70 and 700}`;
+              }
+            }
             return undefined;
           }
         ]}

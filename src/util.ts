@@ -4,11 +4,23 @@ export const round = (n: number, places: number) => {
   const factor = Math.pow(10, places);
   return Math.round(n * factor) / factor;
 };
-export const lbsToKg = (n: number) => {
-  return n / 2.205;
+export const toKg = (weight: Weight) => {
+  if (!weight.value) {
+    return weight;
+  }
+  if (weight.unit === WeightUnit.KG) {
+    return weight;
+  }
+  return { ...weight, value: weight.value / 2.205 };
 };
-export const kgToLbs = (n: number) => {
-  return n * 2.205;
+export const toLbs = (weight: Weight) => {
+  if (!weight.value) {
+    return weight;
+  }
+  if (weight.unit === WeightUnit.KG) {
+    return weight;
+  }
+  return { ...weight, value: weight.value * 2.205 };
 };
 export const durationToString = (duration: Duration) => {
   const timeDuration = duration.unit === DurationUnit.HH_MM_SS ? duration : secondsToTime(duration);

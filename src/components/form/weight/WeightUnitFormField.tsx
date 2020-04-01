@@ -1,7 +1,7 @@
 import { Box, FormField, FormFieldProps, Select, TextInput } from "grommet";
 import React from "react";
 import { Weight, WeightUnit } from "../../../types";
-import { kgToLbs, lbsToKg, round } from "../../../util";
+import { toLbs, toKg, round } from "../../../util";
 
 interface OwnProps {
   weight: Weight;
@@ -22,10 +22,10 @@ const WeightUnitFormField = ({ weight, setWeight, ref, name, unitLabel = "Weight
           onChange={({ option }) => {
             if (weight.value) {
               if (option === WeightUnit.LBS && weight.unit === WeightUnit.KG) {
-                setWeight({ unit: option, value: round(kgToLbs(weight.value), 2) });
+                setWeight({ unit: option, value: round(toLbs(weight).value!, 2) });
               }
               if (option === WeightUnit.KG && weight.unit === WeightUnit.LBS) {
-                setWeight({ unit: option, value: round(lbsToKg(weight.value), 2) });
+                setWeight({ unit: option, value: round(toKg(weight).value!, 2) });
               }
             } else {
               setWeight({ ...weight, unit: option });

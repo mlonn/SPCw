@@ -199,6 +199,7 @@ const CalculateFTP = (props: Props) => {
       )}
       <Box>
         <Form
+          validate="blur"
           onSubmit={(e: any) => {
             e.preventDefault();
             setActivities([...activities, { id: uuidv4(), power, duration }]);
