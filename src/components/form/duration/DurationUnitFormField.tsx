@@ -5,15 +5,23 @@ import { secondsToTime, timeToSeconds } from "../../../util";
 
 interface OwnProps {
   duration: Duration;
+  unitLabel?: string;
   setDuration: (value: Duration) => void;
 }
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name = "timeunit", label = "Time unit", ...rest }: Props) => {
+const DurationUnitFormField = ({
+  duration,
+  setDuration,
+  ref,
+  name = "timeunit",
+  unitLabel = "Time unit",
+  ...rest
+}: Props) => {
   return (
     <Box justify="end">
-      <FormField {...rest} label={label} name={name}>
+      <FormField {...rest} label={unitLabel} name={name}>
         <Select
           name={name}
           value={duration?.unit}
@@ -32,4 +40,4 @@ const DurationFormField = ({ duration, setDuration, ref, name = "timeunit", labe
   );
 };
 
-export default DurationFormField;
+export default DurationUnitFormField;

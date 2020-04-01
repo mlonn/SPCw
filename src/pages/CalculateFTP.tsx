@@ -1,26 +1,56 @@
-import { Box, Button, DataTable, Form, Grid, Heading, Layer, Text, ThemeContext } from "grommet";
+import { Box, Button, Form, Grid, Heading, Layer, Text, ThemeContext } from "grommet";
 import { Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
 import React, { Fragment, useState } from "react";
+import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../calculations/ftp";
-import { Activity, Duration, Power, PowerUnit, Weight, DurationUnit, WeightUnit } from "../types";
+import { Activity, Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit } from "../types";
 import { durationToString, round } from "../util";
-import DurationFormField from "./form/duration/DurationFormField";
-import DurationValueFormField from "./form/duration/DurationValueFormField";
-import DurationUnitFormField from "./form/duration/DurationUnitFormField";
-import PowerFormField from "./form/power/PowerFormField";
-import WeightFormField from "./form/WeightFormField";
-import PowerValueFormField from "./form/power/PowerValueFormField";
-import PowerUnitFormField from "./form/power/PowerUnitFormField";
+import DurationFormField from "../components/form/duration/DurationFormField";
+import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
+import DurationValueFormField from "../components/form/duration/DurationValueFormField";
+import PowerFormField from "../components/form/power/PowerFormField";
+import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
+import PowerValueFormField from "../components/form/power/PowerValueFormField";
+import WeightFormField from "../components/form/weight/WeightFormField";
+import useAthleteState from "../hooks/useAthleteState";
 interface Props {}
+const FtpList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr auto auto;
+  grid-template-areas: "value value value value edit delete";
+  grid-gap: 10px;
+  @media only screen and (max-width: 600px) {
+    grid-template-columns: 1fr 1fr auto;
+    grid-template-areas:
+      "value value edit"
+      "value value delete";
+  }
+  border-bottom: 1px solid black;
+  padding: 10px 0;
+  margin-bottom: 10px;
+`;
+const EditButton = styled.div`
+  grid-area: edit;
+`;
+const DeleteButton = styled.div`
+  grid-area: delete;
+`;
 
+const NewRow = styled.div``;
 const CalculateFTP = (props: Props) => {
+  const athlete = useAthleteState();
   const [duration, setDuration] = useState<Duration>({ unit: DurationUnit.HH_MM_SS });
   const [showError, setShowError] = useState(false);
   const [power, setPower] = useState<Power>({ unit: PowerUnit.WATTS });
   const [edit, setEdit] = useState<string>();
-  const [weight, setWeight] = useState<Weight>({ unit: WeightUnit.KG });
+  const [weight, setWeight] = useState<Weight>(athlete.weight ? athlete.weight : { unit: WeightUnit.KG });
   const [calculationError, setCalculationError] = useState("");
+  const mock: Activity[] = Array.from({ length: 10 }).map(a => ({
+    id: uuidv4(),
+    power: { unit: PowerUnit.WATTS, value: Math.floor(Math.random() * 400) + 200 },
+    duration: { unit: DurationUnit.SECONDS, value: Math.floor(Math.random() * 1000) + 200 }
+  }));
   const [activities, setActivities] = useState<Activity[]>([]);
 
   let result;
@@ -41,7 +71,8 @@ const CalculateFTP = (props: Props) => {
 
   return (
     <Box alignSelf="center" width="xlarge">
-      <Heading level="2">Input</Heading>
+      <Heading level="2">Calculate FTP/CP and RWC (W') from a CP test</Heading>
+      <Heading level="3">Input</Heading>
       <Form validate="blur">
         <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
       </Form>
@@ -57,15 +88,11 @@ const CalculateFTP = (props: Props) => {
             }
           }}
         >
-          <DataTable
-            margin={{ vertical: "medium" }}
-            primaryKey="id"
-            columns={[
-              {
-                property: "power",
-                header: "Power",
-                render: (datum: Activity) =>
-                  edit === datum.id ? (
+          {activities.map(datum => (
+            <Fragment>
+              <FtpList>
+                <NewRow>
+                  {edit === datum.id ? (
                     <PowerValueFormField
                       power={datum.power}
                       label=""
@@ -82,12 +109,10 @@ const CalculateFTP = (props: Props) => {
                     <Box width="100%">
                       <Text>{datum.power.value}</Text>
                     </Box>
-                  )
-              },
-              {
-                property: "powerUnit",
-                render: (datum: Activity) =>
-                  edit === datum.id ? (
+                  )}
+                </NewRow>
+                <Box>
+                  {edit === datum.id ? (
                     <PowerUnitFormField
                       power={datum.power}
                       label=""
@@ -100,21 +125,23 @@ const CalculateFTP = (props: Props) => {
                       }
                       weight={weight}
                     />
-                  ) : datum.power.unit === PowerUnit.WATTS ? (
-                    <Box fill>
-                      <Text>Watts</Text>
-                    </Box>
                   ) : (
                     <Box fill>
-                      <Text>Watts/kgs</Text>
+                      <Text>{datum.power.unit}</Text>
                     </Box>
-                  )
-              },
-              {
-                property: "duration",
-                header: "Duration",
-                render: (datum: Activity) =>
-                  edit === datum.id ? (
+                  )}
+                </Box>
+                <EditButton>
+                  <Button
+                    plain
+                    icon={<Edit />}
+                    onClick={() => {
+                      edit === datum.id ? setEdit("") : setEdit(datum.id);
+                    }}
+                  />
+                </EditButton>
+                <NewRow>
+                  {edit === datum.id ? (
                     <DurationValueFormField
                       duration={datum.duration}
                       label=""
@@ -128,18 +155,16 @@ const CalculateFTP = (props: Props) => {
                     />
                   ) : datum.duration.unit === DurationUnit.SECONDS ? (
                     <Box fill>
-                      <Text>{datum.duration.value} seconds</Text>
+                      <Text>{datum.duration.value}</Text>
                     </Box>
                   ) : (
                     <Box fill>
                       <Text>{durationToString(datum.duration)}</Text>
                     </Box>
-                  )
-              },
-              {
-                property: "durationUnit",
-                render: (datum: Activity) =>
-                  edit === datum.id ? (
+                  )}
+                </NewRow>
+                <Box>
+                  {edit === datum.id ? (
                     <DurationUnitFormField
                       duration={datum.duration}
                       label=""
@@ -151,40 +176,25 @@ const CalculateFTP = (props: Props) => {
                         )
                       }
                     />
-                  ) : null
-              },
-              {
-                property: "edit",
-                render: (datum: Activity) => (
-                  <Box fill align="center" justify="center">
-                    <Button
-                      plain
-                      icon={<Edit />}
-                      onClick={() => {
-                        edit === datum.id ? setEdit("") : setEdit(datum.id);
-                      }}
-                    />
-                  </Box>
-                )
-              },
-              {
-                property: "delete",
-                render: (datum: Activity) => (
-                  <Box fill align="center" justify="center">
-                    <Button
-                      plain
-                      alignSelf="center"
-                      icon={<Trash />}
-                      onClick={() => {
-                        setActivities(activities.filter(activity => activity.id !== datum.id));
-                      }}
-                    />
-                  </Box>
-                )
-              }
-            ]}
-            data={activities}
-          />
+                  ) : (
+                    <Box fill>
+                      <Text>{datum.duration.unit}</Text>
+                    </Box>
+                  )}
+                </Box>
+
+                <DeleteButton>
+                  <Button
+                    plain
+                    icon={<Trash />}
+                    onClick={() => {
+                      setActivities(activities.filter(activity => activity.id !== datum.id));
+                    }}
+                  />
+                </DeleteButton>
+              </FtpList>
+            </Fragment>
+          ))}
         </ThemeContext.Extend>
       )}
       <Box>
@@ -216,22 +226,22 @@ const CalculateFTP = (props: Props) => {
             {result.ftpkg ? <Text>{result.ftpkg} </Text> : <Text>Enter weight</Text>}
             <Text>Watts/kg</Text>
 
-            <Text>AWC (W')</Text>
-            <Text>{result.awc}</Text>
+            <Text>RWC (W')</Text>
+            <Text>{result.rwc}</Text>
             <Text>kJ</Text>
             <Text>R^2 Coefficient</Text>
             <Text>{round(result.r2 * 100, 2).toFixed(2)}</Text>
             <Text>%</Text>
           </Grid>
           <Box margin="medium" align="center" gap="medium">
-            {result.awc > 12 && (
+            {result.rwc > 12 && (
               <Text color={"status-critical"}>
-                WARNING: AWC seems high - expected 4 to 12 kJ, FTP/CP may be under-estimated{" "}
+                WARNING: RWC seems high - expected 4 to 12 kJ, FTP/CP may be under-estimated{" "}
               </Text>
             )}
-            {result.awc < 4 && (
+            {result.rwc < 4 && (
               <Text color={"status-critical"}>
-                WARNING: AWC seems low - expected 4 to 12 kJ, FTP/CP may be over-estimated{" "}
+                WARNING: RWC seems low - expected 4 to 12 kJ, FTP/CP may be over-estimated{" "}
               </Text>
             )}
           </Box>

@@ -64,7 +64,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight) => {
     weightValue = lbsToKg(weight.value);
   }
   ftpkg = weightValue ? Math.round((valuesRegression.equation[0] / weightValue) * 100) / 100 : undefined;
-  const awc = Math.round(valuesRegression.equation[1]) / 1000;
+  const rwc = Math.round(valuesRegression.equation[1]) / 1000;
   const r2 = valuesRegression.r2;
   if (isNaN(r2)) {
     throw Error(CALCULATOION_ERRORS.TOO_SIMILAR);
@@ -73,7 +73,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight) => {
     reigel,
     ftp,
     ftpkg,
-    awc,
+    rwc,
     r2
   };
 };

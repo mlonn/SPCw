@@ -5,12 +5,20 @@ import { durationToString } from "../../../util";
 
 interface OwnProps {
   duration: Duration;
+  valueLabel?: string;
   setDuration: (value: Duration) => void;
 }
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name = "duration", label = "Duration", ...rest }: Props) => {
+const DurationValueFormField = ({
+  duration,
+  setDuration,
+  ref,
+  name = "duration",
+  valueLabel = "Duration",
+  ...rest
+}: Props) => {
   const [durationString, setDurationString] = useState("");
   const prevUnitRef = useRef<DurationUnit>();
 
@@ -33,7 +41,7 @@ const DurationFormField = ({ duration, setDuration, ref, name = "duration", labe
   }, [duration, prevUnit]);
   return (
     <Box fill>
-      <FormField name={name} label={label} required {...rest}>
+      <FormField name={name} label={valueLabel} required {...rest}>
         {duration?.unit === DurationUnit.SECONDS ? (
           <TextInput
             name={name}
@@ -88,4 +96,4 @@ const DurationFormField = ({ duration, setDuration, ref, name = "duration", labe
   );
 };
 
-export default DurationFormField;
+export default DurationValueFormField;

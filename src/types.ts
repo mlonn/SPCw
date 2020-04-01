@@ -5,16 +5,35 @@ export enum CALCULATOION_ERRORS {
   NO_DURATION = "No duration value found",
   NO_WEIGHT = "No weight value found"
 }
+export enum PowerUnit {
+  WATTS = "Watts",
+  WATTS_KG = "Watts/kg"
+}
+export enum DurationUnit {
+  HH_MM_SS = "hh:mm:ss",
+  SECONDS = "Seconds"
+}
+export enum WeightUnit {
+  KG = "Kilograms",
+  LBS = "Pounds"
+}
+
+export enum Gender {
+  MALE = "Male",
+  FEMALE = "Female"
+}
+
+export enum PowerMeter {
+  WIND = "Stryd Wind",
+  NON_WIND = "Stryd non=Wind",
+  OTHER = "Other"
+}
+
 export interface Activity {
   id: string;
-  description?: string;
-  time?: Date;
   power: Power;
   duration: Duration;
-  activityweight?: number;
-  altitude?: number;
-  temperature?: number;
-  humidity?: string;
+  activityweight?: Weight;
 }
 
 export interface Weight {
@@ -38,16 +57,4 @@ export interface TimeDuration {
   minutes?: number;
   seconds?: number;
   unit: DurationUnit.HH_MM_SS;
-}
-export enum PowerUnit {
-  WATTS = "Watts",
-  WATTS_KG = "Watts/kg"
-}
-export enum DurationUnit {
-  HH_MM_SS = "hh:mm:ss",
-  SECONDS = "Seconds"
-}
-export enum WeightUnit {
-  KG = "Kilograms",
-  LBS = "Pounds"
 }

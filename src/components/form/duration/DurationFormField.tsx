@@ -6,16 +6,18 @@ import DurationValueFormField from "./DurationValueFormField";
 
 interface OwnProps {
   duration: Duration;
+  valueLabel?: string;
+  unitLabel?: string;
   setDuration: (value: Duration) => void;
 }
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }: Props) => {
+const DurationFormField = ({ ref, ...rest }: Props) => {
   return (
     <Box gap="small" direction="row" align="start">
-      <DurationValueFormField duration={duration} setDuration={setDuration} />
-      <DurationUnitFormField duration={duration} setDuration={setDuration} />
+      <DurationValueFormField {...rest} />
+      <DurationUnitFormField {...rest} />
     </Box>
   );
 };

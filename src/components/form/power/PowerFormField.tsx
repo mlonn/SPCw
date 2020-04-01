@@ -7,16 +7,18 @@ import PowerValueFormField from "./PowerValueFormField";
 interface OwnProps {
   weight: Weight;
   power: Power;
+  valueLabel?: string;
+  unitLabel?: string;
   setPower: (value: Power) => void;
 }
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerFormField = ({ weight, power, setPower, ref, name, label, ...rest }: Props) => {
+const PowerFormField = ({ ref, ...rest }: Props) => {
   return (
     <Box gap="small" direction="row" align="start">
-      <PowerValueFormField power={power} setPower={setPower} weight={weight} />
-      <PowerUnitFormField power={power} setPower={setPower} weight={weight} />
+      <PowerValueFormField {...rest} />
+      <PowerUnitFormField {...rest} />
     </Box>
   );
 };

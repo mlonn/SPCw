@@ -1,11 +1,12 @@
 import { Box, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
 import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { lbsToKg, round } from "../../../util";
+import { round, lbsToKg } from "../../../util";
 
 interface OwnProps {
   weight: Weight;
   power: Power;
+  unitLabel?: string;
   setPower: (value: Power) => void;
 }
 
@@ -17,12 +18,12 @@ const PowerUnitFormField = ({
   setPower,
   ref,
   name = "powerunit",
-  label = "Power unit",
+  unitLabel = "Power unit",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
-      <FormField label={label} name={name} {...rest}>
+      <FormField label={unitLabel} name={name} {...rest}>
         <Select
           name={name}
           value={power.unit}

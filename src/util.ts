@@ -1,4 +1,4 @@
-import { TimeDuration, SecondDuration, DurationUnit, Duration } from "./types";
+import { TimeDuration, SecondDuration, DurationUnit, Duration, Weight, WeightUnit } from "./types";
 
 export const round = (n: number, places: number) => {
   const factor = Math.pow(10, places);

@@ -5,16 +5,25 @@ import { Power, PowerUnit, Weight } from "../../../types";
 interface OwnProps {
   weight: Weight;
   power: Power;
+  valueLabel?: string;
   setPower: (power: Power) => void;
 }
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({ weight, power, setPower, ref, name = "power", label = "Power", ...rest }: Props) => {
+const PowerValueFormField = ({
+  weight,
+  power,
+  setPower,
+  ref,
+  name = "power",
+  valueLabel = "Power",
+  ...rest
+}: Props) => {
   return (
     <Box fill>
       <FormField
-        label={label}
+        label={valueLabel}
         required
         name={name}
         validate={[
