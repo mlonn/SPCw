@@ -25,7 +25,7 @@ export enum Gender {
 
 export enum PowerMeter {
   WIND = "Stryd Wind",
-  NON_WIND = "Stryd non=Wind",
+  NON_WIND = "Stryd non-Wind",
   OTHER = "Other"
 }
 

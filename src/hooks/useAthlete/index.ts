@@ -4,6 +4,8 @@ import { WeightUnit, PowerUnit, DurationUnit } from "../../types";
 
 const modalReducer = (state: AthleteState, action: Action) => {
   switch (action.type) {
+    case TypeKeys.SET_NAME:
+      return updateStorage({ ...state, name: action.name });
     case TypeKeys.SET_FTP:
       return updateStorage({ ...state, ftp: action.ftp });
     case TypeKeys.SET_GENDER:
@@ -30,7 +32,7 @@ export const useAthlete = (): [AthleteState, Dispatch<Action>] => {
   let initialState: AthleteState = {
     weight: { unit: WeightUnit.KG },
     ftp: { unit: PowerUnit.WATTS },
-    tte: { unit: DurationUnit.HH_MM_SS }
+    tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS }
   };
   if (localState) {
     initialState = JSON.parse(localState);

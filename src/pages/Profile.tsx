@@ -2,7 +2,7 @@ import { Box, Form, Heading, FormField, RadioButtonGroup } from "grommet";
 import React, { useState } from "react";
 import WeightFormField from "../components/form/weight/WeightFormField";
 import useAthleteState from "../hooks/useAthleteState";
-import { Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit } from "../types";
+import { Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit, Gender, PowerMeter } from "../types";
 import DurationFormField from "../components/form/duration/DurationFormField";
 import PowerFormField from "../components/form/power/PowerFormField";
 import useAthleteAction from "../hooks/useAthleteAction";
@@ -28,16 +28,32 @@ const Profile = (props: Props) => {
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading level="2">Profile</Heading>
-      <Form validate="blur">
-        <FormField label="Athelete Name" />
+      <Form>
+        <FormField
+          label="Athelete Name"
+          value={athlete.name}
+          onChange={e => dispatch({ type: TypeKeys.SET_NAME, name: e.target.value })}
+        />
         <WeightFormField weight={athlete.weight} setWeight={setWeight} />
         <PowerFormField power={ftp} setPower={setFtp} weight={weight} valueLabel={"FTP/CP"} />
         <DurationFormField duration={tte} setDuration={setTte} valueLabel={"Time To Exhaustion"} />
         <FormField label="Gender">
-          <RadioButtonGroup direction="row" name="ampm" options={["Male", "Female"]} />
+          <RadioButtonGroup
+            direction="row"
+            name="gender"
+            value={athlete.gender}
+            options={[...Object.values(Gender)]}
+            onChange={e => dispatch({ type: TypeKeys.SET_GENDER, gender: e.target.value as Gender })}
+          />
         </FormField>
         <FormField label="Power meter">
-          <RadioButtonGroup direction="row" name="ampm" options={["Stryd Wind", "Stryd non-Wind", "Other"]} />
+          <RadioButtonGroup
+            direction="row"
+            name="powermeter"
+            value={athlete.powerMeter}
+            options={[...Object.values(PowerMeter)]}
+            onChange={e => dispatch({ type: TypeKeys.SET_POWER_METER, powerMeter: e.target.value as PowerMeter })}
+          />
         </FormField>
       </Form>
     </Box>
