@@ -18,7 +18,7 @@ const PowerUnitFormField = ({
   setPower,
   ref,
   name = "powerunit",
-  unitLabel = "Power unit",
+  unitLabel = "‎\u00A0‎‎‎",
   ...rest
 }: Props) => {
   return (

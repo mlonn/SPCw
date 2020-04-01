@@ -4,8 +4,8 @@ import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../calculations/ftp";
-import { Activity, Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit } from "../types";
-import { durationToString, round } from "../util";
+import { Activity, Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit, INPUT_ERRORS } from "../types";
+import { durationToString, round, timeToSeconds } from "../util";
 import DurationFormField from "../components/form/duration/DurationFormField";
 import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
 import DurationValueFormField from "../components/form/duration/DurationValueFormField";
@@ -37,7 +37,26 @@ const DeleteButton = styled.div`
   grid-area: delete;
 `;
 
-const NewRow = styled.div``;
+const checkActivities = (activities: Activity[]): boolean => {
+  if (activities.length < 2) {
+    throw Error(INPUT_ERRORS.NOT_ENOUGH);
+  }
+  const seconds = activities.map(a => timeToSeconds(a.duration).value || 0);
+  const max = Math.max(...seconds);
+  const min = Math.min(...seconds);
+  if (max - min < 360) {
+    throw Error(INPUT_ERRORS.TO_CLOSE);
+  }
+  const sortedPower = [...activities].sort((a, b) => b.power.value! - a.power.value!);
+  const durationAlsoSorted = sortedPower.every(
+    (activity, i, arr) => !i || timeToSeconds(activity.duration).value! >= timeToSeconds(arr[i - 1].duration).value!
+  );
+  if (!durationAlsoSorted) {
+    throw Error(INPUT_ERRORS.HIGH_LONG_POWER);
+  }
+
+  return true;
+};
 const CalculateFTP = (props: Props) => {
   const athlete = useAthleteState();
   const [duration, setDuration] = useState<Duration>({ unit: DurationUnit.HH_MM_SS });
@@ -54,18 +73,20 @@ const CalculateFTP = (props: Props) => {
   const [activities, setActivities] = useState<Activity[]>([]);
 
   let result;
-  if (activities.length > 1) {
-    try {
+
+  try {
+    if (activities.length > 0 && checkActivities(activities)) {
       result = calculateFTP(activities, weight);
       if (showError) {
         setShowError(false);
         setCalculationError("");
+      } else {
       }
-    } catch (error) {
-      if (!showError) {
-        setShowError(true);
-        setCalculationError(error.message);
-      }
+    }
+  } catch (error) {
+    if (!showError) {
+      setShowError(true);
+      setCalculationError(error.message);
     }
   }
 
@@ -91,7 +112,7 @@ const CalculateFTP = (props: Props) => {
           {activities.map(datum => (
             <Fragment>
               <FtpList>
-                <NewRow>
+                <Box>
                   {edit === datum.id ? (
                     <PowerValueFormField
                       power={datum.power}
@@ -110,7 +131,7 @@ const CalculateFTP = (props: Props) => {
                       <Text>{datum.power.value}</Text>
                     </Box>
                   )}
-                </NewRow>
+                </Box>
                 <Box>
                   {edit === datum.id ? (
                     <PowerUnitFormField
@@ -140,7 +161,7 @@ const CalculateFTP = (props: Props) => {
                     }}
                   />
                 </EditButton>
-                <NewRow>
+                <Box>
                   {edit === datum.id ? (
                     <DurationValueFormField
                       duration={datum.duration}
@@ -162,7 +183,7 @@ const CalculateFTP = (props: Props) => {
                       <Text>{durationToString(datum.duration)}</Text>
                     </Box>
                   )}
-                </NewRow>
+                </Box>
                 <Box>
                   {edit === datum.id ? (
                     <DurationUnitFormField
@@ -199,7 +220,6 @@ const CalculateFTP = (props: Props) => {
       )}
       <Box>
         <Form
-          validate="blur"
           onSubmit={(e: any) => {
             e.preventDefault();
             setActivities([...activities, { id: uuidv4(), power, duration }]);

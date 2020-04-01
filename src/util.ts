@@ -40,14 +40,20 @@ export const durationToString = (duration: Duration) => {
   return `${hoursString}:${minuteString}:${secondString}`;
 };
 
-export const timeToSeconds = (duration: TimeDuration): SecondDuration => {
+export const timeToSeconds = (duration: Duration): SecondDuration => {
+  if (duration.unit === DurationUnit.SECONDS) {
+    return duration;
+  }
   const hours = duration.hours ? duration.hours * 60 * 60 : 0;
   const minutes = duration.minutes ? duration.minutes * 60 : 0;
   const seconds = duration.seconds ? duration.seconds : 0;
   return { unit: DurationUnit.SECONDS, value: hours + minutes + seconds };
 };
 
-export const secondsToTime = (duration: SecondDuration): TimeDuration => {
+export const secondsToTime = (duration: Duration): TimeDuration => {
+  if (duration.unit === DurationUnit.HH_MM_SS) {
+    return duration;
+  }
   let totalSeconds = duration.value || 0;
   const hours = Math.floor(totalSeconds / 3600);
   totalSeconds %= 3600;

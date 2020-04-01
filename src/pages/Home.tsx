@@ -7,14 +7,20 @@ interface Props {}
 const Home = () => {
   return (
     <Box fill justify="center" align="center">
-      <Heading>SuperPower Calculator</Heading>
-      <Link to="/profile">
-        <Button label={"Profile"} />
-      </Link>
-      <Heading>Calculators</Heading>
-      <Link to="/ftp">
-        <Button label={"Calculate FTP/CP and RWC (W') from a CP test"} />
-      </Link>
+      <Box>
+        <Heading>SuperPower Calculator</Heading>
+
+        <Link to="/profile">
+          <Button label={"Profile"} />
+        </Link>
+
+        <Heading>Calculators</Heading>
+        <ul>
+          <li>
+            <Link to="/ftp">Calculate FTP/CP and RWC (W') from a CP test"</Link>
+          </li>
+        </ul>
+      </Box>
     </Box>
   );
 };

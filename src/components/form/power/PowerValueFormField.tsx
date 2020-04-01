@@ -1,6 +1,6 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
+import { Power, PowerUnit, Weight, WeightUnit, INPUT_ERRORS } from "../../../types";
 import { toKg } from "../../../util";
 
 interface OwnProps {
@@ -18,7 +18,7 @@ const PowerValueFormField = ({
   setPower,
   ref,
   name = "power",
-  valueLabel = "Power",
+  valueLabel = "Power (Pt)",
   ...rest
 }: Props) => {
   return (
@@ -31,7 +31,7 @@ const PowerValueFormField = ({
           (value: number) => {
             console.log(weight);
             if (!weight.value && power.unit === PowerUnit.WATTS_KG) {
-              return "Please enter stryd weight if using Watts/kg";
+              return INPUT_ERRORS.ENTER_WEIGHT;
             }
             if (power.unit === PowerUnit.WATTS_KG && (value < 1 || value > 10)) {
               return "Please enter Watts/kg between 1 and 10";
@@ -39,12 +39,14 @@ const PowerValueFormField = ({
             if (weight.value && power.unit === PowerUnit.WATTS) {
               const kgs = toKg(weight).value!;
               if (value < Math.floor(kgs) || value > Math.ceil(kgs * 10)) {
-                return `Please enter watts between ${Math.floor(kgs)} and ${Math.ceil(kgs * 10)}`;
+                return `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(
+                  kgs * 10
+                )} Watts (check value and/or Unit of Measure)`;
               }
             }
             if (!weight.value && power.unit === PowerUnit.WATTS) {
               if (value < 70 || value > 700) {
-                return `Please enter watts between 70 and 700}`;
+                return INPUT_ERRORS.POWER;
               }
             }
             return undefined;

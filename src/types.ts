@@ -5,6 +5,14 @@ export enum CALCULATOION_ERRORS {
   NO_DURATION = "No duration value found",
   NO_WEIGHT = "No weight value found"
 }
+
+export enum INPUT_ERRORS {
+  TO_CLOSE = "min/max durations should be at least 6 minutes apart",
+  NOT_ENOUGH = "please enter Power+Duration for 2 or more activities",
+  HIGH_LONG_POWER = "Power should be higher at shorter durations",
+  ENTER_WEIGHT = "Enter Stryd Weight to see FTP/Critical Power (Pt)/kg",
+  POWER = "Power (Pt): Expecting 70-700 Watts (check value and/or Unit of Measure)"
+}
 export enum PowerUnit {
   WATTS = "Watts",
   WATTS_KG = "Watts/kg"

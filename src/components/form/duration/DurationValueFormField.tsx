@@ -1,7 +1,7 @@
 import { Box, FormField, FormFieldProps, MaskedInput, TextInput } from "grommet";
 import React, { useEffect, useState, useRef } from "react";
 import { Duration, DurationUnit } from "../../../types";
-import { durationToString } from "../../../util";
+import { durationToString, timeToSeconds } from "../../../util";
 
 interface OwnProps {
   duration: Duration;
@@ -41,7 +41,19 @@ const DurationValueFormField = ({
   }, [duration, prevUnit]);
   return (
     <Box fill>
-      <FormField name={name} label={valueLabel} required {...rest}>
+      <FormField
+        name={name}
+        label={valueLabel}
+        required
+        {...rest}
+        validate={[
+          (value: any) => {
+            const seconds = timeToSeconds(duration).value;
+            if (seconds! < 120 || seconds! > 1800) return "Please enter duration between 2min and 30min";
+            return undefined;
+          }
+        ]}
+      >
         {duration?.unit === DurationUnit.SECONDS ? (
           <TextInput
             name={name}

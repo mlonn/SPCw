@@ -16,12 +16,12 @@ const DurationUnitFormField = ({
   setDuration,
   ref,
   name = "timeunit",
-  unitLabel = "Time unit",
+  unitLabel = "\u00A0",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
-      <FormField {...rest} label={unitLabel} name={name}>
+      <FormField label={unitLabel} name={name} {...rest}>
         <Select
           name={name}
           value={duration?.unit}
