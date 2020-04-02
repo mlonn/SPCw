@@ -1,4 +1,4 @@
-import { Box, Form, Heading, FormField, RadioButtonGroup, Button } from "grommet";
+import { Box, Form, Heading, FormField, RadioButtonGroup, Button, TextInput } from "grommet";
 import React, { useState, useEffect } from "react";
 import WeightFormField from "../components/form/weight/WeightFormField";
 import useAthleteState from "../hooks/useAthleteState";
@@ -11,18 +11,17 @@ import { Clear } from "grommet-icons";
 interface Props {}
 
 const Profile = (props: Props) => {
-  const athlete = useAthleteState();
+  const { weight, tte, ftp, name, gender, powerMeter } = useAthleteState();
   const dispatch = useAthleteAction();
 
-  const weight = athlete.weight;
   const setWeight = (newWeight: Weight) => {
     dispatch({ type: TypeKeys.SET_WEIGHT, weight: newWeight });
   };
-  const tte = athlete.tte;
+
   const setTte = (newTte: Duration) => {
     dispatch({ type: TypeKeys.SET_TTE, tte: newTte });
   };
-  const ftp = athlete.ftp;
+
   const setFtp = (newPower: Power) => {
     dispatch({ type: TypeKeys.SET_FTP, ftp: newPower });
   };
@@ -30,13 +29,19 @@ const Profile = (props: Props) => {
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading level="2">Profile</Heading>
-      <Form>
-        <FormField
-          label="Athelete Name"
-          value={athlete.name}
-          onChange={e => dispatch({ type: TypeKeys.SET_NAME, name: e.target.value })}
-        />
-        <WeightFormField weight={athlete.weight} setWeight={setWeight} />
+      <Form
+        onReset={() => {
+          dispatch({ type: TypeKeys.CLEAR_PROFILE });
+        }}
+      >
+        <FormField label="Athelete Name" name="name">
+          <TextInput
+            name="name"
+            value={name || ""}
+            onChange={e => dispatch({ type: TypeKeys.SET_NAME, name: e.target.value })}
+          />
+        </FormField>
+        <WeightFormField weight={weight} setWeight={setWeight} />
         <PowerFormField power={ftp} setPower={setFtp} weight={weight} valueLabel={"FTP/CP"} />
         <DurationFormField duration={tte} setDuration={setTte} valueLabel={"Time To Exhaustion"} />
         <Form onReset={() => dispatch({ type: TypeKeys.CLEAR_GENDER })}>
@@ -46,7 +51,7 @@ const Profile = (props: Props) => {
                 <RadioButtonGroup
                   direction="row"
                   name="gender"
-                  value={athlete.gender}
+                  value={gender}
                   options={[...Object.values(Gender)]}
                   onChange={e => dispatch({ type: TypeKeys.SET_GENDER, gender: e.target.value as Gender })}
                 />
@@ -62,7 +67,7 @@ const Profile = (props: Props) => {
                 <RadioButtonGroup
                   direction="row"
                   name="powermeter"
-                  value={athlete.powerMeter}
+                  value={powerMeter}
                   options={[...Object.values(PowerMeter)]}
                   onChange={e => dispatch({ type: TypeKeys.SET_POWER_METER, powerMeter: e.target.value as PowerMeter })}
                 />
@@ -71,6 +76,7 @@ const Profile = (props: Props) => {
             <Button icon={<Clear />} type="reset" />
           </Box>
         </Form>
+        <Button label="Clear profile" type="reset" />
       </Form>
     </Box>
   );

@@ -11,11 +11,20 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const WeightValueFormField = ({ weight, setWeight, ref, name, valueLabel = "Weight", label, ...rest }: Props) => {
+const WeightValueFormField = ({
+  weight,
+  setWeight,
+  ref,
+  name = "weightvalue",
+  valueLabel = "Weight",
+  label,
+  ...rest
+}: Props) => {
   return (
     <Box fill>
       <FormField
         label={valueLabel}
+        name={name}
         validate={[
           () => {
             if (weight.value && weight.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
@@ -26,6 +35,7 @@ const WeightValueFormField = ({ weight, setWeight, ref, name, valueLabel = "Weig
       >
         <TextInput
           value={weight.value}
+          name={name}
           type="number"
           step="any"
           onChange={e => setWeight({ ...weight, value: parseFloat(e.target.value) })}

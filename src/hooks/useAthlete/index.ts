@@ -1,9 +1,16 @@
 import { useReducer, Dispatch } from "react";
 import { AthleteState, TypeKeys, Action } from "./types";
 import { WeightUnit, PowerUnit, DurationUnit } from "../../types";
-
+const initialState: AthleteState = {
+  weight: { unit: WeightUnit.KG },
+  ftp: { unit: PowerUnit.WATTS },
+  tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS }
+};
 const modalReducer = (state: AthleteState, action: Action) => {
   switch (action.type) {
+    case TypeKeys.CLEAR_PROFILE:
+      console.log(action);
+      return updateStorage({ ...initialState });
     case TypeKeys.SET_NAME:
       return updateStorage({ ...state, name: action.name });
     case TypeKeys.SET_FTP:
@@ -26,24 +33,18 @@ const modalReducer = (state: AthleteState, action: Action) => {
   return state;
 };
 
-const updateStorage = (state: AthleteState) => {
-  window.localStorage.setItem("athlete", JSON.stringify(state));
-  return state;
+const updateStorage = (newState: AthleteState) => {
+  console.log(newState);
+  window.localStorage.setItem("athlete", JSON.stringify(newState));
+  return newState;
 };
 
 export const useAthlete = (): [AthleteState, Dispatch<Action>] => {
   const localState = window.localStorage.getItem("athlete");
-  let initialState: AthleteState = {
-    weight: { unit: WeightUnit.KG },
-    ftp: { unit: PowerUnit.WATTS },
-    tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS }
-  };
-  if (localState) {
-    initialState = JSON.parse(localState);
-  } else {
-    window.localStorage.setItem("athlete", JSON.stringify(initialState));
-  }
+  let init = localState ? JSON.parse(localState) : initialState;
 
-  const [state, dispatch] = useReducer(modalReducer, initialState);
+  window.localStorage.setItem("athlete", JSON.stringify(init));
+
+  const [state, dispatch] = useReducer(modalReducer, init);
   return [state, dispatch];
 };

@@ -10,6 +10,7 @@ export interface AthleteState {
 }
 
 export type Action =
+  | ClearProfileAction
   | SetWeightAction
   | SetGenderAction
   | ClearGenderAction
@@ -18,6 +19,10 @@ export type Action =
   | SetFtpAction
   | SetTteAction
   | SetNameAction;
+
+export interface ClearProfileAction {
+  type: TypeKeys.CLEAR_PROFILE;
+}
 
 export interface SetWeightAction {
   type: TypeKeys.SET_WEIGHT;
@@ -57,6 +62,7 @@ export interface SetNameAction {
 }
 
 export enum TypeKeys {
+  CLEAR_PROFILE = "CLEAR_PROFILE",
   SET_WEIGHT = "SET_WEIGHT",
   SET_GENDER = "SET_GENDER",
   CLEAR_GENDER = "CLEAR_GENDER",
