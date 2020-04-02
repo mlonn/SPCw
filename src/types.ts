@@ -7,8 +7,8 @@ export enum CALCULATOION_ERRORS {
 }
 
 export enum INPUT_ERRORS {
-  TO_CLOSE = "min/max durations should be at least 6 minutes apart",
-  NOT_ENOUGH = "please enter Power+Duration for 2 or more activities",
+  TO_CLOSE = "Min/max durations should be at least 6 minutes apart",
+  NOT_ENOUGH = "Please enter Power+Duration for 2 or more activities",
   HIGH_LONG_POWER = "Power should be higher at shorter durations",
   ENTER_WEIGHT = "Enter Stryd Weight to see FTP/Critical Power (Pt)/kg",
   POWER = "Power (Pt): Expecting 70-700 Watts (check value and/or Unit of Measure)"
@@ -16,6 +16,17 @@ export enum INPUT_ERRORS {
 export enum PowerUnit {
   WATTS = "Watts",
   WATTS_KG = "Watts/kg"
+}
+export enum RwcUnit {
+  KJ = "KiloJules (kJ)",
+  JKG = "Joules/kg (J/kg)"
+}
+export enum RwcRating {
+  TOO_LOW = "Too Low",
+  LOW = "Low",
+  MEDIUM = "Medium",
+  HIGH = "High",
+  TOO_HIGH = "Too High"
 }
 export enum DurationUnit {
   HH_MM_SS = "hh:mm:ss",

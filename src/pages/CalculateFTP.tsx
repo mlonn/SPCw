@@ -1,10 +1,21 @@
-import { Box, Button, Form, Grid, Heading, Layer, Text, ThemeContext } from "grommet";
-import { Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
+import { Box, Button, Form, Grid, Heading, Layer, Text, ThemeContext, FormField, RadioButtonGroup } from "grommet";
+import { Edit, FormClose, StatusWarning, Trash, Clear } from "grommet-icons";
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../calculations/ftp";
-import { Activity, Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit, INPUT_ERRORS } from "../types";
+import {
+  Activity,
+  Duration,
+  DurationUnit,
+  Power,
+  PowerUnit,
+  Weight,
+  WeightUnit,
+  INPUT_ERRORS,
+  Gender,
+  PowerMeter
+} from "../types";
 import { durationToString, round, timeToSeconds } from "../util";
 import DurationFormField from "../components/form/duration/DurationFormField";
 import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
@@ -14,6 +25,7 @@ import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
 import PowerValueFormField from "../components/form/power/PowerValueFormField";
 import WeightFormField from "../components/form/weight/WeightFormField";
 import useAthleteState from "../hooks/useAthleteState";
+import { rwcReference } from "../calculations/data";
 interface Props {}
 const FtpList = styled.div`
   display: grid;
@@ -37,46 +49,36 @@ const DeleteButton = styled.div`
   grid-area: delete;
 `;
 
-const checkActivities = (activities: Activity[]): boolean => {
-  if (activities.length < 2) {
-    throw Error(INPUT_ERRORS.NOT_ENOUGH);
-  }
-  const seconds = activities.map(a => timeToSeconds(a.duration).value || 0);
-  const max = Math.max(...seconds);
-  const min = Math.min(...seconds);
-  if (max - min < 360) {
-    throw Error(INPUT_ERRORS.TO_CLOSE);
-  }
-  const sortedPower = [...activities].sort((a, b) => b.power.value! - a.power.value!);
-  const durationAlsoSorted = sortedPower.every(
-    (activity, i, arr) => !i || timeToSeconds(activity.duration).value! >= timeToSeconds(arr[i - 1].duration).value!
-  );
-  if (!durationAlsoSorted) {
-    throw Error(INPUT_ERRORS.HIGH_LONG_POWER);
-  }
-
-  return true;
-};
 const CalculateFTP = (props: Props) => {
   const athlete = useAthleteState();
   const [duration, setDuration] = useState<Duration>({ unit: DurationUnit.HH_MM_SS });
   const [showError, setShowError] = useState(false);
   const [power, setPower] = useState<Power>({ unit: PowerUnit.WATTS });
   const [edit, setEdit] = useState<string>();
-  const [weight, setWeight] = useState<Weight>(athlete.weight ? athlete.weight : { unit: WeightUnit.KG });
+  const [weight, setWeight] = useState<Weight>(athlete.weight || { unit: WeightUnit.KG });
+  const [gender, setGender] = useState(athlete.gender);
+  const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
+
   const [calculationError, setCalculationError] = useState("");
-  const mock: Activity[] = Array.from({ length: 10 }).map(a => ({
-    id: uuidv4(),
-    power: { unit: PowerUnit.WATTS, value: Math.floor(Math.random() * 400) + 200 },
-    duration: { unit: DurationUnit.SECONDS, value: Math.floor(Math.random() * 1000) + 200 }
-  }));
-  const [activities, setActivities] = useState<Activity[]>([]);
+  const mock: Activity[] = [
+    {
+      id: uuidv4(),
+      power: { unit: PowerUnit.WATTS, value: 409 },
+      duration: { unit: DurationUnit.SECONDS, value: 180 }
+    },
+    {
+      id: uuidv4(),
+      power: { unit: PowerUnit.WATTS, value: 359 },
+      duration: { unit: DurationUnit.SECONDS, value: 600 }
+    }
+  ];
+  const [activities, setActivities] = useState<Activity[]>(mock);
 
   let result;
 
   try {
-    if (activities.length > 0 && checkActivities(activities)) {
-      result = calculateFTP(activities, weight);
+    if (activities.length > 0) {
+      result = calculateFTP(activities, weight, gender, powerMeter);
       if (showError) {
         setShowError(false);
         setCalculationError("");
@@ -96,6 +98,38 @@ const CalculateFTP = (props: Props) => {
       <Heading level="3">Input</Heading>
       <Form validate="blur">
         <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
+        <Form onReset={() => setGender(undefined)}>
+          <Box direction="row" align="center">
+            <Box fill>
+              <FormField label="Gender">
+                <RadioButtonGroup
+                  direction="row"
+                  name="gender"
+                  value={gender}
+                  options={[...Object.values(Gender)]}
+                  onChange={e => setGender(e.target.value as Gender)}
+                />
+              </FormField>
+            </Box>
+            <Button type="reset" icon={<Clear />} />
+          </Box>
+        </Form>
+        <Form onReset={() => setPowerMeter(undefined)}>
+          <Box direction="row" align="center">
+            <Box fill>
+              <FormField label="Power meter">
+                <RadioButtonGroup
+                  direction="row"
+                  name="powermeter"
+                  value={powerMeter}
+                  options={[...Object.values(PowerMeter)]}
+                  onChange={e => setPowerMeter(e.target.value as PowerMeter)}
+                />
+              </FormField>
+            </Box>
+            <Button icon={<Clear />} type="reset" />
+          </Box>
+        </Form>
       </Form>
       <Heading level="3">Activities</Heading>
       {activities.length > 0 && (
@@ -250,22 +284,15 @@ const CalculateFTP = (props: Props) => {
             <Text>RWC (W')</Text>
             <Text>{result.rwc}</Text>
             <Text>kJ</Text>
+
+            <Text>RWC (W')/kg</Text>
+            {result.rwckg ? <Text>{Math.round(result.rwckg)}</Text> : <Text>Enter weight</Text>}
+            <Text>Joules/kg</Text>
+
             <Text>R^2 Coefficient</Text>
             <Text>{round(result.r2 * 100, 2).toFixed(2)}</Text>
             <Text>%</Text>
           </Grid>
-          <Box margin="medium" align="center" gap="medium">
-            {result.rwc > 12 && (
-              <Text color={"status-critical"}>
-                WARNING: RWC seems high - expected 4 to 12 kJ, FTP/CP may be under-estimated{" "}
-              </Text>
-            )}
-            {result.rwc < 4 && (
-              <Text color={"status-critical"}>
-                WARNING: RWC seems low - expected 4 to 12 kJ, FTP/CP may be over-estimated{" "}
-              </Text>
-            )}
-          </Box>
         </Fragment>
       )}
       {activities.length < 2 && (

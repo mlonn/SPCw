@@ -10,8 +10,12 @@ const modalReducer = (state: AthleteState, action: Action) => {
       return updateStorage({ ...state, ftp: action.ftp });
     case TypeKeys.SET_GENDER:
       return updateStorage({ ...state, gender: action.gender });
+    case TypeKeys.CLEAR_GENDER:
+      return updateStorage({ ...state, gender: undefined });
     case TypeKeys.SET_POWER_METER:
       return updateStorage({ ...state, powerMeter: action.powerMeter });
+    case TypeKeys.CLEAR_POWER_METER:
+      return updateStorage({ ...state, powerMeter: undefined });
     case TypeKeys.SET_TTE:
       return updateStorage({ ...state, tte: action.tte });
     case TypeKeys.SET_WEIGHT:
