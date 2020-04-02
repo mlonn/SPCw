@@ -1,7 +1,7 @@
 import regression from "regression";
 import {
   Activity,
-  CALCULATOION_ERRORS,
+  CALCULATION_ERRORS,
   DurationUnit,
   Gender,
   INPUT_ERRORS,
@@ -17,16 +17,16 @@ import { rwcReference } from "./data";
 
 const standardizeActivity = (activity: Activity, weight: Weight) => {
   if (!activity.power.value) {
-    throw Error(CALCULATOION_ERRORS.NO_POWER);
+    throw Error(CALCULATION_ERRORS.NO_POWER);
   }
   if (activity.duration.unit === DurationUnit.SECONDS && !activity.duration.value) {
-    throw Error(CALCULATOION_ERRORS.NO_DURATION);
+    throw Error(CALCULATION_ERRORS.NO_DURATION);
   }
   let power = activity.power;
   let duration = activity.duration;
   if (activity.power.unit === PowerUnit.WATTS_KG) {
     if (!weight.value) {
-      throw Error(CALCULATOION_ERRORS.NO_WEIGHT);
+      throw Error(CALCULATION_ERRORS.NO_WEIGHT);
     }
     let weightValue = weight.value;
     if (weight.unit === WeightUnit.LBS) {
@@ -66,39 +66,35 @@ const checkActivities = (activities: Activity[]): boolean => {
 
   return true;
 };
-const checkRwc = (rwc: number, gender = Gender.MALE, powerMeter = PowerMeter.NON_WIND, weight: Weight) => {
-  if (powerMeter === PowerMeter.OTHER) {
+const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
+  const powerMeterToUse = powerMeter || PowerMeter.NON_WIND;
+  const genderToUse = gender || Gender.MALE;
+  if (powerMeterToUse === PowerMeter.OTHER) {
     return;
   }
-
-  const kj = rwcReference.find(
-    ref =>
-      ref.gender === gender &&
-      ref.powerMeter === powerMeter &&
-      ref.unit === RwcUnit.KJ &&
-      rwc / 1000 >= ref.min &&
-      rwc / 1000 <= ref.max
-  );
+  let rating;
   if (weight.value) {
     const kg = toKg(weight).value!;
-    const jkg = rwcReference.find(
+    rating = rwcReference.find(
       ref =>
-        ref.gender === gender &&
-        ref.powerMeter === powerMeter &&
+        ref.gender === genderToUse &&
+        ref.powerMeter === powerMeterToUse &&
         ref.unit === RwcUnit.JKG &&
         rwc / kg >= ref.min &&
         rwc / kg <= ref.max
-    );
-
-    switch (jkg?.rating) {
-      case RwcRating.HIGH:
-        break;
-
-      default:
-        break;
-    }
+    )?.rating;
   } else {
+    rating = rwcReference.find(
+      ref =>
+        ref.gender === genderToUse &&
+        ref.powerMeter === powerMeterToUse &&
+        ref.unit === RwcUnit.KJ &&
+        rwc / 1000 >= ref.min &&
+        rwc / 1000 <= ref.max
+    )?.rating;
   }
+
+  return rating;
 };
 
 export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
@@ -107,7 +103,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
   const constantRegression = regression.linear(
     convertedActivities.map(a => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
-        throw Error(CALCULATOION_ERRORS.EXPEXTED_SECONDS);
+        throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
         return [Math.log(a.duration.value || 0), Math.log(a.power.value || 0)];
       }
@@ -116,7 +112,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
   const valuesRegression = regression.linear(
     convertedActivities.map(a => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
-        throw Error(CALCULATOION_ERRORS.EXPEXTED_SECONDS);
+        throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
         const duration = a.duration.value || 0;
         const power = a.power.value || 0;
@@ -136,9 +132,9 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
   const rwc = Math.round(valuesRegression.equation[1]) / 1000;
   rwckg = weightValue ? round(valuesRegression.equation[1] / weightValue, 2) : undefined;
   const r2 = valuesRegression.r2;
-  checkRwc(rwc, gender, powerMeter, weight);
+  const rwcRating = checkRwc(valuesRegression.equation[1], weight, gender, powerMeter);
   if (isNaN(r2)) {
-    throw Error(CALCULATOION_ERRORS.TOO_SIMILAR);
+    throw Error(CALCULATION_ERRORS.TOO_SIMILAR);
   }
   return {
     reigel,
@@ -146,6 +142,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
     ftpkg,
     rwc,
     rwckg,
+    rwcRating,
     r2
   };
 };

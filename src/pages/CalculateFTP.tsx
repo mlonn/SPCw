@@ -1,22 +1,9 @@
-import { Box, Button, Form, Grid, Heading, Layer, Text, ThemeContext, FormField, RadioButtonGroup } from "grommet";
-import { Edit, FormClose, StatusWarning, Trash, Clear } from "grommet-icons";
+import { Box, Button, Form, FormField, Grid, Heading, Layer, RadioButtonGroup, Text, ThemeContext } from "grommet";
+import { Clear, Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../calculations/ftp";
-import {
-  Activity,
-  Duration,
-  DurationUnit,
-  Power,
-  PowerUnit,
-  Weight,
-  WeightUnit,
-  INPUT_ERRORS,
-  Gender,
-  PowerMeter
-} from "../types";
-import { durationToString, round, timeToSeconds } from "../util";
 import DurationFormField from "../components/form/duration/DurationFormField";
 import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
 import DurationValueFormField from "../components/form/duration/DurationValueFormField";
@@ -25,7 +12,21 @@ import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
 import PowerValueFormField from "../components/form/power/PowerValueFormField";
 import WeightFormField from "../components/form/weight/WeightFormField";
 import useAthleteState from "../hooks/useAthleteState";
-import { rwcReference } from "../calculations/data";
+import {
+  Activity,
+  Duration,
+  DurationUnit,
+  Gender,
+  Power,
+  PowerMeter,
+  PowerUnit,
+  Weight,
+  WeightUnit,
+  INPUT_ERRORS,
+  CALCULATION_ERRORS,
+  RwcRating
+} from "../types";
+import { durationToString, round, getRwcError, getFtpError } from "../util";
 interface Props {}
 const FtpList = styled.div`
   display: grid;
@@ -63,7 +64,7 @@ const CalculateFTP = (props: Props) => {
   const mock: Activity[] = [
     {
       id: uuidv4(),
-      power: { unit: PowerUnit.WATTS, value: 409 },
+      power: { unit: PowerUnit.WATTS, value: 600 },
       duration: { unit: DurationUnit.SECONDS, value: 180 }
     },
     {
@@ -293,6 +294,22 @@ const CalculateFTP = (props: Props) => {
             <Text>{round(result.r2 * 100, 2).toFixed(2)}</Text>
             <Text>%</Text>
           </Grid>
+          {result.rwcRating && (
+            <Box pad={{ vertical: "medium" }}>
+              <Text
+                color={
+                  result.rwcRating === RwcRating.TOO_HIGH || result.rwcRating === RwcRating.TOO_LOW
+                    ? "status-critical"
+                    : ""
+                }
+              >
+                {getRwcError(result.rwcRating, gender, powerMeter)}
+              </Text>
+              {getFtpError(result.rwcRating) !== null && (
+                <Text color={"status-critical"}>{getFtpError(result.rwcRating)}</Text>
+              )}
+            </Box>
+          )}
         </Fragment>
       )}
       {activities.length < 2 && (

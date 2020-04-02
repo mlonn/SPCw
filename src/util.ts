@@ -1,8 +1,58 @@
-import { TimeDuration, SecondDuration, DurationUnit, Duration, Weight, WeightUnit } from "./types";
+import {
+  TimeDuration,
+  SecondDuration,
+  DurationUnit,
+  Duration,
+  Weight,
+  WeightUnit,
+  Power,
+  PowerUnit,
+  RwcRating,
+  Gender,
+  PowerMeter
+} from "./types";
 
 export const round = (n: number, places: number) => {
   const factor = Math.pow(10, places);
   return Math.round(n * factor) / factor;
+};
+
+export const getPowerError = (power: Power, weight: Weight) => {
+  if (!power.value) {
+    return;
+  }
+  const value = power.value;
+  if (power.unit === PowerUnit.WATTS_KG && (value < 1 || value > 10)) {
+    return "Power (Pt): Expecting  1-10 Watts (check value and/or Unit of Measure)";
+  }
+  let kgs = 70;
+  if (weight.value) {
+    kgs = toKg(weight).value!;
+    if (value < Math.floor(kgs) || value > Math.ceil(kgs * 10)) {
+      return `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(
+        kgs * 10
+      )} Watts (check value and/or Unit of Measure)`;
+    }
+  }
+};
+
+export const getRwcError = (rating: RwcRating, gender?: Gender, powerMeter?: PowerMeter) => {
+  const prefix = rating === RwcRating.TOO_HIGH || rating === RwcRating.TOO_LOW ? "WARNING" : "NOTE";
+  if (gender && powerMeter) {
+    return `${prefix}: Your RWC (W') is '${rating}' for a ${gender} using ${powerMeter}`;
+  } else {
+    const enter = !gender && !powerMeter ? "Gender+Power Meter" : !gender ? "Gender" : !powerMeter ? "PowerMeter" : "";
+    return `${prefix}: Your RWC (W') is rated '${rating}' - to check this rating, please enter ${enter}`;
+  }
+};
+
+export const getFtpError = (rating: RwcRating) => {
+  const prefix = rating === RwcRating.TOO_HIGH ? "under" : RwcRating.TOO_LOW ? "over" : "";
+  if (rating === RwcRating.TOO_HIGH || rating === RwcRating.TOO_LOW) {
+    return `WARNING: If your RWC (W') is '${rating}', FTP/CP may be ${prefix}-estimated`;
+  } else {
+    return null;
+  }
 };
 export const toKg = (weight: Weight) => {
   if (!weight.value) {

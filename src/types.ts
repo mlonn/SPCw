@@ -1,9 +1,14 @@
-export enum CALCULATOION_ERRORS {
+export enum CALCULATION_ERRORS {
   TOO_SIMILAR = "Activities too similar",
   EXPEXTED_SECONDS = "Needs duration in seconds",
   NO_POWER = "No power value found",
   NO_DURATION = "No duration value found",
-  NO_WEIGHT = "No weight value found"
+  NO_WEIGHT = "No weight value found",
+  RWC_TOO_HIGH = "",
+  RWC_HIGH = "",
+  RWC_LOW = "",
+  RWC_TOO_LOW = "",
+  POWER_ERROR = "POWER_ERROR"
 }
 
 export enum INPUT_ERRORS {
