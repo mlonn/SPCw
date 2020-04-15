@@ -10,7 +10,16 @@ interface Props {
 const Search = ({ open, setOpen }: Props) => {
   const history = useHistory();
   const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState(["Calculate FTP/CP and RWC (W') from a CP test"]);
+  const [suggestions, setSuggestions] = useState([
+    {
+      label: (
+        <Box align="start" pad="small">
+          Calculate FTP/CP and RWC (W') from a CP test
+        </Box>
+      ),
+      value: "ftp",
+    },
+  ]);
   const inputRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -24,7 +33,7 @@ const Search = ({ open, setOpen }: Props) => {
   const onEnter = () => {};
 
   const onSelect = (event: any) => {
-    history.push("ftp");
+    history.push(event.suggestion.value);
   };
 
   if (open) {

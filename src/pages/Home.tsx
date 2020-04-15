@@ -9,7 +9,7 @@ const Home = () => {
     <Box alignSelf="center" width="large" align="center">
       <Heading>SuperPower Calculator</Heading>
 
-      <Paragraph fill margin="medium">
+      <Paragraph fill>
         The SuperPower Calculator (SPC) contains a comprehensive suite of calculators and converters useful to anyone
         training, racing, and running with power. There are two versions: SPC Web (SPCw) and SPC Sheets (SPCs). This
         site is for SPCw and supports the most popular SPCs features. For more information about SPCs, please visit the
