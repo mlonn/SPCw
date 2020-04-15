@@ -8,6 +8,8 @@ import CalculateFTP from "./pages/CalculateFTP";
 import Calculators from "./pages/Calculators";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
+import { IdentityContextProvider, useIdentityContext } from "react-netlify-identity";
+import { LogIn } from "./pages/Login";
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -18,6 +20,10 @@ const AppContainer = styled.div`
 function App() {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
+  const { isLoggedIn } = useIdentityContext();
+  if (!isLoggedIn && window.location.hostname.includes("qa")) {
+    return <LogIn />;
+  }
   return (
     <Main>
       <Router>

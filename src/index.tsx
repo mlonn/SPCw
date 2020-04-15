@@ -7,16 +7,18 @@ import App from "./App";
 import AthleteProvider from "./context/AthleteProvider";
 import * as serviceWorker from "./serviceWorker";
 import { theme } from "./theme";
-import styled from "styled-components";
+import { IdentityContextProvider } from "react-netlify-identity";
 
+const url = "https://superpowercalculator.com";
 ReactDOM.render(
   <React.StrictMode>
     <Grommet theme={deepMerge(grommet, theme)}>
-      <AthleteProvider>
-        <Normalize />
-
-        <App />
-      </AthleteProvider>
+      <IdentityContextProvider url={url}>
+        <AthleteProvider>
+          <Normalize />
+          <App />
+        </AthleteProvider>
+      </IdentityContextProvider>
     </Grommet>
   </React.StrictMode>,
   document.getElementById("root")
