@@ -7,12 +7,14 @@ import App from "./App";
 import AthleteProvider from "./context/AthleteProvider";
 import * as serviceWorker from "./serviceWorker";
 import { theme } from "./theme";
+import styled from "styled-components";
 
 ReactDOM.render(
   <React.StrictMode>
     <Grommet theme={deepMerge(grommet, theme)}>
       <AthleteProvider>
         <Normalize />
+
         <App />
       </AthleteProvider>
     </Grommet>

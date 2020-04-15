@@ -1,13 +1,13 @@
-import { Box, Form, Heading, FormField, RadioButtonGroup, Button, TextInput } from "grommet";
-import React, { useState, useEffect } from "react";
-import WeightFormField from "../components/form/weight/WeightFormField";
-import useAthleteState from "../hooks/useAthleteState";
-import { Duration, DurationUnit, Power, PowerUnit, Weight, WeightUnit, Gender, PowerMeter } from "../types";
+import { Box, Button, Form, FormField, Heading, RadioButtonGroup, TextInput } from "grommet";
+import { Clear } from "grommet-icons";
+import React from "react";
 import DurationFormField from "../components/form/duration/DurationFormField";
 import PowerFormField from "../components/form/power/PowerFormField";
-import useAthleteAction from "../hooks/useAthleteAction";
+import WeightFormField from "../components/form/weight/WeightFormField";
 import { TypeKeys } from "../hooks/useAthlete/types";
-import { Clear } from "grommet-icons";
+import useAthleteAction from "../hooks/useAthleteAction";
+import useAthleteState from "../hooks/useAthleteState";
+import { Duration, Gender, Power, PowerMeter, Weight } from "../types";
 interface Props {}
 
 const Profile = (props: Props) => {
@@ -38,7 +38,7 @@ const Profile = (props: Props) => {
           <TextInput
             name="name"
             value={name || ""}
-            onChange={e => dispatch({ type: TypeKeys.SET_NAME, name: e.target.value })}
+            onChange={(e) => dispatch({ type: TypeKeys.SET_NAME, name: e.target.value })}
           />
         </FormField>
         <WeightFormField weight={weight} setWeight={setWeight} />
@@ -53,7 +53,7 @@ const Profile = (props: Props) => {
                   name="gender"
                   value={gender}
                   options={[...Object.values(Gender)]}
-                  onChange={e => dispatch({ type: TypeKeys.SET_GENDER, gender: e.target.value as Gender })}
+                  onChange={(e) => dispatch({ type: TypeKeys.SET_GENDER, gender: e.target.value as Gender })}
                 />
               </FormField>
             </Box>
@@ -69,7 +69,9 @@ const Profile = (props: Props) => {
                   name="powermeter"
                   value={powerMeter}
                   options={[...Object.values(PowerMeter)]}
-                  onChange={e => dispatch({ type: TypeKeys.SET_POWER_METER, powerMeter: e.target.value as PowerMeter })}
+                  onChange={(e) =>
+                    dispatch({ type: TypeKeys.SET_POWER_METER, powerMeter: e.target.value as PowerMeter })
+                  }
                 />
               </FormField>
             </Box>

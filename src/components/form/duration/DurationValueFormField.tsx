@@ -1,6 +1,6 @@
 import { Box, FormField, FormFieldProps, MaskedInput, TextInput } from "grommet";
 import React, { useEffect, useState, useRef } from "react";
-import { Duration, DurationUnit } from "../../../types";
+import { Duration, DurationUnit, INPUT_ERRORS } from "../../../types";
 import { durationToString, timeToSeconds } from "../../../util";
 
 interface OwnProps {
@@ -49,9 +49,9 @@ const DurationValueFormField = ({
         validate={[
           (value: any) => {
             const seconds = timeToSeconds(duration).value;
-            if (seconds! < 120 || seconds! > 1800) return "Please enter duration between 2min and 30min";
+            if (seconds! < 120 || seconds! > 1800) return INPUT_ERRORS.DURATION_ERROR;
             return undefined;
-          }
+          },
         ]}
       >
         {duration?.unit === DurationUnit.SECONDS ? (
@@ -60,7 +60,7 @@ const DurationValueFormField = ({
             plain
             type="number"
             value={duration.value ? duration.value : ""}
-            onChange={e => {
+            onChange={(e) => {
               setDuration({ ...duration, value: parseFloat(e.target.value) });
             }}
           />
@@ -72,23 +72,23 @@ const DurationValueFormField = ({
               {
                 length: [1, 2],
                 regexp: /^[0-9]{1,2}$/,
-                placeholder: "hh"
+                placeholder: "hh",
               },
               { fixed: ":" },
               {
                 length: [1, 2],
                 regexp: /^[0-5][0-9]$|^[0-9]$/,
-                placeholder: "mm"
+                placeholder: "mm",
               },
               { fixed: ":" },
               {
                 length: [1, 2],
                 regexp: /^[0-5][0-9]$|^[0-9]$/,
-                placeholder: "ss"
-              }
+                placeholder: "ss",
+              },
             ]}
             value={durationString}
-            onChange={e => {
+            onChange={(e) => {
               const split = e.target.value.split(":");
               if (split.length >= 1) {
                 setDuration({ ...duration, hours: parseInt(split[0]) });

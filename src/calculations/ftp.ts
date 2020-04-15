@@ -10,7 +10,7 @@ import {
   Weight,
   WeightUnit,
   RwcUnit,
-  RwcRating
+  RwcRating,
 } from "../types";
 import { timeToSeconds, toKg, round } from "../util";
 import { rwcReference } from "./data";
@@ -34,7 +34,7 @@ const standardizeActivity = (activity: Activity, weight: Weight) => {
     }
     power = {
       value: activity.power.value * weightValue,
-      unit: PowerUnit.WATTS
+      unit: PowerUnit.WATTS,
     };
   }
   if (activity.duration.unit === DurationUnit.HH_MM_SS) {
@@ -43,19 +43,48 @@ const standardizeActivity = (activity: Activity, weight: Weight) => {
   return {
     ...activity,
     power,
-    duration
+    duration,
   };
 };
-const checkActivities = (activities: Activity[]): boolean => {
+const checkActivities = (activities: Activity[], weight: Weight): boolean => {
   if (activities.length < 2) {
     throw Error(INPUT_ERRORS.NOT_ENOUGH);
   }
-  const seconds = activities.map(a => timeToSeconds(a.duration).value || 0);
+
+  const seconds = activities.map((a) => timeToSeconds(a.duration).value || 0);
+  if (seconds.some((s) => s < 120) || seconds.some((s) => s > 1800)) {
+    throw Error(INPUT_ERRORS.DURATION_ERROR);
+  }
   const max = Math.max(...seconds);
   const min = Math.min(...seconds);
   if (max - min < 360) {
     throw Error(INPUT_ERRORS.TO_CLOSE);
   }
+  activities.forEach((a) => {
+    const { power } = a;
+    if (!power.value) {
+      throw Error(CALCULATION_ERRORS.NO_POWER);
+    }
+    if (!weight.value && power.unit === PowerUnit.WATTS_KG) {
+      throw Error(INPUT_ERRORS.ENTER_WEIGHT);
+    }
+    if (power.unit === PowerUnit.WATTS_KG && (power.value < 1 || power.value > 10)) {
+      throw Error("Please enter Watts/kg between 1 and 10");
+    }
+    if (weight.value && power.unit === PowerUnit.WATTS) {
+      const kgs = toKg(weight).value!;
+      if (power.value < Math.floor(kgs) || power.value > Math.ceil(kgs * 10)) {
+        throw Error(
+          `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(kgs * 10)} Watts (check value and/or Unit of Measure)`
+        );
+      }
+    }
+    if (!weight.value && power.unit === PowerUnit.WATTS) {
+      if (power.value < 70 || power.value > 700) {
+        throw Error(INPUT_ERRORS.POWER);
+      }
+    }
+  });
   const sortedPower = [...activities].sort((a, b) => b.power.value! - a.power.value!);
   const durationAlsoSorted = sortedPower.every(
     (activity, i, arr) => !i || timeToSeconds(activity.duration).value! >= timeToSeconds(arr[i - 1].duration).value!
@@ -76,7 +105,7 @@ const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: Pow
   if (weight.value) {
     const kg = toKg(weight).value!;
     rating = rwcReference.find(
-      ref =>
+      (ref) =>
         ref.gender === genderToUse &&
         ref.powerMeter === powerMeterToUse &&
         ref.unit === RwcUnit.JKG &&
@@ -85,7 +114,7 @@ const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: Pow
     )?.rating;
   } else {
     rating = rwcReference.find(
-      ref =>
+      (ref) =>
         ref.gender === genderToUse &&
         ref.powerMeter === powerMeterToUse &&
         ref.unit === RwcUnit.KJ &&
@@ -98,10 +127,10 @@ const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: Pow
 };
 
 export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
-  checkActivities(activities);
-  const convertedActivities = activities.map(activity => standardizeActivity(activity, weight));
+  checkActivities(activities, weight);
+  const convertedActivities = activities.map((activity) => standardizeActivity(activity, weight));
   const constantRegression = regression.linear(
-    convertedActivities.map(a => {
+    convertedActivities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
         throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
@@ -110,7 +139,7 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
     })
   );
   const valuesRegression = regression.linear(
-    convertedActivities.map(a => {
+    convertedActivities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
         throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
@@ -143,6 +172,6 @@ export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Ge
     rwc,
     rwckg,
     rwcRating,
-    r2
+    r2,
   };
 };

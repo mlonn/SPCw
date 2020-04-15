@@ -8,7 +8,7 @@ export enum CALCULATION_ERRORS {
   RWC_HIGH = "",
   RWC_LOW = "",
   RWC_TOO_LOW = "",
-  POWER_ERROR = "POWER_ERROR"
+  POWER_ERROR = "POWER_ERROR",
 }
 
 export enum INPUT_ERRORS {
@@ -16,41 +16,42 @@ export enum INPUT_ERRORS {
   NOT_ENOUGH = "Please enter Power+Duration for 2 or more activities",
   HIGH_LONG_POWER = "Power should be higher at shorter durations",
   ENTER_WEIGHT = "Enter Stryd Weight to see FTP/Critical Power (Pt)/kg",
-  POWER = "Power (Pt): Expecting 70-700 Watts (check value and/or Unit of Measure)"
+  POWER = "Power (Pt): Expecting 70-700 Watts (check value and/or Unit of Measure)",
+  DURATION_ERROR = "Please enter duration between 2min and 30min",
 }
 export enum PowerUnit {
   WATTS = "Watts",
-  WATTS_KG = "Watts/kg"
+  WATTS_KG = "Watts/kg",
 }
 export enum RwcUnit {
   KJ = "KiloJules (kJ)",
-  JKG = "Joules/kg (J/kg)"
+  JKG = "Joules/kg (J/kg)",
 }
 export enum RwcRating {
   TOO_LOW = "Too Low",
   LOW = "Low",
   MEDIUM = "Medium",
   HIGH = "High",
-  TOO_HIGH = "Too High"
+  TOO_HIGH = "Too High",
 }
 export enum DurationUnit {
   HH_MM_SS = "hh:mm:ss",
-  SECONDS = "Seconds"
+  SECONDS = "Seconds",
 }
 export enum WeightUnit {
   KG = "Kilograms",
-  LBS = "Pounds"
+  LBS = "Pounds",
 }
 
 export enum Gender {
   MALE = "Male",
-  FEMALE = "Female"
+  FEMALE = "Female",
 }
 
 export enum PowerMeter {
   WIND = "Stryd Wind",
   NON_WIND = "Stryd non-Wind",
-  OTHER = "Other"
+  OTHER = "Other",
 }
 
 export interface Activity {

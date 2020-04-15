@@ -1,26 +1,21 @@
+import { Box, Button, Heading, Paragraph, Anchor } from "grommet";
 import React from "react";
-import { Heading, Box, Button } from "grommet";
 import { Link } from "react-router-dom";
 
 interface Props {}
 
 const Home = () => {
   return (
-    <Box fill justify="center" align="center">
-      <Box>
-        <Heading>SuperPower Calculator</Heading>
+    <Box alignSelf="center" width="large" align="center">
+      <Heading>SuperPower Calculator</Heading>
 
-        <Link to="/profile">
-          <Button label={"Profile"} />
-        </Link>
-
-        <Heading>Calculators</Heading>
-        <ul>
-          <li>
-            <Link to="/ftp">Calculate FTP/CP and RWC (W') from a CP test"</Link>
-          </li>
-        </ul>
-      </Box>
+      <Paragraph fill margin="medium">
+        The SuperPower Calculator (SPC) contains a comprehensive suite of calculators and converters useful to anyone
+        training, racing, and running with power. There are two versions: SPC Web (SPCw) and SPC Sheets (SPCs). This
+        site is for SPCw and supports the most popular SPCs features. For more information about SPCs, please visit the
+        {` `}
+        <Anchor href="https://www.powerpacing.run/superpower-calculator/" label="SPCs page" />
+      </Paragraph>
     </Box>
   );
 };

@@ -1,6 +1,6 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight, WeightUnit, INPUT_ERRORS } from "../../../types";
+import { INPUT_ERRORS, Power, PowerUnit, Weight } from "../../../types";
 import { toKg } from "../../../util";
 
 interface OwnProps {
@@ -29,7 +29,6 @@ const PowerValueFormField = ({
         name={name}
         validate={[
           (value: number) => {
-            console.log(weight);
             if (!weight.value && power.unit === PowerUnit.WATTS_KG) {
               return INPUT_ERRORS.ENTER_WEIGHT;
             }
@@ -50,13 +49,13 @@ const PowerValueFormField = ({
               }
             }
             return undefined;
-          }
+          },
         ]}
         {...rest}
       >
         <TextInput
           name={name}
-          onChange={e => {
+          onChange={(e) => {
             setPower({ ...power, value: parseFloat(e.target.value) });
           }}
           value={power.value ? power.value : ""}

@@ -1,4 +1,16 @@
-import { Box, Button, Form, FormField, Grid, Heading, Layer, RadioButtonGroup, Text, ThemeContext } from "grommet";
+import {
+  Box,
+  Button,
+  Collapsible,
+  Form,
+  FormField,
+  Grid,
+  Heading,
+  Layer,
+  RadioButtonGroup,
+  Text,
+  ThemeContext,
+} from "grommet";
 import { Clear, Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
@@ -20,13 +32,11 @@ import {
   Power,
   PowerMeter,
   PowerUnit,
+  RwcRating,
   Weight,
   WeightUnit,
-  INPUT_ERRORS,
-  CALCULATION_ERRORS,
-  RwcRating
 } from "../types";
-import { durationToString, round, getRwcError, getFtpError } from "../util";
+import { durationToString, getFtpError, getRwcError, round } from "../util";
 interface Props {}
 const FtpList = styled.div`
   display: grid;
@@ -65,16 +75,16 @@ const CalculateFTP = (props: Props) => {
     {
       id: uuidv4(),
       power: { unit: PowerUnit.WATTS, value: 600 },
-      duration: { unit: DurationUnit.SECONDS, value: 180 }
+      duration: { unit: DurationUnit.SECONDS, value: 180 },
     },
     {
       id: uuidv4(),
       power: { unit: PowerUnit.WATTS, value: 359 },
-      duration: { unit: DurationUnit.SECONDS, value: 600 }
-    }
+      duration: { unit: DurationUnit.SECONDS, value: 600 },
+    },
   ];
-  const [activities, setActivities] = useState<Activity[]>([]);
-
+  const [activities, setActivities] = useState<Activity[]>(mock);
+  const [showInputs, setShowInputs] = useState(true);
   let result;
 
   try {
@@ -96,55 +106,76 @@ const CalculateFTP = (props: Props) => {
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading level="2">Calculate FTP/CP and RWC (W') from a CP test</Heading>
-      <Heading level="3">Input</Heading>
-      <Form validate="blur">
-        <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
-        <Form onReset={() => setGender(undefined)}>
-          <Box direction="row" align="center">
-            <Box fill>
-              <FormField label="Gender">
-                <RadioButtonGroup
-                  direction="row"
-                  name="gender"
-                  value={gender}
-                  options={[...Object.values(Gender)]}
-                  onChange={e => setGender(e.target.value as Gender)}
-                />
-              </FormField>
-            </Box>
-            <Button type="reset" icon={<Clear />} />
-          </Box>
-        </Form>
-        <Form onReset={() => setPowerMeter(undefined)}>
-          <Box direction="row" align="center">
-            <Box fill>
-              <FormField label="Power meter">
-                <RadioButtonGroup
-                  direction="row"
-                  name="powermeter"
-                  value={powerMeter}
-                  options={[...Object.values(PowerMeter)]}
-                  onChange={e => setPowerMeter(e.target.value as PowerMeter)}
-                />
-              </FormField>
-            </Box>
-            <Button icon={<Clear />} type="reset" />
-          </Box>
-        </Form>
-      </Form>
-      <Heading level="3">Activities</Heading>
-      {activities.length > 0 && (
+      <Heading level="3">Instructions</Heading>
+      <ul>
+        <li>Enter at least two maximal effort power & duration pairs from the same day.</li>
+        <li>The durations should be between 2 and 30 minutes, and have at least 6 minutes difference between them.</li>
+      </ul>
+      <Box direction="row" justify="between">
+        <Heading level="3">Inputs</Heading>
+        <Box justify="center" align="center">
+          <Button
+            plain
+            reverse
+            label={`${showInputs ? "Hide" : "Show"} inputs`}
+            onClick={() => setShowInputs(!showInputs)}
+          />
+        </Box>
+      </Box>
+      <Box>
+        <Collapsible open={showInputs}>
+          <Form validate="blur">
+            <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
+            <Form onReset={() => setGender(undefined)}>
+              <Box direction="row" align="center">
+                <Box fill>
+                  <FormField label="Gender">
+                    <RadioButtonGroup
+                      direction="row"
+                      name="gender"
+                      wrap
+                      value={gender}
+                      options={[...Object.values(Gender)]}
+                      onChange={(e) => setGender(e.target.value as Gender)}
+                    />
+                  </FormField>
+                </Box>
+                <Button type="reset" icon={<Clear />} />
+              </Box>
+            </Form>
+            <Form onReset={() => setPowerMeter(undefined)}>
+              <Box direction="row" align="center" justify="center">
+                <Box fill>
+                  <FormField label="Power meter">
+                    <RadioButtonGroup
+                      direction="row"
+                      name="powermeter"
+                      wrap
+                      value={powerMeter}
+                      options={[...Object.values(PowerMeter)]}
+                      onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
+                    />
+                  </FormField>
+                </Box>
+                <Button icon={<Clear />} type="reset" />
+              </Box>
+            </Form>
+          </Form>
+        </Collapsible>
+      </Box>
+      {activities.length > 0 ? (
         <ThemeContext.Extend
           value={{
             textInput: {
-              extend: `padding: 11px 0`
+              extend: `padding: 11px 0`,
             },
             maskedInput: {
-              extend: `padding: 11px 0`
-            }
+              extend: `padding: 11px 0`,
+            },
           }}
         >
-          {activities.map(datum => (
+          <Heading level="3">Activities</Heading>
+          {activities.map((datum) => (
             <Fragment>
               <FtpList>
                 <Box>
@@ -152,9 +183,9 @@ const CalculateFTP = (props: Props) => {
                     <PowerValueFormField
                       power={datum.power}
                       label=""
-                      setPower={newPower =>
+                      setPower={(newPower) =>
                         setActivities(
-                          activities.map(activity =>
+                          activities.map((activity) =>
                             activity.id === datum.id ? { ...activity, power: newPower } : activity
                           )
                         )
@@ -172,9 +203,9 @@ const CalculateFTP = (props: Props) => {
                     <PowerUnitFormField
                       power={datum.power}
                       label=""
-                      setPower={newPower =>
+                      setPower={(newPower) =>
                         setActivities(
-                          activities.map(activity =>
+                          activities.map((activity) =>
                             activity.id === datum.id ? { ...activity, power: newPower } : activity
                           )
                         )
@@ -201,9 +232,9 @@ const CalculateFTP = (props: Props) => {
                     <DurationValueFormField
                       duration={datum.duration}
                       label=""
-                      setDuration={newDuration =>
+                      setDuration={(newDuration) =>
                         setActivities(
-                          activities.map(activity =>
+                          activities.map((activity) =>
                             activity.id === datum.id ? { ...activity, duration: newDuration } : activity
                           )
                         )
@@ -224,9 +255,9 @@ const CalculateFTP = (props: Props) => {
                     <DurationUnitFormField
                       duration={datum.duration}
                       label=""
-                      setDuration={newDuration =>
+                      setDuration={(newDuration) =>
                         setActivities(
-                          activities.map(activity =>
+                          activities.map((activity) =>
                             activity.id === datum.id ? { ...activity, duration: newDuration } : activity
                           )
                         )
@@ -244,7 +275,7 @@ const CalculateFTP = (props: Props) => {
                     plain
                     icon={<Trash />}
                     onClick={() => {
-                      setActivities(activities.filter(activity => activity.id !== datum.id));
+                      setActivities(activities.filter((activity) => activity.id !== datum.id));
                     }}
                   />
                 </DeleteButton>
@@ -252,8 +283,13 @@ const CalculateFTP = (props: Props) => {
             </Fragment>
           ))}
         </ThemeContext.Extend>
+      ) : (
+        <Box align="center">
+          <Heading level="3">No activities</Heading>
+        </Box>
       )}
       <Box>
+        <Heading level="3">Add activity</Heading>
         <Form
           onSubmit={(e: any) => {
             e.preventDefault();
@@ -313,8 +349,8 @@ const CalculateFTP = (props: Props) => {
         </Fragment>
       )}
       {activities.length < 2 && (
-        <Box>
-          <Text>Add more activities</Text>
+        <Box align="center">
+          <Heading level="3">Add more activities</Heading>
         </Box>
       )}
 

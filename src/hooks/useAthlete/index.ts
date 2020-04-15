@@ -4,12 +4,11 @@ import { WeightUnit, PowerUnit, DurationUnit } from "../../types";
 const initialState: AthleteState = {
   weight: { unit: WeightUnit.KG },
   ftp: { unit: PowerUnit.WATTS },
-  tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS }
+  tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS },
 };
 const modalReducer = (state: AthleteState, action: Action) => {
   switch (action.type) {
     case TypeKeys.CLEAR_PROFILE:
-      console.log(action);
       return updateStorage({ ...initialState });
     case TypeKeys.SET_NAME:
       return updateStorage({ ...state, name: action.name });
@@ -34,7 +33,6 @@ const modalReducer = (state: AthleteState, action: Action) => {
 };
 
 const updateStorage = (newState: AthleteState) => {
-  console.log(newState);
   window.localStorage.setItem("athlete", JSON.stringify(newState));
   return newState;
 };
