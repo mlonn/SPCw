@@ -21,7 +21,7 @@ function App() {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
   const { isLoggedIn } = useIdentityContext();
-  if (!isLoggedIn && window.location.hostname.includes("qa")) {
+  if (!isLoggedIn && (window.location.hostname.includes("qa") || window.location.hostname.includes("localhost"))) {
     return <LogIn />;
   }
   return (
