@@ -29,7 +29,7 @@ const WeightValueFormField = ({
           () => {
             if (weight.value && weight.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
             if (weight.value && weight.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
-          }
+          },
         ]}
         {...rest}
       >
@@ -38,7 +38,7 @@ const WeightValueFormField = ({
           name={name}
           type="number"
           step="any"
-          onChange={e => setWeight({ ...weight, value: parseFloat(e.target.value) })}
+          onChange={(e) => setWeight({ ...weight, value: parseFloat(e.target.value) })}
         />
       </FormField>
     </Box>

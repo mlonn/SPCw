@@ -54,7 +54,7 @@ export enum PowerMeter {
   OTHER = "Other",
 }
 
-export interface Activity {
+export interface IActivity {
   id: string;
   power: Power;
   duration: Duration;

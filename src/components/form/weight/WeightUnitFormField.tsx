@@ -28,6 +28,7 @@ const WeightUnitFormField = ({
           value={weight.unit}
           options={[...Object.values(WeightUnit)]}
           onChange={({ option }) => {
+            console.log(weight);
             if (weight.value) {
               if (option === WeightUnit.LBS && weight.unit === WeightUnit.KG) {
                 setWeight({ unit: option, value: round(toLbs(weight).value!, 2) });

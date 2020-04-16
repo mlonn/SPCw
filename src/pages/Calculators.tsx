@@ -22,7 +22,7 @@ const Calculators = (props: Props) => {
                 {calculators
                   .filter((c) => c.active)
                   .map((c) => (
-                    <Link to={`/calculators/${c.id}`}>
+                    <Link key={c.id} to={`/calculators/${c.id}`}>
                       <Button plain label={c.title} />
                     </Link>
                   ))}

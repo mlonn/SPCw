@@ -1,5 +1,5 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React from "react";
+import React, { memo } from "react";
 import { INPUT_ERRORS, Power, PowerUnit, Weight } from "../../../types";
 import { toKg } from "../../../util";
 
@@ -67,4 +67,4 @@ const PowerValueFormField = ({
   );
 };
 
-export default PowerValueFormField;
+export default memo(PowerValueFormField);

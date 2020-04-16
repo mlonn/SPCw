@@ -9,7 +9,7 @@ import {
   PowerUnit,
   RwcRating,
   Gender,
-  PowerMeter
+  PowerMeter,
 } from "./types";
 
 export const round = (n: number, places: number) => {
@@ -67,13 +67,16 @@ export const toLbs = (weight: Weight) => {
   if (!weight.value) {
     return weight;
   }
-  if (weight.unit === WeightUnit.KG) {
+  if (weight.unit === WeightUnit.LBS) {
     return weight;
   }
   return { ...weight, value: weight.value * 2.205 };
 };
 export const durationToString = (duration: Duration) => {
   const timeDuration = duration.unit === DurationUnit.HH_MM_SS ? duration : secondsToTime(duration);
+  if (timeDuration.hours === undefined && timeDuration.minutes === undefined && timeDuration.seconds === undefined) {
+    return "";
+  }
   let hoursString = "00";
   let minuteString = "00";
   let secondString = "00";
@@ -86,7 +89,6 @@ export const durationToString = (duration: Duration) => {
   if (timeDuration.seconds) {
     secondString = timeDuration.seconds > 9 ? `${timeDuration.seconds}` : `0${timeDuration.seconds}`;
   }
-
   return `${hoursString}:${minuteString}:${secondString}`;
 };
 

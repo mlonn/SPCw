@@ -1,6 +1,6 @@
 import regression from "regression";
 import {
-  Activity,
+  IActivity,
   CALCULATION_ERRORS,
   DurationUnit,
   Gender,
@@ -14,8 +14,24 @@ import {
 } from "../types";
 import { timeToSeconds, toKg, round } from "../util";
 import { rwcReference } from "./data";
-
-const standardizeActivity = (activity: Activity, weight: Weight) => {
+const filterActivites = (activity: IActivity) => {
+  if (!activity.power.value) {
+    return false;
+  }
+  if (activity.duration.unit === DurationUnit.SECONDS && !activity.duration.value) {
+    return false;
+  }
+  if (
+    activity.duration.unit === DurationUnit.HH_MM_SS &&
+    !activity.duration.hours &&
+    !activity.duration.minutes &&
+    !activity.duration.seconds
+  ) {
+    return false;
+  }
+  return true;
+};
+const standardizeActivity = (activity: IActivity, weight: Weight) => {
   if (!activity.power.value) {
     throw Error(CALCULATION_ERRORS.NO_POWER);
   }
@@ -46,13 +62,13 @@ const standardizeActivity = (activity: Activity, weight: Weight) => {
     duration,
   };
 };
-const checkActivities = (activities: Activity[], weight: Weight): boolean => {
+const checkActivities = (activities: IActivity[], weight: Weight): boolean => {
   if (activities.length < 2) {
     throw Error(INPUT_ERRORS.NOT_ENOUGH);
   }
-
   const seconds = activities.map((a) => timeToSeconds(a.duration).value || 0);
-  if (seconds.some((s) => s < 120) || seconds.some((s) => s > 1800)) {
+  console.log(seconds);
+  if (seconds.some((s) => s && s < 120) || seconds.some((s) => s && s > 1800)) {
     throw Error(INPUT_ERRORS.DURATION_ERROR);
   }
   const max = Math.max(...seconds);
@@ -62,26 +78,22 @@ const checkActivities = (activities: Activity[], weight: Weight): boolean => {
   }
   activities.forEach((a) => {
     const { power } = a;
-    if (!power.value) {
-      throw Error(CALCULATION_ERRORS.NO_POWER);
-    }
-    if (!weight.value && power.unit === PowerUnit.WATTS_KG) {
-      throw Error(INPUT_ERRORS.ENTER_WEIGHT);
-    }
-    if (power.unit === PowerUnit.WATTS_KG && (power.value < 1 || power.value > 10)) {
-      throw Error("Please enter Watts/kg between 1 and 10");
-    }
-    if (weight.value && power.unit === PowerUnit.WATTS) {
-      const kgs = toKg(weight).value!;
-      if (power.value < Math.floor(kgs) || power.value > Math.ceil(kgs * 10)) {
-        throw Error(
-          `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(kgs * 10)} Watts (check value and/or Unit of Measure)`
-        );
+    if (power.value && weight.value) {
+      if (power.unit === PowerUnit.WATTS_KG && (power.value < 1 || power.value > 10)) {
+        throw Error("Please enter Watts/kg between 1 and 10");
       }
-    }
-    if (!weight.value && power.unit === PowerUnit.WATTS) {
-      if (power.value < 70 || power.value > 700) {
-        throw Error(INPUT_ERRORS.POWER);
+      if (weight.value && power.unit === PowerUnit.WATTS) {
+        const kgs = toKg(weight).value!;
+        if (power.value < Math.floor(kgs) || power.value > Math.ceil(kgs * 10)) {
+          throw Error(
+            `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(kgs * 10)} Watts (check value and/or Unit of Measure)`
+          );
+        }
+      }
+      if (!weight.value && power.unit === PowerUnit.WATTS) {
+        if (power.value < 70 || power.value > 700) {
+          throw Error(INPUT_ERRORS.POWER);
+        }
       }
     }
   });
@@ -126,9 +138,11 @@ const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: Pow
   return rating;
 };
 
-export const calculateFTP = (activities: Activity[], weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
-  checkActivities(activities, weight);
-  const convertedActivities = activities.map((activity) => standardizeActivity(activity, weight));
+export const calculateFTP = (activities: IActivity[], weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
+  const filteredActivites = activities.filter(filterActivites);
+  const convertedActivities = filteredActivites.map((activity) => standardizeActivity(activity, weight));
+  console.log(filteredActivites);
+  checkActivities(convertedActivities, weight);
   const constantRegression = regression.linear(
     convertedActivities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {

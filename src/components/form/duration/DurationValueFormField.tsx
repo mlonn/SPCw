@@ -90,16 +90,15 @@ const DurationValueFormField = ({
             value={durationString}
             onChange={(e) => {
               const split = e.target.value.split(":");
-              if (split.length >= 1) {
-                setDuration({ ...duration, hours: parseInt(split[0]) });
-              }
-              if (split.length >= 2) {
-                setDuration({ ...duration, minutes: parseInt(split[1]) });
-              }
-              if (split.length >= 3) {
-                setDuration({ ...duration, seconds: parseInt(split[2]) });
-              }
+              console.log(split);
+              const seconds = parseInt(split[2]);
+              const minutes = parseInt(split[1]);
+              const hours = parseInt(split[0]);
+              setDuration({ ...duration, hours, minutes, seconds });
               setDurationString(e.target.value);
+            }}
+            onBlur={() => {
+              setDurationString(durationToString(duration));
             }}
           />
         )}
