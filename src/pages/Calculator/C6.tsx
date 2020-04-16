@@ -9,21 +9,22 @@ import {
   Layer,
   RadioButtonGroup,
   Text,
-  ThemeContext,
+  ThemeContext
 } from "grommet";
 import { Clear, Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
 import React, { Fragment, useState } from "react";
 import styled from "styled-components";
 import { v4 as uuidv4 } from "uuid";
-import { calculateFTP } from "../calculations/ftp";
-import DurationFormField from "../components/form/duration/DurationFormField";
-import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
-import DurationValueFormField from "../components/form/duration/DurationValueFormField";
-import PowerFormField from "../components/form/power/PowerFormField";
-import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
-import PowerValueFormField from "../components/form/power/PowerValueFormField";
-import WeightFormField from "../components/form/weight/WeightFormField";
-import useAthleteState from "../hooks/useAthleteState";
+import { calculateFTP } from "../../calculations/ftp";
+import DurationFormField from "../../components/form/duration/DurationFormField";
+import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
+import DurationValueFormField from "../../components/form/duration/DurationValueFormField";
+import PowerFormField from "../../components/form/power/PowerFormField";
+import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
+import PowerValueFormField from "../../components/form/power/PowerValueFormField";
+import WeightFormField from "../../components/form/weight/WeightFormField";
+import useAthleteState from "../../hooks/useAthleteState";
+import calculators from "../../resources/calculators";
 import {
   Activity,
   Duration,
@@ -34,9 +35,9 @@ import {
   PowerUnit,
   RwcRating,
   Weight,
-  WeightUnit,
-} from "../types";
-import { durationToString, getFtpError, getRwcError, round } from "../util";
+  WeightUnit
+} from "../../types";
+import { durationToString, getFtpError, getRwcError, round } from "../../util";
 interface Props {}
 const FtpList = styled.div`
   display: grid;
@@ -60,7 +61,9 @@ const DeleteButton = styled.div`
   grid-area: delete;
 `;
 
-const CalculateFTP = (props: Props) => {
+const C6 = (props: Props) => {
+  const TASK_ID = 6;
+  const calculator = calculators.find(c => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [duration, setDuration] = useState<Duration>({ unit: DurationUnit.HH_MM_SS });
   const [showError, setShowError] = useState(false);
@@ -69,23 +72,25 @@ const CalculateFTP = (props: Props) => {
   const [weight, setWeight] = useState<Weight>(athlete.weight || { unit: WeightUnit.KG });
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
-
   const [calculationError, setCalculationError] = useState("");
   const mock: Activity[] = [
     {
       id: uuidv4(),
       power: { unit: PowerUnit.WATTS, value: 600 },
-      duration: { unit: DurationUnit.SECONDS, value: 180 },
+      duration: { unit: DurationUnit.SECONDS, value: 180 }
     },
     {
       id: uuidv4(),
       power: { unit: PowerUnit.WATTS, value: 359 },
-      duration: { unit: DurationUnit.SECONDS, value: 600 },
-    },
+      duration: { unit: DurationUnit.SECONDS, value: 600 }
+    }
   ];
   const [activities, setActivities] = useState<Activity[]>([]);
   const [showInputs, setShowInputs] = useState(true);
   let result;
+  if (!calculator) {
+    return <Heading>Calcualtor not found</Heading>;
+  }
 
   try {
     if (activities.length > 0) {
@@ -105,7 +110,9 @@ const CalculateFTP = (props: Props) => {
 
   return (
     <Box alignSelf="center" width="xlarge">
-      <Heading level="2">Calculate FTP/CP and RWC (W') from a CP test</Heading>
+      <Heading alignSelf="center" textAlign="center" level="1" size="small">
+        {calculator.title}
+      </Heading>
       <Heading level="3">Instructions</Heading>
       <ul>
         <li>Enter at least two maximal effort power & duration pairs from the same day.</li>
@@ -136,7 +143,7 @@ const CalculateFTP = (props: Props) => {
                       wrap
                       value={gender}
                       options={[...Object.values(Gender)]}
-                      onChange={(e) => setGender(e.target.value as Gender)}
+                      onChange={e => setGender(e.target.value as Gender)}
                     />
                   </FormField>
                 </Box>
@@ -153,7 +160,7 @@ const CalculateFTP = (props: Props) => {
                       wrap
                       value={powerMeter}
                       options={[...Object.values(PowerMeter)]}
-                      onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
+                      onChange={e => setPowerMeter(e.target.value as PowerMeter)}
                     />
                   </FormField>
                 </Box>
@@ -167,15 +174,15 @@ const CalculateFTP = (props: Props) => {
         <ThemeContext.Extend
           value={{
             textInput: {
-              extend: `padding: 11px 0`,
+              extend: `padding: 11px 0`
             },
             maskedInput: {
-              extend: `padding: 11px 0`,
-            },
+              extend: `padding: 11px 0`
+            }
           }}
         >
           <Heading level="3">Activities</Heading>
-          {activities.map((datum) => (
+          {activities.map(datum => (
             <Fragment>
               <FtpList>
                 <Box>
@@ -183,9 +190,9 @@ const CalculateFTP = (props: Props) => {
                     <PowerValueFormField
                       power={datum.power}
                       label=""
-                      setPower={(newPower) =>
+                      setPower={newPower =>
                         setActivities(
-                          activities.map((activity) =>
+                          activities.map(activity =>
                             activity.id === datum.id ? { ...activity, power: newPower } : activity
                           )
                         )
@@ -203,9 +210,9 @@ const CalculateFTP = (props: Props) => {
                     <PowerUnitFormField
                       power={datum.power}
                       label=""
-                      setPower={(newPower) =>
+                      setPower={newPower =>
                         setActivities(
-                          activities.map((activity) =>
+                          activities.map(activity =>
                             activity.id === datum.id ? { ...activity, power: newPower } : activity
                           )
                         )
@@ -232,9 +239,9 @@ const CalculateFTP = (props: Props) => {
                     <DurationValueFormField
                       duration={datum.duration}
                       label=""
-                      setDuration={(newDuration) =>
+                      setDuration={newDuration =>
                         setActivities(
-                          activities.map((activity) =>
+                          activities.map(activity =>
                             activity.id === datum.id ? { ...activity, duration: newDuration } : activity
                           )
                         )
@@ -255,9 +262,9 @@ const CalculateFTP = (props: Props) => {
                     <DurationUnitFormField
                       duration={datum.duration}
                       label=""
-                      setDuration={(newDuration) =>
+                      setDuration={newDuration =>
                         setActivities(
-                          activities.map((activity) =>
+                          activities.map(activity =>
                             activity.id === datum.id ? { ...activity, duration: newDuration } : activity
                           )
                         )
@@ -275,7 +282,7 @@ const CalculateFTP = (props: Props) => {
                     plain
                     icon={<Trash />}
                     onClick={() => {
-                      setActivities(activities.filter((activity) => activity.id !== datum.id));
+                      setActivities(activities.filter(activity => activity.id !== datum.id));
                     }}
                   />
                 </DeleteButton>
@@ -385,4 +392,4 @@ const CalculateFTP = (props: Props) => {
   );
 };
 
-export default CalculateFTP;
+export default C6;
