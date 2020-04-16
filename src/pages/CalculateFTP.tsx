@@ -83,7 +83,7 @@ const CalculateFTP = (props: Props) => {
       duration: { unit: DurationUnit.SECONDS, value: 600 },
     },
   ];
-  const [activities, setActivities] = useState<Activity[]>(mock);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [showInputs, setShowInputs] = useState(true);
   let result;
 

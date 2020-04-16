@@ -28,8 +28,8 @@ export const LogIn: React.FunctionComponent = () => {
 
   return (
     <Container fill justify="center" align="center">
-      <Heading level="1">QA version are not public plase sign in</Heading>
-      <Button label="Sign in" onClick={() => NetlifyIdentityWidget.open()} />
+      <Heading level="1">QA version are not public please sign in</Heading>
+      <Button label="Sign in" onClick={() => NetlifyIdentityWidget.open("signup")} />
     </Container>
   );
 };
