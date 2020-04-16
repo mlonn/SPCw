@@ -27,7 +27,7 @@ function App() {
       <Router>
         <AppContainer>
           <Header />
-          <Box pad="medium" height="100%">
+          <Box pad="medium">
             <Switch>
               <Route path="/profile" component={Profile} />
               <Route path="/calculators" component={Calculators} />
