@@ -3,7 +3,7 @@ export enum CALCULATION_ERRORS {
   EXPEXTED_SECONDS = "Needs duration in seconds",
   NO_POWER = "No power value found",
   NO_DURATION = "No duration value found",
-  NO_WEIGHT = "No weight value found",
+  NO_WEIGHT = "Please enter weight when using W/kg",
   RWC_TOO_HIGH = "",
   RWC_HIGH = "",
   RWC_LOW = "",

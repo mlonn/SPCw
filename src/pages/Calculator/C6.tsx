@@ -268,14 +268,13 @@ const C6 = (props: Props) => {
             justify="between"
             round="medium"
             elevation="medium"
-            pad={{ vertical: "xsmall", horizontal: "small" }}
+            pad={{ vertical: "small", horizontal: "medium" }}
             background="status-critical"
           >
             <Box align="center" direction="row" gap="xsmall">
               <StatusWarning />
               <Text>{calculationError}</Text>
             </Box>
-            <Button icon={<FormClose />} onClick={() => setShowError(false)} plain />
           </Box>
         </Layer>
       )}
