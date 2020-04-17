@@ -9,14 +9,15 @@ const Header = () => {
   const size = useContext(ResponsiveContext);
 
   return (
-    <Box fill>
+    <Box pad="medium">
       <GHeader
         direction="row"
         justify="between"
         pad={{ vertical: "medium" }}
         alignSelf="center"
-        width="xlarge"
+        width={{ max: "xlarge" }}
         align="center"
+        fill
       >
         <Link to="/">
           <Box justify="center" align="center" direction="row" gap="small" pad={{ vertical: "medium" }}>

@@ -19,9 +19,9 @@ const AppContainer = styled.div`
 `;
 function App() {
   const { isLoggedIn } = useIdentityContext();
-  if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
-    return <LogIn />;
-  }
+  // if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
+  //   return <LogIn />;
+  // }
   return (
     <Main>
       <Router>
