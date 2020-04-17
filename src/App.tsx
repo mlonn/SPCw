@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import { LogIn } from "./pages/Login";
 import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
-
+import NetlifyIdentityWidget from "netlify-identity-widget";
 const AppContainer = styled.div`
   min-height: 100vh;
   height: 100%;
@@ -21,6 +21,8 @@ function App() {
   const { isLoggedIn } = useIdentityContext();
   if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
     return <LogIn />;
+  } else {
+    NetlifyIdentityWidget.close();
   }
   return (
     <Main>
