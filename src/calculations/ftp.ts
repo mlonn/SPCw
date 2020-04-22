@@ -1,18 +1,17 @@
 import regression from "regression";
 import {
-  IActivity,
   CALCULATION_ERRORS,
   DurationUnit,
   Gender,
+  IActivity,
   INPUT_ERRORS,
   PowerMeter,
   PowerUnit,
+  RwcUnit,
   Weight,
   WeightUnit,
-  RwcUnit,
-  RwcRating,
 } from "../types";
-import { timeToSeconds, toKg, round } from "../util";
+import { round, timeToSeconds, toKg } from "../util";
 import { rwcReference } from "./data";
 const filterActivites = (activity: IActivity) => {
   if (!activity.power.value) {
@@ -31,7 +30,7 @@ const filterActivites = (activity: IActivity) => {
   }
   return true;
 };
-const standardizeActivity = (activity: IActivity, weight: Weight) => {
+const standardizeActivity = (activity: IActivity, weight?: Weight) => {
   if (!activity.power.value) {
     throw Error(CALCULATION_ERRORS.NO_POWER);
   }
@@ -41,7 +40,7 @@ const standardizeActivity = (activity: IActivity, weight: Weight) => {
   let power = activity.power;
   let duration = activity.duration;
   if (activity.power.unit === PowerUnit.WATTS_KG) {
-    if (!weight.value) {
+    if (!weight || !weight.value) {
       throw Error(CALCULATION_ERRORS.NO_WEIGHT);
     }
     let weightValue = weight.value;
@@ -62,7 +61,7 @@ const standardizeActivity = (activity: IActivity, weight: Weight) => {
     duration,
   };
 };
-const checkActivities = (activities: IActivity[], weight: Weight): boolean => {
+const checkActivities = (activities: IActivity[], weight?: Weight): boolean => {
   if (activities.length < 2) {
     throw Error(INPUT_ERRORS.NOT_ENOUGH);
   }
@@ -78,7 +77,7 @@ const checkActivities = (activities: IActivity[], weight: Weight): boolean => {
   }
   activities.forEach((a) => {
     const { power } = a;
-    if (power.value && weight.value) {
+    if (power.value && weight) {
       if (power.unit === PowerUnit.WATTS_KG && (power.value < 1 || power.value > 10)) {
         throw Error("Please enter Watts/kg between 1 and 10");
       }
@@ -107,14 +106,14 @@ const checkActivities = (activities: IActivity[], weight: Weight): boolean => {
 
   return true;
 };
-const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
+const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
   const powerMeterToUse = powerMeter || PowerMeter.NON_WIND;
   const genderToUse = gender || Gender.MALE;
   if (powerMeterToUse === PowerMeter.OTHER) {
     return;
   }
   let rating;
-  if (weight.value) {
+  if (weight?.value) {
     const kg = toKg(weight).value!;
     rating = rwcReference.find(
       (ref) =>
@@ -138,7 +137,7 @@ const checkRwc = (rwc: number, weight: Weight, gender?: Gender, powerMeter?: Pow
   return rating;
 };
 
-export const calculateFTP = (activities: IActivity[], weight: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
+export const calculateFTP = (activities: IActivity[], weight?: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
   const filteredActivites = activities.filter(filterActivites);
   const convertedActivities = filteredActivites.map((activity) => standardizeActivity(activity, weight));
   console.log(filteredActivites);
@@ -167,8 +166,8 @@ export const calculateFTP = (activities: IActivity[], weight: Weight, gender?: G
   const reigel = constantRegression.equation[0];
   const ftp = valuesRegression.equation[0];
   let ftpkg, rwckg;
-  let weightValue = weight.value;
-  if (weight.value && weight.unit === WeightUnit.LBS) {
+  let weightValue = weight ? weight.value : undefined;
+  if (weight?.value && weight.unit === WeightUnit.LBS) {
     weightValue = toKg(weight).value!;
   }
   ftpkg = weightValue ? Math.round((ftp / weightValue) * 100) / 100 : undefined;

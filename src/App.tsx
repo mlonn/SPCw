@@ -13,17 +13,16 @@ import Footer from "./components/Footer";
 import NetlifyIdentityWidget from "netlify-identity-widget";
 const AppContainer = styled.div`
   min-height: 100vh;
-  height: 100%;
   display: grid;
   grid-template-rows: auto 1fr auto;
 `;
 function App() {
   const { isLoggedIn } = useIdentityContext();
-  if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
-    return <LogIn />;
-  } else {
-    NetlifyIdentityWidget.close();
-  }
+  // if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
+  //   return <LogIn />;
+  // } else {
+  //   NetlifyIdentityWidget.close();
+  // }
   return (
     <Main>
       <Router>

@@ -95,21 +95,27 @@ export const durationToString = (duration: Duration) => {
 export const timeToSeconds = (duration: Duration): SecondDuration => {
   if (duration.unit === DurationUnit.SECONDS) {
     return duration;
+  } else if (duration.unit === DurationUnit.HH_MM_SS) {
+    const hours = duration.hours ? duration.hours * 60 * 60 : 0;
+    const minutes = duration.minutes ? duration.minutes * 60 : 0;
+    const seconds = duration.seconds ? duration.seconds : 0;
+    return { unit: DurationUnit.SECONDS, value: hours + minutes + seconds };
+  } else {
+    throw Error("No unit");
   }
-  const hours = duration.hours ? duration.hours * 60 * 60 : 0;
-  const minutes = duration.minutes ? duration.minutes * 60 : 0;
-  const seconds = duration.seconds ? duration.seconds : 0;
-  return { unit: DurationUnit.SECONDS, value: hours + minutes + seconds };
 };
 
 export const secondsToTime = (duration: Duration): TimeDuration => {
   if (duration.unit === DurationUnit.HH_MM_SS) {
     return duration;
+  } else if (duration.unit === DurationUnit.SECONDS) {
+    let totalSeconds = duration.value || 0;
+    const hours = Math.floor(totalSeconds / 3600);
+    totalSeconds %= 3600;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return { unit: DurationUnit.HH_MM_SS, hours, seconds, minutes };
+  } else {
+    throw Error("No unit");
   }
-  let totalSeconds = duration.value || 0;
-  const hours = Math.floor(totalSeconds / 3600);
-  totalSeconds %= 3600;
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  return { unit: DurationUnit.HH_MM_SS, hours, seconds, minutes };
 };

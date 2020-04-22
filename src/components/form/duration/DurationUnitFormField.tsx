@@ -24,13 +24,14 @@ const DurationUnitFormField = ({
       <FormField label={unitLabel} name={name} {...rest}>
         <Select
           name={name}
-          value={duration?.unit}
+          value={duration.unit}
           onChange={({ option }) => {
             if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {
               setDuration(secondsToTime(duration));
-            }
-            if (option === DurationUnit.SECONDS && duration.unit === DurationUnit.HH_MM_SS) {
+            } else if (option === DurationUnit.SECONDS && duration.unit === DurationUnit.HH_MM_SS) {
               setDuration(timeToSeconds(duration));
+            } else {
+              setDuration({ ...duration, unit: option });
             }
           }}
           options={[...Object.values(DurationUnit)]}

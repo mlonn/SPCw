@@ -4,8 +4,8 @@ export interface AthleteState {
   name?: string;
   gender?: Gender;
   powerMeter?: PowerMeter;
-  weight: Weight;
-  ftp: Power;
+  weight?: Weight;
+  ftp?: Power;
   tte: Duration;
 }
 
@@ -70,5 +70,5 @@ export enum TypeKeys {
   CLEAR_POWER_METER = "CLEAR_POWER_METER",
   SET_FTP = "SET_FTP",
   SET_TTE = "SET_TTE",
-  SET_NAME = "SET_NAME"
+  SET_NAME = "SET_NAME",
 }

@@ -27,7 +27,9 @@ const DurationValueFormField = ({
   }, [duration.unit]);
   const prevUnit = prevUnitRef.current;
   useEffect(() => {
-    setDurationString(durationToString(duration));
+    if (duration.unit) {
+      setDurationString(durationToString(duration));
+    }
     // eslint-disable-next-line
   }, []);
   useEffect(() => {
@@ -39,6 +41,7 @@ const DurationValueFormField = ({
       }
     }
   }, [duration, prevUnit]);
+  console.log(duration);
   return (
     <Box fill>
       <FormField
@@ -47,7 +50,7 @@ const DurationValueFormField = ({
         required
         {...rest}
         validate={[
-          (value: any) => {
+          () => {
             const seconds = timeToSeconds(duration).value;
             if (seconds! < 120 || seconds! > 1800) return INPUT_ERRORS.DURATION_ERROR;
             return undefined;
@@ -64,7 +67,7 @@ const DurationValueFormField = ({
               setDuration({ ...duration, value: parseFloat(e.target.value) });
             }}
           />
-        ) : (
+        ) : duration?.unit === DurationUnit.HH_MM_SS ? (
           <MaskedInput
             plain
             name={name}
@@ -101,6 +104,8 @@ const DurationValueFormField = ({
               setDurationString(durationToString(duration));
             }}
           />
+        ) : (
+          <TextInput disabled value={"Select a unit"} />
         )}
       </FormField>
     </Box>

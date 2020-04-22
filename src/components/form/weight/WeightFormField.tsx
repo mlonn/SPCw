@@ -5,7 +5,7 @@ import WeightUnitFormField from "./WeightUnitFormField";
 import WeightValueFormField from "./WeightValueFormField";
 
 interface OwnProps {
-  weight: Weight;
+  weight?: Weight;
   valueLabel?: string;
   unitLabel?: string;
   setWeight: (value: Weight) => void;

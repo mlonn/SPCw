@@ -1,9 +1,9 @@
-import { useReducer, Dispatch } from "react";
-import { AthleteState, TypeKeys, Action } from "./types";
-import { WeightUnit, PowerUnit, DurationUnit } from "../../types";
+import { Dispatch, useReducer } from "react";
+import { DurationUnit } from "../../types";
+import { Action, AthleteState, TypeKeys } from "./types";
 const initialState: AthleteState = {
-  weight: { unit: WeightUnit.KG },
-  ftp: { unit: PowerUnit.WATTS },
+  weight: {},
+  ftp: {},
   tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS },
 };
 const modalReducer = (state: AthleteState, action: Action) => {

@@ -3,9 +3,8 @@ import React from "react";
 import { Weight } from "../../../types";
 
 interface OwnProps {
-  weight: Weight;
+  weight?: Weight;
   valueLabel?: string;
-
   setWeight: (value: Weight) => void;
 }
 
@@ -27,14 +26,14 @@ const WeightValueFormField = ({
         name={name}
         validate={[
           () => {
-            if (weight.value && weight.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
-            if (weight.value && weight.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
+            if (weight?.value && weight?.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
+            if (weight?.value && weight?.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
           },
         ]}
         {...rest}
       >
         <TextInput
-          value={weight.value}
+          value={weight?.value}
           name={name}
           type="number"
           step="any"

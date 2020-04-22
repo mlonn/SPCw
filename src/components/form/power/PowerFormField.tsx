@@ -5,8 +5,8 @@ import PowerUnitFormField from "./PowerUnitFormField";
 import PowerValueFormField from "./PowerValueFormField";
 
 interface OwnProps {
-  weight: Weight;
-  power: Power;
+  weight?: Weight;
+  power?: Power;
   valueLabel?: string;
   unitLabel?: string;
   setPower: (value: Power) => void;

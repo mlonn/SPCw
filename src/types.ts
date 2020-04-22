@@ -63,23 +63,23 @@ export interface IActivity {
 
 export interface Weight {
   value?: number;
-  unit: WeightUnit;
+  unit?: WeightUnit;
 }
 
 export interface Power {
   value?: number;
-  unit: PowerUnit;
+  unit?: PowerUnit;
 }
 
 export type Duration = SecondDuration | TimeDuration;
 
 export interface SecondDuration {
   value?: number;
-  unit: DurationUnit.SECONDS;
+  unit?: DurationUnit.SECONDS;
 }
 export interface TimeDuration {
   hours?: number;
   minutes?: number;
   seconds?: number;
-  unit: DurationUnit.HH_MM_SS;
+  unit?: DurationUnit.HH_MM_SS;
 }

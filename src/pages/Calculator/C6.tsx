@@ -1,56 +1,29 @@
 import {
   Box,
   Button,
-  Collapsible,
   Form,
   FormField,
   Grid,
   Heading,
   Layer,
+  Paragraph,
   RadioButtonGroup,
+  ResponsiveContext,
   Text,
   ThemeContext,
-  Paragraph,
-  ResponsiveContext,
 } from "grommet";
-import { Clear, Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
-import React, { memo, Fragment, useState, useContext } from "react";
-import styled from "styled-components";
+import { Clear, StatusWarning } from "grommet-icons";
+import debounce from "lodash.debounce";
+import React, { Fragment, useContext, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../../calculations/ftp";
-import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
-import DurationValueFormField from "../../components/form/duration/DurationValueFormField";
-import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
-import PowerValueFormField from "../../components/form/power/PowerValueFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import debounce from "lodash.debounce";
-import { IActivity, DurationUnit, Gender, PowerMeter, PowerUnit, RwcRating, Weight, WeightUnit } from "../../types";
-import { durationToString, getFtpError, getRwcError, round } from "../../util";
+import { DurationUnit, Gender, IActivity, PowerMeter, PowerUnit, RwcRating, Weight } from "../../types";
+import { getFtpError, getRwcError, round } from "../../util";
 import Activity from "../Activity";
 interface Props {}
-
-const ActivityContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  grid-template-areas: "value value value value edit delete";
-  grid-gap: 10px;
-  @media only screen and (max-width: 600px) {
-    grid-template-columns: 1fr 1fr auto;
-    grid-template-areas:
-      "value value delete"
-      "value value delete";
-  }
-  align-items: center;
-  margin-bottom: 10px;
-`;
-const EditButton = styled.div`
-  grid-area: edit;
-`;
-const DeleteButton = styled.div`
-  grid-area: delete;
-`;
 
 const C6 = (props: Props) => {
   const TASK_ID = 6;
@@ -58,8 +31,7 @@ const C6 = (props: Props) => {
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
   const size = useContext(ResponsiveContext);
-  const [edit, setEdit] = useState<string>();
-  const [weight, setWeight] = useState<Weight>(athlete.weight || { unit: WeightUnit.KG });
+  const [weight, setWeight] = useState(athlete.weight);
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
   const [calculationError, setCalculationError] = useState("");
@@ -67,13 +39,13 @@ const C6 = (props: Props) => {
   const initialActivities: IActivity[] = [
     {
       id: uuidv4(),
-      power: { unit: PowerUnit.WATTS },
-      duration: { unit: DurationUnit.HH_MM_SS },
+      power: {},
+      duration: {},
     },
     {
       id: uuidv4(),
-      power: { unit: PowerUnit.WATTS },
-      duration: { unit: DurationUnit.HH_MM_SS },
+      power: {},
+      duration: {},
     },
   ];
 
@@ -123,7 +95,7 @@ const C6 = (props: Props) => {
         </Box>
         <Box margin={{ top: "medium" }}>
           <Form validate="blur">
-            <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
+            <WeightFormField weight={weight} setWeight={setWeight} />
           </Form>
           <Form onReset={() => setGender(undefined)}>
             <Box direction="row" align="center">
@@ -202,7 +174,6 @@ const C6 = (props: Props) => {
               const duration = { unit: DurationUnit.HH_MM_SS };
               const power = { unit: PowerUnit.WATTS };
               const id = uuidv4();
-              setEdit(id);
               setActivities([...activities, { id, power, duration }]);
             }}
           />

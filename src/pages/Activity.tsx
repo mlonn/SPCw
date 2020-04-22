@@ -29,7 +29,7 @@ const DeleteButton = styled.div`
 interface Props {
   activity: IActivity;
   canDelete?: boolean;
-  weight: Weight;
+  weight?: Weight;
   updateActivity: (activity: IActivity) => void;
   removeActivity: (activity: IActivity) => void;
 }
