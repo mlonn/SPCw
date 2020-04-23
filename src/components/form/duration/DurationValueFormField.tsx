@@ -45,7 +45,7 @@ const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Dura
           <TextInput
             plain
             type="number"
-            value={duration.value ? duration.value : ""}
+            value={value}
             onChange={(e) => {
               setValue(parseFloat(e.target.value));
             }}

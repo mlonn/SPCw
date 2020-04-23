@@ -21,7 +21,7 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
             setValue(parseFloat(e.target.value));
           }}
           onBlur={() => setPower({ ...power, value })}
-          value={power?.value ? power.value : ""}
+          value={value}
           type="number"
           step="any"
         />
