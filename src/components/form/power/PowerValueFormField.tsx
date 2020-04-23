@@ -1,5 +1,5 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Power, Weight } from "../../../types";
 
 interface OwnProps {
@@ -13,6 +13,9 @@ type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "p
 
 const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", ...rest }: Props) => {
   const [value, setValue] = useState(power?.value);
+  useEffect(() => {
+    setValue(power?.value);
+  }, [power]);
   return (
     <Box fill>
       <FormField label={valueLabel} required {...rest}>

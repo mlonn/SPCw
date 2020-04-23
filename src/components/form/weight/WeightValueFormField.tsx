@@ -1,6 +1,6 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React, { useState } from "react";
-import { Weight } from "../../../types";
+import React, { useState, useEffect, useRef } from "react";
+import { Weight, WeightUnit } from "../../../types";
 
 interface OwnProps {
   weight?: Weight;
@@ -20,6 +20,11 @@ const WeightValueFormField = ({
   ...rest
 }: Props) => {
   const [value, setValue] = useState(weight?.value);
+
+  useEffect(() => {
+    setValue(weight?.value);
+  }, [setWeight, weight]);
+
   return (
     <Box fill>
       <FormField

@@ -18,11 +18,11 @@ const AppContainer = styled.div`
 `;
 function App() {
   const { isLoggedIn } = useIdentityContext();
-  if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
-    return <LogIn />;
-  } else {
-    NetlifyIdentityWidget.close();
-  }
+  // if (!isLoggedIn && window.location.hostname !== "superpowercalculator.com") {
+  //   return <LogIn />;
+  // } else {
+  //   NetlifyIdentityWidget.close();
+  // }
   return (
     <Main>
       <Router>
