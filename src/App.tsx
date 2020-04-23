@@ -28,7 +28,7 @@ function App() {
       <Router>
         <AppContainer>
           <Header />
-          <Box pad="medium">
+          <Box pad={{ horizontal: "medium", bottom: "medium " }}>
             <Switch>
               <Route path="/profile" component={Profile} />
               <Route path="/calculators" component={Calculators} />

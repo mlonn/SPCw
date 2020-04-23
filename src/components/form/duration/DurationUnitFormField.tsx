@@ -15,15 +15,14 @@ const DurationUnitFormField = ({
   duration,
   setDuration,
   ref,
-  name = "timeunit",
+
   unitLabel = "\u00A0",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
-      <FormField label={unitLabel} name={name} {...rest}>
+      <FormField label={unitLabel} {...rest}>
         <Select
-          name={name}
           value={duration.unit}
           onChange={({ option }) => {
             if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {

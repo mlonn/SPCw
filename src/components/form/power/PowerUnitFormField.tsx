@@ -17,15 +17,14 @@ const PowerUnitFormField = ({
   power,
   setPower,
   ref,
-  name = "powerunit",
-  unitLabel = "‎\u00A0‎‎‎",
+
+  unitLabel = "‎Power unit",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
-      <FormField label={unitLabel} name={name} {...rest}>
+      <FormField label={unitLabel} {...rest}>
         <Select
-          name={name}
           value={power?.unit}
           onChange={({ option }) => {
             if (weight?.value && power?.value && power.unit) {

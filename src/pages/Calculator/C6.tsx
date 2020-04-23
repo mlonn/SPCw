@@ -12,9 +12,9 @@ import {
   Text,
   ThemeContext,
 } from "grommet";
-import { Clear, StatusWarning } from "grommet-icons";
+import { Clear, StatusWarning, Close } from "grommet-icons";
 import debounce from "lodash.debounce";
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useState, useEffect, useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../../calculations/ftp";
 import WeightFormField from "../../components/form/weight/WeightFormField";
@@ -22,7 +22,9 @@ import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
 import { DurationUnit, Gender, IActivity, PowerMeter, PowerUnit, RwcRating, Weight } from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
-import Activity from "../Activity";
+import Activity from "../../components/Activity";
+import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
+import Parent from "./Parent";
 interface Props {}
 
 const C6 = (props: Props) => {
@@ -31,7 +33,10 @@ const C6 = (props: Props) => {
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
   const size = useContext(ResponsiveContext);
-  const [weight, setWeight] = useState(athlete.weight);
+  const [weight, setWeight] = useState<Weight>({
+    value: athlete.weight?.value,
+    unit: athlete.weight?.unit ? athlete.weight.unit : athlete.units?.weight,
+  });
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
   const [calculationError, setCalculationError] = useState("");
@@ -39,50 +44,62 @@ const C6 = (props: Props) => {
   const initialActivities: IActivity[] = [
     {
       id: uuidv4(),
-      power: {},
-      duration: {},
+      power: { unit: athlete.units?.power },
+      duration: { unit: athlete.units?.duration },
     },
     {
       id: uuidv4(),
-      power: {},
-      duration: {},
+      power: { unit: athlete.units?.power },
+      duration: { unit: athlete.units?.duration },
     },
   ];
 
-  const [activities, setActivities] = useState<IActivity[]>([...initialActivities]);
-  const debouncedSetActivites = debounce(setActivities, 100);
-  const updateActivity = (newActivity: IActivity) => {
-    console.log(newActivity.id);
-    debouncedSetActivites(activities.map((activity) => (activity.id === newActivity.id ? newActivity : activity)));
+  const [activities, setActivities] = useState<IActivity[]>(initialActivities);
+  useEffect(() => {
+    setResult(undefined);
+  }, [activities, weight, gender, powerMeter]);
+  const [result, setResult] = useState<any>();
+
+  const onActivityChange = (index: number, activity: IActivity) => {
+    const newState = [...activities];
+    newState[index] = activity;
+    setActivities(newState);
+    // setResult(undefined);
   };
-  const removeActivity = (activityToRemove: IActivity) => {
-    setActivities(activities.filter((activity) => activityToRemove.id !== activity.id));
+
+  const onDelete = (index: number) => {
+    setActivities((state) => {
+      console.log(index);
+      const newState = [...state];
+      console.log(newState);
+      newState.splice(index, 1);
+      console.log(newState);
+      return newState;
+    });
   };
-  let result;
+
   if (!calculator) {
     return <Heading>Calcualtor not found</Heading>;
   }
-
-  try {
-    if (activities.length > 0) {
-      result = calculateFTP(activities, weight, gender, powerMeter);
+  const onCalculate = () => {
+    try {
+      const newResult = calculateFTP(activities, weight, gender, powerMeter);
+      setResult(newResult);
       if (showError) {
         setShowError(false);
         setCalculationError("");
       }
-    }
-  } catch (error) {
-    if (calculationError !== error.message) {
+    } catch (error) {
       setShowError(true);
       setCalculationError(error.message);
     }
-  }
-
+  };
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading alignSelf="center" textAlign="center" level="1" size="small">
         {calculator.title}
       </Heading>
+
       <Grid columns={size !== "small" ? ["1fr", "1fr"] : undefined} gap="medium">
         <Box>
           <Heading level="2" size="small">
@@ -136,6 +153,7 @@ const C6 = (props: Props) => {
       <Heading level="2" size="small">
         Activities
       </Heading>
+
       {activities.length > 0 ? (
         <ThemeContext.Extend
           value={{
@@ -148,14 +166,15 @@ const C6 = (props: Props) => {
           }}
         >
           <Box margin={{ vertical: "medium" }}>
-            {activities.map((activity) => (
+            {activities.map((activity, index) => (
               <Activity
                 canDelete={activities.length > 2}
                 key={activity.id}
+                index={index}
                 activity={activity}
                 weight={weight}
-                updateActivity={updateActivity}
-                removeActivity={removeActivity}
+                onActivityChange={onActivityChange}
+                onDelete={onDelete}
               />
             ))}
           </Box>
@@ -169,15 +188,19 @@ const C6 = (props: Props) => {
         <Box justify="center" align="end">
           <Button
             label="Add activity"
-            type="submit"
             onClick={() => {
-              const duration = { unit: DurationUnit.HH_MM_SS };
-              const power = { unit: PowerUnit.WATTS };
+              const duration = { unit: athlete.units?.duration };
+              const power = { unit: athlete.units?.power };
               const id = uuidv4();
               setActivities([...activities, { id, power, duration }]);
             }}
           />
         </Box>
+        {!result && (
+          <Box justify="center" align="end" margin={{ vertical: "medium" }}>
+            <Button label="Calculate" onClick={onCalculate} />
+          </Box>
+        )}
       </Box>
 
       {result && (
@@ -246,6 +269,7 @@ const C6 = (props: Props) => {
               <StatusWarning />
               <Text>{calculationError}</Text>
             </Box>
+            <Button icon={<Close />} onClick={() => setShowError(false)} />
           </Box>
         </Layer>
       )}

@@ -15,7 +15,7 @@ const DurationValueFormField = ({
   duration,
   setDuration,
   ref,
-  name = "duration",
+
   valueLabel = "Duration",
   ...rest
 }: Props) => {
@@ -41,11 +41,10 @@ const DurationValueFormField = ({
       }
     }
   }, [duration, prevUnit]);
-  console.log(duration);
+
   return (
     <Box fill>
       <FormField
-        name={name}
         label={valueLabel}
         required
         {...rest}
@@ -59,7 +58,6 @@ const DurationValueFormField = ({
       >
         {duration?.unit === DurationUnit.SECONDS ? (
           <TextInput
-            name={name}
             plain
             type="number"
             value={duration.value ? duration.value : ""}
@@ -70,7 +68,6 @@ const DurationValueFormField = ({
         ) : duration?.unit === DurationUnit.HH_MM_SS ? (
           <MaskedInput
             plain
-            name={name}
             mask={[
               {
                 length: [1, 2],
@@ -93,7 +90,6 @@ const DurationValueFormField = ({
             value={durationString}
             onChange={(e) => {
               const split = e.target.value.split(":");
-              console.log(split);
               const seconds = parseInt(split[2]);
               const minutes = parseInt(split[1]);
               const hours = parseInt(split[0]);

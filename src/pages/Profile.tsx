@@ -7,15 +7,22 @@ import WeightFormField from "../components/form/weight/WeightFormField";
 import { TypeKeys } from "../hooks/useAthlete/types";
 import useAthleteAction from "../hooks/useAthleteAction";
 import useAthleteState from "../hooks/useAthleteState";
-import { Duration, Gender, Power, PowerMeter, Weight } from "../types";
+import { Duration, Gender, Power, PowerMeter, Weight, Units } from "../types";
+import WeightUnitFormField from "../components/form/weight/WeightUnitFormField";
+import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
+import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
 interface Props {}
 
 const Profile = (props: Props) => {
-  const { weight, tte, ftp, name, gender, powerMeter } = useAthleteState();
+  const { weight, tte, ftp, name, gender, powerMeter, units } = useAthleteState();
   const dispatch = useAthleteAction();
 
   const setWeight = (newWeight: Weight) => {
     dispatch({ type: TypeKeys.SET_WEIGHT, weight: newWeight });
+  };
+
+  const setUnits = (newUnits: Units) => {
+    dispatch({ type: TypeKeys.SET_UNITS, units: newUnits });
   };
 
   const setTte = (newTte: Duration) => {
@@ -77,8 +84,29 @@ const Profile = (props: Props) => {
             </Box>
             <Button icon={<Clear />} type="reset" />
           </Box>
+          <Heading level="3">Standard Units</Heading>
+          <WeightUnitFormField
+            weight={{ unit: units?.weight }}
+            setWeight={(newWeight) => {
+              setUnits({ ...units, weight: newWeight?.unit });
+            }}
+          />
+          <PowerUnitFormField
+            power={{ unit: units?.power }}
+            setPower={(newPower) => {
+              setUnits({ ...units, power: newPower?.unit });
+            }}
+            weight={weight}
+          />
+          <DurationUnitFormField
+            duration={{ unit: units?.duration }}
+            unitLabel="Duration unit"
+            setDuration={(newDuration) => {
+              setUnits({ ...units, duration: newDuration?.unit });
+            }}
+          />
+          <Button label="Clear profile" type="reset" />
         </Form>
-        <Button label="Clear profile" type="reset" />
       </Form>
     </Box>
   );

@@ -1,5 +1,5 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React, { memo } from "react";
+import React from "react";
 import { INPUT_ERRORS, Power, PowerUnit, Weight } from "../../../types";
 import { toKg } from "../../../util";
 
@@ -12,21 +12,12 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({
-  weight,
-  power,
-  setPower,
-  ref,
-  name = "power",
-  valueLabel = "Power (Pt)",
-  ...rest
-}: Props) => {
+const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", ...rest }: Props) => {
   return (
     <Box fill>
       <FormField
         label={valueLabel}
         required
-        name={name}
         validate={[
           (value: number) => {
             if (!weight?.value && power?.unit === PowerUnit.WATTS_KG) {
@@ -54,7 +45,6 @@ const PowerValueFormField = ({
         {...rest}
       >
         <TextInput
-          name={name}
           onChange={(e) => {
             setPower({ ...power, value: parseFloat(e.target.value) });
           }}
@@ -67,4 +57,4 @@ const PowerValueFormField = ({
   );
 };
 
-export default memo(PowerValueFormField);
+export default PowerValueFormField;

@@ -26,6 +26,8 @@ const modalReducer = (state: AthleteState, action: Action) => {
       return updateStorage({ ...state, tte: action.tte });
     case TypeKeys.SET_WEIGHT:
       return updateStorage({ ...state, weight: action.weight });
+    case TypeKeys.SET_UNITS:
+      return updateStorage({ ...state, units: action.units });
     default:
       break;
   }

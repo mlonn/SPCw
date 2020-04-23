@@ -14,11 +14,11 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerFormField = ({ ref, ...rest }: Props) => {
+const PowerFormField = ({ ref, unitLabel = "‎\u00A0‎‎‎", ...rest }: Props) => {
   return (
     <Box gap="small" direction="row" align="start">
       <PowerValueFormField {...rest} />
-      <PowerUnitFormField {...rest} />
+      <PowerUnitFormField unitLabel={unitLabel} {...rest} />
     </Box>
   );
 };

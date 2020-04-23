@@ -83,3 +83,8 @@ export interface TimeDuration {
   seconds?: number;
   unit?: DurationUnit.HH_MM_SS;
 }
+export interface Units {
+  weight?: WeightUnit;
+  power?: PowerUnit;
+  duration?: DurationUnit;
+}

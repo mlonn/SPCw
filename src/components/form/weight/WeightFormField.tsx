@@ -13,11 +13,11 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const WeightFormField = ({ ref, ...rest }: Props) => {
+const WeightFormField = ({ ref, unitLabel = "\u00A0", ...rest }: Props) => {
   return (
     <Box gap="small" direction="row" align="start">
       <WeightValueFormField {...rest} />
-      <WeightUnitFormField {...rest} />
+      <WeightUnitFormField unitLabel={unitLabel} {...rest} />
     </Box>
   );
 };

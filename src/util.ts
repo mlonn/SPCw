@@ -72,6 +72,7 @@ export const toLbs = (weight: Weight) => {
   }
   return { ...weight, value: weight.value * 2.205 };
 };
+
 export const durationToString = (duration: Duration) => {
   const timeDuration = duration.unit === DurationUnit.HH_MM_SS ? duration : secondsToTime(duration);
   if (timeDuration.hours === undefined && timeDuration.minutes === undefined && timeDuration.seconds === undefined) {

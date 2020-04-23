@@ -9,7 +9,7 @@ const Header = () => {
   const size = useContext(ResponsiveContext);
 
   return (
-    <Box pad="medium">
+    <Box>
       <GHeader
         direction="row"
         justify="between"

@@ -62,11 +62,8 @@ const standardizeActivity = (activity: IActivity, weight?: Weight) => {
   };
 };
 const checkActivities = (activities: IActivity[], weight?: Weight): boolean => {
-  if (activities.length < 2) {
-    throw Error(INPUT_ERRORS.NOT_ENOUGH);
-  }
   const seconds = activities.map((a) => timeToSeconds(a.duration).value || 0);
-  console.log(seconds);
+
   if (seconds.some((s) => s && s < 120) || seconds.some((s) => s && s > 1800)) {
     throw Error(INPUT_ERRORS.DURATION_ERROR);
   }
@@ -139,9 +136,12 @@ const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: Po
 
 export const calculateFTP = (activities: IActivity[], weight?: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
   const filteredActivites = activities.filter(filterActivites);
+  if (filteredActivites.length < 2) {
+    throw Error(INPUT_ERRORS.NOT_ENOUGH);
+  }
   const convertedActivities = filteredActivites.map((activity) => standardizeActivity(activity, weight));
-  console.log(filteredActivites);
   checkActivities(convertedActivities, weight);
+
   const constantRegression = regression.linear(
     convertedActivities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
