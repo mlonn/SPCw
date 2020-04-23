@@ -11,15 +11,9 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationValueFormField = ({
-  duration,
-  setDuration,
-  ref,
-
-  valueLabel = "Duration",
-  ...rest
-}: Props) => {
+const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Duration", ...rest }: Props) => {
   const [durationString, setDurationString] = useState("");
+  const [value, setValue] = useState<number>();
   const prevUnitRef = useRef<DurationUnit>();
 
   useEffect(() => {
@@ -39,31 +33,23 @@ const DurationValueFormField = ({
       } else if (prevUnit === DurationUnit.SECONDS) {
         setDurationString(durationToString(duration));
       }
+    } else if (duration.unit === DurationUnit.SECONDS) {
+      setValue(duration.value);
     }
   }, [duration, prevUnit]);
 
   return (
     <Box fill>
-      <FormField
-        label={valueLabel}
-        required
-        {...rest}
-        validate={[
-          () => {
-            const seconds = timeToSeconds(duration).value;
-            if (seconds! < 120 || seconds! > 1800) return INPUT_ERRORS.DURATION_ERROR;
-            return undefined;
-          },
-        ]}
-      >
+      <FormField label={valueLabel} required {...rest}>
         {duration?.unit === DurationUnit.SECONDS ? (
           <TextInput
             plain
             type="number"
             value={duration.value ? duration.value : ""}
             onChange={(e) => {
-              setDuration({ ...duration, value: parseFloat(e.target.value) });
+              setValue(parseFloat(e.target.value));
             }}
+            onBlur={() => setDuration({ ...duration, value })}
           />
         ) : duration?.unit === DurationUnit.HH_MM_SS ? (
           <MaskedInput
@@ -89,15 +75,16 @@ const DurationValueFormField = ({
             ]}
             value={durationString}
             onChange={(e) => {
-              const split = e.target.value.split(":");
-              const seconds = parseInt(split[2]);
-              const minutes = parseInt(split[1]);
-              const hours = parseInt(split[0]);
-              setDuration({ ...duration, hours, minutes, seconds });
               setDurationString(e.target.value);
             }}
             onBlur={() => {
-              setDurationString(durationToString(duration));
+              const split = durationString.split(":");
+              const seconds = parseInt(split[2]);
+              const minutes = parseInt(split[1]);
+              const hours = parseInt(split[0]);
+              const newDuration = { ...duration, hours, minutes, seconds };
+              setDuration(newDuration);
+              setDurationString(durationToString(newDuration));
             }}
           />
         ) : (

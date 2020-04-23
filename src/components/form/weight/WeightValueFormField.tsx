@@ -1,5 +1,5 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React from "react";
+import React, { useState } from "react";
 import { Weight } from "../../../types";
 
 interface OwnProps {
@@ -19,6 +19,7 @@ const WeightValueFormField = ({
   label,
   ...rest
 }: Props) => {
+  const [value, setValue] = useState(weight?.value);
   return (
     <Box fill>
       <FormField
@@ -33,11 +34,12 @@ const WeightValueFormField = ({
         {...rest}
       >
         <TextInput
-          value={weight?.value}
+          value={value}
           name={name}
           type="number"
           step="any"
-          onChange={(e) => setWeight({ ...weight, value: parseFloat(e.target.value) })}
+          onChange={(e) => setValue(parseFloat(e.target.value))}
+          onBlur={() => setWeight({ ...weight, value: value })}
         />
       </FormField>
     </Box>

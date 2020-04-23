@@ -1,5 +1,5 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React from "react";
+import React, { useState } from "react";
 import { INPUT_ERRORS, Power, PowerUnit, Weight } from "../../../types";
 import { toKg } from "../../../util";
 
@@ -13,41 +13,15 @@ interface OwnProps {
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
 const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", ...rest }: Props) => {
+  const [value, setValue] = useState(power?.value);
   return (
     <Box fill>
-      <FormField
-        label={valueLabel}
-        required
-        validate={[
-          (value: number) => {
-            if (!weight?.value && power?.unit === PowerUnit.WATTS_KG) {
-              return INPUT_ERRORS.ENTER_WEIGHT;
-            }
-            if (power?.unit === PowerUnit.WATTS_KG && (value < 1 || value > 10)) {
-              return "Please enter Watts/kg between 1 and 10";
-            }
-            if (weight?.value && power?.unit === PowerUnit.WATTS) {
-              const kgs = toKg(weight).value!;
-              if (value < Math.floor(kgs) || value > Math.ceil(kgs * 10)) {
-                return `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(
-                  kgs * 10
-                )} Watts (check value and/or Unit of Measure)`;
-              }
-            }
-            if (!weight?.value && power?.unit === PowerUnit.WATTS) {
-              if (value < 70 || value > 700) {
-                return INPUT_ERRORS.POWER;
-              }
-            }
-            return undefined;
-          },
-        ]}
-        {...rest}
-      >
+      <FormField label={valueLabel} required {...rest}>
         <TextInput
           onChange={(e) => {
-            setPower({ ...power, value: parseFloat(e.target.value) });
+            setValue(parseFloat(e.target.value));
           }}
+          onBlur={() => setPower({ ...power, value })}
           value={power?.value ? power.value : ""}
           type="number"
           step="any"

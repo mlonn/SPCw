@@ -3,7 +3,6 @@ import React from "react";
 import { Duration } from "../../../types";
 import DurationUnitFormField from "./DurationUnitFormField";
 import DurationValueFormField from "./DurationValueFormField";
-import useAthleteState from "../../../hooks/useAthleteState";
 
 interface OwnProps {
   duration: Duration;
