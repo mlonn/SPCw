@@ -1,7 +1,7 @@
 import { Box, FormField, FormFieldProps, MaskedInput, TextInput } from "grommet";
-import React, { useEffect, useState, useRef } from "react";
-import { Duration, DurationUnit, INPUT_ERRORS } from "../../../types";
-import { durationToString, timeToSeconds } from "../../../util";
+import React, { useEffect, useRef, useState } from "react";
+import { Duration, DurationUnit } from "../../../types";
+import { durationToString } from "../../../util";
 
 interface OwnProps {
   duration: Duration;

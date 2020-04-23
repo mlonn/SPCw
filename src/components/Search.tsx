@@ -1,6 +1,6 @@
-import React, { createRef, useEffect, useState } from "react";
-import { Keyboard, TextInput, Button, Box } from "grommet";
+import { Box, Button, Keyboard, TextInput } from "grommet";
 import { Search as SearchIcon } from "grommet-icons";
+import React, { createRef, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import calculators from "../resources/calculators";
 interface Props {
@@ -10,8 +10,8 @@ interface Props {
 
 const Search = ({ open, setOpen }: Props) => {
   const history = useHistory();
-  const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState(
+  const [value] = useState("");
+  const [suggestions] = useState(
     calculators
       .filter((c) => c.active)
       .map((calculator) => ({

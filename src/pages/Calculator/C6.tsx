@@ -12,19 +12,16 @@ import {
   Text,
   ThemeContext,
 } from "grommet";
-import { Clear, StatusWarning, Close } from "grommet-icons";
-import debounce from "lodash.debounce";
-import React, { Fragment, useContext, useState, useEffect, useMemo } from "react";
+import { Clear, Close, StatusWarning } from "grommet-icons";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../../calculations/ftp";
+import Activity from "../../components/Activity";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { DurationUnit, Gender, IActivity, PowerMeter, PowerUnit, RwcRating, Weight } from "../../types";
+import { Gender, IActivity, PowerMeter, RwcRating, Weight } from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
-import Activity from "../../components/Activity";
-import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
-import Parent from "./Parent";
 interface Props {}
 
 const C6 = (props: Props) => {

@@ -1,6 +1,5 @@
-import { Box, Button, Heading, Paragraph, Anchor } from "grommet";
+import { Anchor, Box, Heading, Paragraph } from "grommet";
 import React from "react";
-import { Link } from "react-router-dom";
 
 interface Props {}
 

@@ -1,10 +1,10 @@
 import { Button } from "grommet";
 import { Trash } from "grommet-icons";
-import React, { memo, useState, useEffect, useRef } from "react";
+import React, { memo } from "react";
 import styled from "styled-components";
+import { IActivity, Weight } from "../types";
 import DurationFormField from "./form/duration/DurationFormField";
 import PowerFormField from "./form/power/PowerFormField";
-import { IActivity, Weight, Power } from "../types";
 
 const ActivityContainer = styled.div`
   display: grid;

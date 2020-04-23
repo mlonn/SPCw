@@ -5,7 +5,7 @@ interface Props {}
 
 const Footer = (props: Props) => {
   return (
-    <Box background="dark-2">
+    <Box margin={{ top: "medium" }} background="dark-2">
       <GFooter background="dark-2">
         <Box pad="medium" align="center" fill>
           <div>
