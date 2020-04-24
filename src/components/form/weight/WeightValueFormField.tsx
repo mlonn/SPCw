@@ -1,6 +1,7 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
 import React, { useState, useEffect, useRef } from "react";
 import { Weight, WeightUnit } from "../../../types";
+import { round } from "../../../util";
 
 interface OwnProps {
   weight?: Weight;
@@ -39,7 +40,7 @@ const WeightValueFormField = ({
         {...rest}
       >
         <TextInput
-          value={value}
+          value={value ? round(value, 2) : ""}
           name={name}
           type="number"
           step="any"

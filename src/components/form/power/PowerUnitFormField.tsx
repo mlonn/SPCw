@@ -30,10 +30,10 @@ const PowerUnitFormField = ({
             if (weight?.value && power?.value && power.unit) {
               const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toKg(weight).value!;
               if (option === PowerUnit.WATTS) {
-                setPower({ value: round(power?.value * kgWeight, 2), unit: option });
+                setPower({ value: power?.value * kgWeight, unit: option });
               }
               if (option === PowerUnit.WATTS_KG) {
-                setPower({ value: round(power?.value / kgWeight, 2), unit: option });
+                setPower({ value: power?.value / kgWeight, unit: option });
               }
             } else {
               setPower({ ...power, unit: option });

@@ -1,6 +1,7 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
 import React, { useState, useEffect } from "react";
 import { Power, Weight } from "../../../types";
+import { round } from "../../../util";
 
 interface OwnProps {
   weight?: Weight;
@@ -24,7 +25,7 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
             setValue(parseFloat(e.target.value));
           }}
           onBlur={() => setPower({ ...power, value })}
-          value={value}
+          value={value ? round(value, 2) : ""}
           type="number"
           step="any"
         />
