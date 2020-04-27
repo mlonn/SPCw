@@ -10,6 +10,7 @@ import Calculators from "./pages/Calculators";
 import Home from "./pages/Home";
 import { LogIn } from "./pages/Login";
 import Profile from "./pages/Profile";
+import RWC from "./pages/RWC";
 
 const AppContainer = styled.div`
   min-height: 100vh;
@@ -20,7 +21,8 @@ function App() {
   const { isLoggedIn } = useIdentityContext();
   if (
     !isLoggedIn &&
-    window.location.hostname !== "superpowercalculator.com" && window.location.hostname !== "localhost"
+    window.location.hostname !== "superpowercalculator.com" &&
+    window.location.hostname !== "localhost"
   ) {
     return <LogIn />;
   } else {
@@ -35,6 +37,7 @@ function App() {
             <Switch>
               <Route path="/profile" component={Profile} />
               <Route path="/calculators" component={Calculators} />
+              <Route path="/rwc" component={RWC} />
               <Route path="/" component={Home} />
             </Switch>
           </Box>
