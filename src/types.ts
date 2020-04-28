@@ -43,6 +43,21 @@ export enum WeightUnit {
   LBS = "Pounds",
 }
 
+export enum TemperatureUnit {
+  C = "Celcius",
+  F = "Fahrenheit",
+}
+
+export enum DistanceUnit {
+  METERS = "Meters",
+  FEET = "Feet",
+  MILES = "Miles",
+  KM = "Kilometers",
+  MARATHON = "Marathon",
+  HALF_MARATHON = "Half Marathon",
+  TEN_K = "10k",
+  FIVE_K = "5k",
+}
 export enum Gender {
   MALE = "Male",
   FEMALE = "Female",
@@ -58,6 +73,7 @@ export interface IActivity {
   id: string;
   power: Power;
   duration: Duration;
+  date?: string;
   activityweight?: Weight;
 }
 
@@ -87,4 +103,14 @@ export interface Units {
   weight?: WeightUnit;
   power?: PowerUnit;
   duration?: DurationUnit;
+}
+
+export interface Temperature {
+  value?: number;
+  unit?: TemperatureUnit;
+}
+
+export interface Distance {
+  value?: number;
+  unit?: DistanceUnit;
 }
