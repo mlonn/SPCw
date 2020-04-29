@@ -1,4 +1,4 @@
-import { Box, FormFieldProps } from "grommet";
+import { Box, BoxProps, FormFieldProps } from "grommet";
 import React from "react";
 import { Power, Weight } from "../../../types";
 import PowerUnitFormField from "./PowerUnitFormField";
@@ -12,11 +12,11 @@ interface OwnProps {
   setPower: (value: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerFormField = ({ ref, unitLabel = "‎\u00A0‎‎‎", ...rest }: Props) => {
+const PowerFormField = ({ ref, unitLabel = "‎\u00A0‎‎‎", gridArea, ...rest }: Props) => {
   return (
-    <Box gap="small" direction="row" align="start">
+    <Box gap="small" direction="row" align="start" gridArea={gridArea}>
       <PowerValueFormField {...rest} />
       <PowerUnitFormField unitLabel={unitLabel} {...rest} />
     </Box>

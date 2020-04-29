@@ -24,8 +24,8 @@ import { Gender, IActivity, PowerMeter, RwcRating, Weight } from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
 interface Props {}
 
-const C6 = (props: Props) => {
-  const TASK_ID = 6;
+const C20 = (props: Props) => {
+  const TASK_ID = 20;
   const calculator = calculators.find((c) => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
@@ -43,11 +43,13 @@ const C6 = (props: Props) => {
       id: uuidv4(),
       power: { unit: athlete.units?.power },
       duration: { unit: athlete.units?.duration },
+      date: "",
     },
     {
       id: uuidv4(),
       power: { unit: athlete.units?.power },
       duration: { unit: athlete.units?.duration },
+      date: "",
     },
   ];
 
@@ -61,12 +63,16 @@ const C6 = (props: Props) => {
     const newState = [...activities];
     newState[index] = activity;
     setActivities(newState);
+    // setResult(undefined);
   };
 
   const onDelete = (index: number) => {
     setActivities((state) => {
+      console.log(index);
       const newState = [...state];
+      console.log(newState);
       newState.splice(index, 1);
+      console.log(newState);
       return newState;
     });
   };
@@ -87,7 +93,6 @@ const C6 = (props: Props) => {
       setCalculationError(error.message);
     }
   };
-
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading alignSelf="center" textAlign="center" level="1" size="small">
@@ -99,9 +104,17 @@ const C6 = (props: Props) => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph fill>Enter at least two maximal effort power & duration pairs from the same day.</Paragraph>
-          <Paragraph fill>
-            The durations should be between 2 and 30 minutes, and have at least 6 minutes difference between them.
+          <Paragraph margin="small" fill>
+            Enter at least two maximal effort power & duration pairs within a two week period.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            The durations should be between 2 and 40 minutes.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            Atleast one activity {"<="} 6 minutes.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            Atleast one activity {">="} 15 minutes.
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
@@ -144,7 +157,6 @@ const C6 = (props: Props) => {
           </Form>
         </Box>
       </Grid>
-      {/* <EnvironmentAdjustment /> */}
       <Heading level="2" size="small">
         Activities
       </Heading>
@@ -163,6 +175,7 @@ const C6 = (props: Props) => {
           <Box margin={{ vertical: "medium" }}>
             {activities.map((activity, index) => (
               <Activity
+                date={true}
                 canDelete={activities.length > 2}
                 key={activity.id}
                 index={index}
@@ -187,7 +200,7 @@ const C6 = (props: Props) => {
               const duration = { unit: athlete.units?.duration };
               const power = { unit: athlete.units?.power };
               const id = uuidv4();
-              setActivities([...activities, { id, power, duration }]);
+              setActivities([...activities, { id, power, duration, date: "" }]);
             }}
           />
         </Box>
@@ -272,4 +285,4 @@ const C6 = (props: Props) => {
   );
 };
 
-export default C6;
+export default C20;

@@ -8,12 +8,20 @@ import {
   PowerMeter,
   PowerUnit,
   RwcUnit,
+  StandardActivity,
+  StandardWeight,
   Weight,
   WeightUnit,
 } from "../types";
-import { round, timeToSeconds, toKg } from "../util";
+import { round, timeToSeconds, toKg, toStandardDuration, toStandardPower, toStandardWeight } from "../util";
 import { rwcReference } from "./data";
 const filterActivites = (activity: IActivity) => {
+  if (!activity.power.unit) {
+    return false;
+  }
+  if (!activity.duration.unit) {
+    return false;
+  }
   if (!activity.power.value) {
     return false;
   }
@@ -30,33 +38,17 @@ const filterActivites = (activity: IActivity) => {
   }
   return true;
 };
-const standardizeActivity = (activity: IActivity, weight?: Weight) => {
-  if (!activity.power.value) {
-    throw Error(CALCULATION_ERRORS.NO_POWER);
-  }
-  if (activity.duration.unit === DurationUnit.SECONDS && !activity.duration.value) {
-    throw Error(CALCULATION_ERRORS.NO_DURATION);
-  }
-  let power = activity.power;
-  let duration = activity.duration;
-  if (activity.power.unit === PowerUnit.WATTS_KG) {
-    if (!weight || !weight.value) {
-      throw Error(CALCULATION_ERRORS.NO_WEIGHT);
-    }
-    let weightValue = weight.value;
-    if (weight.unit === WeightUnit.LBS) {
-      weightValue = toKg(weight).value!;
-    }
-    power = {
-      value: activity.power.value * weightValue,
-      unit: PowerUnit.WATTS,
-    };
-  }
-  if (activity.duration.unit === DurationUnit.HH_MM_SS) {
-    duration = timeToSeconds(activity.duration);
+const standardizeActivity = (activity: IActivity, weight?: Weight): StandardActivity => {
+  const power = toStandardPower(activity.power, weight);
+  const duration = toStandardDuration(activity.duration);
+
+  let activityWeight: StandardWeight | undefined;
+  if (activity.activityWeight) {
+    activityWeight = toStandardWeight(activity.activityWeight);
   }
   return {
     ...activity,
+    activityWeight,
     power,
     duration,
   };
@@ -66,6 +58,9 @@ const checkActivities = (activities: IActivity[], weight?: Weight): boolean => {
 
   if (seconds.some((s) => s && s < 120) || seconds.some((s) => s && s > 1800)) {
     throw Error(INPUT_ERRORS.DURATION_ERROR);
+  }
+  if (activities.some((a) => a.date)) {
+    throw Error("hej");
   }
   const max = Math.max(...seconds);
   const min = Math.min(...seconds);

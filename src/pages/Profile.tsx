@@ -1,16 +1,16 @@
-import { Box, Button, Form, FormField, Heading, RadioButtonGroup, TextInput, Grid, ResponsiveContext } from "grommet";
+import { Box, Button, Form, FormField, Grid, Heading, RadioButtonGroup, ResponsiveContext, TextInput } from "grommet";
 import { Clear } from "grommet-icons";
 import React, { useContext } from "react";
 import DurationFormField from "../components/form/duration/DurationFormField";
+import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
 import PowerFormField from "../components/form/power/PowerFormField";
+import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
 import WeightFormField from "../components/form/weight/WeightFormField";
+import WeightUnitFormField from "../components/form/weight/WeightUnitFormField";
 import { TypeKeys } from "../hooks/useAthlete/types";
 import useAthleteAction from "../hooks/useAthleteAction";
 import useAthleteState from "../hooks/useAthleteState";
-import { Duration, Gender, Power, PowerMeter, Weight, Units } from "../types";
-import WeightUnitFormField from "../components/form/weight/WeightUnitFormField";
-import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
-import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
+import { Duration, Gender, Power, PowerMeter, Units, Weight } from "../types";
 interface Props {}
 
 const Profile = (props: Props) => {
@@ -36,12 +36,12 @@ const Profile = (props: Props) => {
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading level="2">Profile</Heading>
-
       <Form
         onReset={() => {
           dispatch({ type: TypeKeys.CLEAR_PROFILE });
         }}
       >
+        {size}
         <Grid columns={size !== "small" ? ["1fr", "1fr"] : undefined} gap="medium">
           <Box>
             <Heading level="3">Athlete info</Heading>

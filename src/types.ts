@@ -2,12 +2,11 @@ export enum CALCULATION_ERRORS {
   TOO_SIMILAR = "Activities too similar",
   EXPEXTED_SECONDS = "Needs duration in seconds",
   NO_POWER = "No power value found",
+  NO_POWER_UNIT = "No power unit found",
   NO_DURATION = "No duration value found",
+  NO_DURATION_UNIT = "No duration unit found",
   NO_WEIGHT = "Please enter weight when using W/kg",
-  RWC_TOO_HIGH = "",
-  RWC_HIGH = "",
-  RWC_LOW = "",
-  RWC_TOO_LOW = "",
+
   POWER_ERROR = "POWER_ERROR",
 }
 
@@ -74,7 +73,15 @@ export interface IActivity {
   power: Power;
   duration: Duration;
   date?: string;
-  activityweight?: Weight;
+  activityWeight?: Weight;
+}
+
+export interface StandardActivity {
+  id: string;
+  power: StandardPower;
+  duration: StandardDuration;
+  date?: string;
+  activityWeight?: StandardWeight;
 }
 
 export interface Weight {
@@ -82,12 +89,27 @@ export interface Weight {
   unit?: WeightUnit;
 }
 
+export interface StandardWeight {
+  value: number;
+  unit: WeightUnit.KG;
+}
+
 export interface Power {
   value?: number;
   unit?: PowerUnit;
 }
 
+export interface StandardPower {
+  value: number;
+  unit: PowerUnit.WATTS;
+}
+
 export type Duration = SecondDuration | TimeDuration;
+
+export interface StandardDuration {
+  value: number;
+  unit: DurationUnit.SECONDS;
+}
 
 export interface SecondDuration {
   value?: number;

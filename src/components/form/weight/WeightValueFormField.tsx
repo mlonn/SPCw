@@ -1,6 +1,6 @@
 import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React, { useState, useEffect, useRef } from "react";
-import { Weight, WeightUnit } from "../../../types";
+import React, { useEffect, useState } from "react";
+import { Weight } from "../../../types";
 import { round } from "../../../util";
 
 interface OwnProps {
