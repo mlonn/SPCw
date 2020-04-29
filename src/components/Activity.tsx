@@ -3,11 +3,8 @@ import { Trash } from "grommet-icons";
 import React, { memo, useContext } from "react";
 import { IActivity, Weight } from "../types";
 import DateFormField from "./form/date/DateFormField";
-import DurationFormField from "./form/duration/DurationFormField";
-import PowerFormField from "./form/power/PowerFormField";
-interface ActivityContainerProps {
-  date?: boolean;
-}
+import DurationValueFormField from "./form/duration/DurationValueFormField";
+import PowerValueFormField from "./form/power/PowerValueFormField";
 
 interface Props {
   activity: IActivity;
@@ -62,8 +59,7 @@ const Activity = (props: Props) => {
     <Box background={index % 2 === 0 ? "light-3" : ""}>
       <Grid columns={columnsVal} areas={areasVal} pad={"small"} gap="small">
         {date && <DateFormField gridArea="date" {...props} />}
-        <PowerFormField
-          gridArea="power"
+        <PowerValueFormField
           power={activity.power}
           setPower={(newPower) => {
             const newActivity = { ...activity, power: newPower };
@@ -71,9 +67,7 @@ const Activity = (props: Props) => {
           }}
           weight={weight}
         />
-
-        <DurationFormField
-          gridArea="duration"
+        <DurationValueFormField
           duration={activity.duration}
           setDuration={(newDuration) => {
             const newActivity = { ...activity, duration: newDuration };

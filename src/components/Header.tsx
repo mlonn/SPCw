@@ -1,13 +1,16 @@
-import { Box, Button, Header as GHeader, ResponsiveContext, Text } from "grommet";
+import { Box, Header as GHeader, ResponsiveContext, Text } from "grommet";
 import { Home } from "grommet-icons";
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import styled from "styled-components";
 import Search from "./Search";
-
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
-
+  const history = useHistory();
   return (
     <Box>
       <GHeader
@@ -21,40 +24,32 @@ const Header = () => {
       >
         <Link to="/">
           <Box justify="center" align="center" direction="row" gap="small" pad={{ vertical: "medium" }}>
-            {size !== "small" && <Text>SuperPower Calculator</Text>}
+            {size !== "small" && <Text>SPC for Web</Text>}
             <Home />
           </Box>
         </Link>
         <Box direction="row" gap="small">
           {!searchOpen && (
-            <Button plain>
-              {({ hover }: { hover: boolean }) => (
-                <Link to="/profile">
-                  <Box
-                    pad={{ vertical: "small", horizontal: "medium" }}
-                    round="xlarge"
-                    background={hover ? "active" : "control"}
-                  >
-                    <Text>Profile</Text>
-                  </Box>
-                </Link>
-              )}
-            </Button>
+            <Box
+              background={"control"}
+              pad={{ vertical: "small", horizontal: "medium" }}
+              round="xlarge"
+              hoverIndicator={"active"}
+              onClick={() => history.push("/profile")}
+            >
+              <Text>Profile</Text>
+            </Box>
           )}
           {!searchOpen && (
-            <Button plain>
-              {({ hover }: { hover: boolean }) => (
-                <Link to="/calculators">
-                  <Box
-                    pad={{ vertical: "small", horizontal: "medium" }}
-                    round="xlarge"
-                    background={hover ? "active" : "control"}
-                  >
-                    <Text>Calculators</Text>
-                  </Box>
-                </Link>
-              )}
-            </Button>
+            <Box
+              hoverIndicator={"active"}
+              onClick={() => {}}
+              background={"control"}
+              pad={{ vertical: "small", horizontal: "medium" }}
+              round="xlarge"
+            >
+              <Text>Calculators</Text>
+            </Box>
           )}
 
           <Search open={searchOpen} setOpen={(value) => setSearchOpen(value)} />
