@@ -93,7 +93,6 @@ const Profile = (props: Props) => {
           setTimeout(() => setShowDialog(false), 1000);
         }}
       >
-        {size}
         <Grid columns={size !== "small" ? ["1fr", "1fr"] : undefined} gap="medium">
           <Box>
             <Heading level="3">Athlete info</Heading>
