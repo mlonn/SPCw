@@ -43,7 +43,7 @@ const Header = () => {
           {!searchOpen && (
             <Box
               hoverIndicator={"active"}
-              onClick={() => {}}
+              onClick={() => history.push("/calculators")}
               background={"control"}
               pad={{ vertical: "small", horizontal: "medium" }}
               round="xlarge"
