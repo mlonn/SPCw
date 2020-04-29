@@ -1,7 +1,7 @@
 import { Box, Header as GHeader, ResponsiveContext, Text } from "grommet";
 import { Home } from "grommet-icons";
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import Search from "./Search";
 const StyledLink = styled(Link)`
@@ -10,7 +10,7 @@ const StyledLink = styled(Link)`
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
-
+  const history = useHistory();
   return (
     <Box>
       <GHeader
@@ -30,30 +30,26 @@ const Header = () => {
         </Link>
         <Box direction="row" gap="small">
           {!searchOpen && (
-            <StyledLink to="/profile">
-              <Box
-                background={"control"}
-                pad={{ vertical: "small", horizontal: "medium" }}
-                round="xlarge"
-                hoverIndicator={"active"}
-                onClick={() => {}}
-              >
-                <Text>Profile</Text>
-              </Box>
-            </StyledLink>
+            <Box
+              background={"control"}
+              pad={{ vertical: "small", horizontal: "medium" }}
+              round="xlarge"
+              hoverIndicator={"active"}
+              onClick={() => history.push("/profile")}
+            >
+              <Text>Profile</Text>
+            </Box>
           )}
           {!searchOpen && (
-            <StyledLink to="/calculators">
-              <Box
-                hoverIndicator={"active"}
-                onClick={() => {}}
-                background={"control"}
-                pad={{ vertical: "small", horizontal: "medium" }}
-                round="xlarge"
-              >
-                <Text>Calculators</Text>
-              </Box>
-            </StyledLink>
+            <Box
+              hoverIndicator={"active"}
+              onClick={() => {}}
+              background={"control"}
+              pad={{ vertical: "small", horizontal: "medium" }}
+              round="xlarge"
+            >
+              <Text>Calculators</Text>
+            </Box>
           )}
 
           <Search open={searchOpen} setOpen={(value) => setSearchOpen(value)} />
