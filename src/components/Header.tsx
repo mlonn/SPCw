@@ -1,9 +1,12 @@
-import { Box, Button, Header as GHeader, ResponsiveContext, Text } from "grommet";
+import { Box, Header as GHeader, ResponsiveContext, Text } from "grommet";
 import { Home } from "grommet-icons";
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import styled from "styled-components";
 import Search from "./Search";
-
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`;
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
@@ -27,34 +30,30 @@ const Header = () => {
         </Link>
         <Box direction="row" gap="small">
           {!searchOpen && (
-            <Button plain>
-              {({ hover }: { hover: boolean }) => (
-                <Link to="/profile">
-                  <Box
-                    pad={{ vertical: "small", horizontal: "medium" }}
-                    round="xlarge"
-                    background={hover ? "active" : "control"}
-                  >
-                    <Text>Profile</Text>
-                  </Box>
-                </Link>
-              )}
-            </Button>
+            <StyledLink to="/profile">
+              <Box
+                background={"control"}
+                pad={{ vertical: "small", horizontal: "medium" }}
+                round="xlarge"
+                hoverIndicator={"active"}
+                onClick={() => {}}
+              >
+                <Text>Profile</Text>
+              </Box>
+            </StyledLink>
           )}
           {!searchOpen && (
-            <Button plain>
-              {({ hover }: { hover: boolean }) => (
-                <Link to="/calculators">
-                  <Box
-                    pad={{ vertical: "small", horizontal: "medium" }}
-                    round="xlarge"
-                    background={hover ? "active" : "control"}
-                  >
-                    <Text>Calculators</Text>
-                  </Box>
-                </Link>
-              )}
-            </Button>
+            <StyledLink to="/calculators">
+              <Box
+                hoverIndicator={"active"}
+                onClick={() => {}}
+                background={"control"}
+                pad={{ vertical: "small", horizontal: "medium" }}
+                round="xlarge"
+              >
+                <Text>Calculators</Text>
+              </Box>
+            </StyledLink>
           )}
 
           <Search open={searchOpen} setOpen={(value) => setSearchOpen(value)} />
