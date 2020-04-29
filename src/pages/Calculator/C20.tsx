@@ -17,10 +17,12 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../../calculations/ftp";
 import Activity from "../../components/Activity";
+import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
+import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Gender, IActivity, PowerMeter, RwcRating, Weight } from "../../types";
+import { Duration, Gender, IActivity, Power, PowerMeter, RwcRating, Weight } from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
 interface Props {}
 
@@ -34,6 +36,8 @@ const C20 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit ? athlete.weight.unit : athlete.units?.weight,
   });
+  const [power, setPowerUnit] = useState<Power>({ unit: athlete.units?.power });
+  const [duration, setDurationUnit] = useState<Duration>({ unit: athlete.units?.duration });
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
   const [calculationError, setCalculationError] = useState("");
@@ -157,21 +161,43 @@ const C20 = (props: Props) => {
           </Form>
         </Box>
       </Grid>
-      <Heading level="2" size="small">
-        Activities
-      </Heading>
+      <ThemeContext.Extend
+        value={{
+          textInput: {
+            extend: `padding: 11px 0`,
+          },
+          maskedInput: {
+            extend: `padding: 11px 0`,
+          },
+        }}
+      >
+        <Box>
+          <Heading level="2" size="small">
+            Units
+          </Heading>
+          <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
+            <Box />
+            <PowerUnitFormField
+              power={power}
+              setPower={(newPower) => {
+                setActivities(activities.map((a) => ({ ...a, power: { ...a.power, unit: newPower.unit } })));
+                setPowerUnit(newPower);
+              }}
+            />
+            <DurationUnitFormField
+              duration={duration}
+              setDuration={(newDuration) => {
+                setActivities(activities.map((a) => ({ ...a, duration: { ...a.duration, unit: newDuration.unit } })));
+                setDurationUnit(newDuration);
+              }}
+            />
+          </Grid>
+        </Box>
+        <Heading level="2" size="small">
+          Activities
+        </Heading>
 
-      {activities.length > 0 ? (
-        <ThemeContext.Extend
-          value={{
-            textInput: {
-              extend: `padding: 11px 0`,
-            },
-            maskedInput: {
-              extend: `padding: 11px 0`,
-            },
-          }}
-        >
+        {activities.length > 0 ? (
           <Box margin={{ vertical: "medium" }}>
             {activities.map((activity, index) => (
               <Activity
@@ -186,19 +212,17 @@ const C20 = (props: Props) => {
               />
             ))}
           </Box>
-        </ThemeContext.Extend>
-      ) : (
-        <Box align="center">
-          <Heading level="3">No activities</Heading>
-        </Box>
-      )}
+        ) : (
+          <Box align="center">
+            <Heading level="3">No activities</Heading>
+          </Box>
+        )}
+      </ThemeContext.Extend>
       <Box>
         <Box justify="center" align="end">
           <Button
             label="Add activity"
             onClick={() => {
-              const duration = { unit: athlete.units?.duration };
-              const power = { unit: athlete.units?.power };
               const id = uuidv4();
               setActivities([...activities, { id, power, duration, date: "" }]);
             }}

@@ -17,8 +17,8 @@ interface Props {
 }
 const Activity = (props: Props) => {
   const columnsDate = {
-    small: ["1fr", "auto"],
-    other: ["1fr", "2fr", "2fr", "auto"],
+    small: ["1fr"],
+    other: ["1fr", "2fr", "2fr"],
   };
   const areasDate = {
     small: [
@@ -29,8 +29,8 @@ const Activity = (props: Props) => {
     other: [["date", "power", "duration", "delete"]],
   };
   const columns = {
-    small: ["1fr", "auto"],
-    other: ["1fr", "1fr", "auto"],
+    small: ["1fr"],
+    other: ["1fr", "1fr"],
   };
   const areas = {
     small: [
@@ -51,16 +51,15 @@ const Activity = (props: Props) => {
     columnsVal = date ? columnsDate["other"] : columns["other"];
     areasVal = date ? areasDate["other"] : areas["other"];
   }
-  if (!canDelete) {
-    columnsVal.pop();
-  }
 
   return (
     <Box background={index % 2 === 0 ? "light-3" : ""}>
       <Grid columns={columnsVal} areas={areasVal} pad={"small"} gap="small">
         {date && <DateFormField gridArea="date" {...props} />}
+
         <PowerValueFormField
           power={activity.power}
+          gridArea="power"
           setPower={(newPower) => {
             const newActivity = { ...activity, power: newPower };
             onActivityChange(index, newActivity);
@@ -68,6 +67,7 @@ const Activity = (props: Props) => {
           weight={weight}
         />
         <DurationValueFormField
+          gridArea="duration"
           duration={activity.duration}
           setDuration={(newDuration) => {
             const newActivity = { ...activity, duration: newDuration };

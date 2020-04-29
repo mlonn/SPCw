@@ -12,7 +12,7 @@ import { theme } from "./theme";
 const url = "https://superpowercalculator.com";
 ReactDOM.render(
   <React.StrictMode>
-    <Grommet theme={deepMerge(generate(20), grommet, theme)}>
+    <Grommet theme={deepMerge(generate(22), grommet, theme)}>
       <IdentityContextProvider url={url}>
         <AthleteProvider>
           <Normalize />
