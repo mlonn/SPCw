@@ -1,10 +1,9 @@
 import { Box, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
 import { Duration, DurationUnit } from "../../../types";
-import { secondsToTime, timeToSeconds } from "../../../util";
 
 interface OwnProps {
-  duration: Duration;
+  duration?: Duration;
   unitLabel?: string;
   setDuration: (value: Duration) => void;
 }
@@ -16,22 +15,16 @@ const DurationUnitFormField = ({
   setDuration,
   ref,
 
-  unitLabel = "\u00A0",
+  unitLabel = "Duration unit",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
       <FormField label={unitLabel} {...rest}>
         <Select
-          value={duration.unit}
+          value={duration?.unit || ""}
           onChange={({ option }) => {
-            if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {
-              setDuration(secondsToTime(duration));
-            } else if (option === DurationUnit.SECONDS && duration.unit === DurationUnit.HH_MM_SS) {
-              setDuration(timeToSeconds(duration));
-            } else {
-              setDuration({ ...duration, unit: option });
-            }
+            setDuration({ ...duration, unit: option });
           }}
           options={[...Object.values(DurationUnit)]}
         />

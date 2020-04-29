@@ -1,7 +1,6 @@
 import { Box, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { round, toKg } from "../../../util";
+import { Power, PowerUnit, Weight } from "../../../types";
 
 interface OwnProps {
   weight?: Weight;
@@ -27,17 +26,7 @@ const PowerUnitFormField = ({
         <Select
           value={power?.unit}
           onChange={({ option }) => {
-            if (weight?.value && power?.value && power.unit) {
-              const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toKg(weight).value!;
-              if (option === PowerUnit.WATTS) {
-                setPower({ value: power?.value * kgWeight, unit: option });
-              }
-              if (option === PowerUnit.WATTS_KG) {
-                setPower({ value: power?.value / kgWeight, unit: option });
-              }
-            } else {
-              setPower({ ...power, unit: option });
-            }
+            setPower({ ...power, unit: option });
           }}
           options={[...Object.values(PowerUnit)]}
         />

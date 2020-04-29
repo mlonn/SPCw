@@ -21,7 +21,7 @@ const Header = () => {
       >
         <Link to="/">
           <Box justify="center" align="center" direction="row" gap="small" pad={{ vertical: "medium" }}>
-            {size !== "small" && <Text>SuperPower Calculator</Text>}
+            {size !== "small" && <Text>SPC for Web</Text>}
             <Home />
           </Box>
         </Link>

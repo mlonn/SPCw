@@ -1,4 +1,4 @@
-import { Duration, Gender, Power, PowerMeter, Weight, Units } from "../../types";
+import { Duration, Gender, Power, PowerMeter, Units, Weight } from "../../types";
 
 export interface AthleteState {
   name?: string;
@@ -12,6 +12,7 @@ export interface AthleteState {
 
 export type Action =
   | ClearProfileAction
+  | SetProfileAction
   | SetWeightAction
   | SetGenderAction
   | ClearGenderAction
@@ -25,6 +26,10 @@ export type Action =
 
 export interface ClearProfileAction {
   type: TypeKeys.CLEAR_PROFILE;
+}
+export interface SetProfileAction {
+  type: TypeKeys.SET_PROFILE;
+  profile: AthleteState;
 }
 
 export interface SetWeightAction {
@@ -71,6 +76,7 @@ export interface SetUnitsAction {
 }
 export enum TypeKeys {
   CLEAR_PROFILE = "CLEAR_PROFILE",
+  SET_PROFILE = "SET_PROFILE",
   SET_WEIGHT = "SET_WEIGHT",
   SET_GENDER = "SET_GENDER",
   CLEAR_GENDER = "CLEAR_GENDER",

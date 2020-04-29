@@ -10,6 +10,8 @@ const modalReducer = (state: AthleteState, action: Action) => {
   switch (action.type) {
     case TypeKeys.CLEAR_PROFILE:
       return updateStorage({ ...initialState });
+    case TypeKeys.SET_PROFILE:
+      return updateStorage({ ...action.profile });
     case TypeKeys.SET_NAME:
       return updateStorage({ ...state, name: action.name });
     case TypeKeys.SET_FTP:

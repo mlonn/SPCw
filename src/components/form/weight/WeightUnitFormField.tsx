@@ -1,7 +1,7 @@
 import { Box, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
 import { Weight, WeightUnit } from "../../../types";
-import { round, toKg, toLbs } from "../../../util";
+import { toKg, toLbs } from "../../../util";
 
 interface OwnProps {
   weight?: Weight;

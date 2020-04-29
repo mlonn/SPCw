@@ -117,8 +117,8 @@ const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: Po
         ref.gender === genderToUse &&
         ref.powerMeter === powerMeterToUse &&
         ref.unit === RwcUnit.JKG &&
-        rwc / kg >= ref.min &&
-        rwc / kg <= ref.max
+        Math.round(rwc / kg) >= ref.min &&
+        Math.round(rwc / kg) <= ref.max
     )?.rating;
   } else {
     rating = rwcReference.find(
@@ -126,8 +126,8 @@ const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: Po
         ref.gender === genderToUse &&
         ref.powerMeter === powerMeterToUse &&
         ref.unit === RwcUnit.KJ &&
-        rwc / 1000 >= ref.min &&
-        rwc / 1000 <= ref.max
+        round(rwc / 1000, 2) >= ref.min &&
+        round(rwc / 1000, 2) <= ref.max
     )?.rating;
   }
 

@@ -3,8 +3,8 @@ import { Trash } from "grommet-icons";
 import React, { memo } from "react";
 import styled from "styled-components";
 import { IActivity, Weight } from "../types";
-import DurationFormField from "./form/duration/DurationFormField";
-import PowerFormField from "./form/power/PowerFormField";
+import DurationValueFormField from "./form/duration/DurationValueFormField";
+import PowerValueFormField from "./form/power/PowerValueFormField";
 
 const ActivityContainer = styled.div`
   display: grid;
@@ -37,7 +37,7 @@ const Activity = (props: Props) => {
 
   return (
     <ActivityContainer>
-      <PowerFormField
+      <PowerValueFormField
         power={activity.power}
         setPower={(newPower) => {
           const newActivity = { ...activity, power: newPower };
@@ -45,7 +45,7 @@ const Activity = (props: Props) => {
         }}
         weight={weight}
       />
-      <DurationFormField
+      <DurationValueFormField
         duration={activity.duration}
         setDuration={(newDuration) => {
           const newActivity = { ...activity, duration: newDuration };
