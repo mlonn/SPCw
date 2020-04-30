@@ -1,7 +1,9 @@
 import { Dispatch, useReducer } from "react";
+import { v4 as uuidv4 } from "uuid";
 import { DurationUnit } from "../../types";
 import { Action, AthleteState, TypeKeys } from "./types";
 const initialState: AthleteState = {
+  id: uuidv4(),
   weight: {},
   ftp: {},
   tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS },

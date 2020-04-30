@@ -26,6 +26,7 @@ interface Props {}
 
 const Profile = (props: Props) => {
   const {
+    id,
     weight: initialWeight,
     tte: initialTte,
     ftp: initialFtp,
@@ -80,6 +81,7 @@ const Profile = (props: Props) => {
           dispatch({
             type: TypeKeys.SET_PROFILE,
             profile: {
+              id,
               weight,
               tte,
               ftp,
