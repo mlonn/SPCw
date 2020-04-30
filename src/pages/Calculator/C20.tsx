@@ -72,11 +72,10 @@ const C20 = (props: Props) => {
 
   const onDelete = (index: number) => {
     setActivities((state) => {
-      console.log(index);
       const newState = [...state];
-      console.log(newState);
+
       newState.splice(index, 1);
-      console.log(newState);
+
       return newState;
     });
   };

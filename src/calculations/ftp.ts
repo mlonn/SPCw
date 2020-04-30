@@ -54,7 +54,6 @@ export const checkActivities = (
       const max = Math.max(...dates);
       const min = Math.min(...dates);
 
-      console.log(max, min);
       if ((max - min) / (1000 * 3600 * 24) > dateDistance) {
         throw Error(`Dates should be within ${dateDistance} days of each other`);
       }
