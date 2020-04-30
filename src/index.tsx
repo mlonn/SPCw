@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/browser";
 import { Grommet, grommet } from "grommet";
 import { deepMerge } from "grommet/utils";
 import LogRocket from "logrocket";
@@ -10,13 +11,28 @@ import AthleteProvider from "./context/AthleteProvider";
 import * as serviceWorker from "./serviceWorker";
 import { theme } from "./theme";
 
+Sentry.init({
+  dsn: "https://3a9e9da734b046f0b17b868e6cf6e2be@o385775.ingest.sentry.io/5219025",
+  release: "spcw@" + process.env.npm_package_version,
+});
+
 LogRocket.init("spc/spcw");
+
+LogRocket.getSessionURL((sessionURL) => {
+  Sentry.configureScope((scope) => {
+    scope.setExtra("sessionURL", sessionURL);
+  });
+});
 
 const state = window.localStorage.getItem("athlete");
 if (state) {
   const athlete = JSON.parse(state);
   LogRocket.identify(athlete.id, {
     name: athlete.name,
+  });
+  Sentry.configureScope((scope) => {
+    scope.setExtra("id", athlete.id);
+    scope.setExtra("name", athlete.name);
   });
 }
 const url = "https://superpowercalculator.com";
