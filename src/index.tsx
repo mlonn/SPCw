@@ -1,14 +1,25 @@
 import { Grommet, grommet } from "grommet";
 import { deepMerge } from "grommet/utils";
+import LogRocket from "logrocket";
 import React from "react";
 import ReactDOM from "react-dom";
+import { IdentityContextProvider } from "react-netlify-identity";
 import { Normalize } from "styled-normalize";
 import App from "./App";
 import AthleteProvider from "./context/AthleteProvider";
 import * as serviceWorker from "./serviceWorker";
 import { theme } from "./theme";
-import { IdentityContextProvider } from "react-netlify-identity";
 
+LogRocket.init("spc/spcw");
+
+const state = window.localStorage.getItem("athlete");
+if (state) {
+  const athlete = JSON.parse(state);
+  console.log(athlete.id);
+  LogRocket.identify(athlete.id, {
+    name: athlete.name,
+  });
+}
 const url = "https://superpowercalculator.com";
 ReactDOM.render(
   <React.StrictMode>

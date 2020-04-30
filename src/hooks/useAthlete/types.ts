@@ -1,6 +1,7 @@
 import { Duration, Gender, Power, PowerMeter, Units, Weight } from "../../types";
 
 export interface AthleteState {
+  id: string;
   name?: string;
   gender?: Gender;
   powerMeter?: PowerMeter;
