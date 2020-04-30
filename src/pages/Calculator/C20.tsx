@@ -172,9 +172,9 @@ const C20 = (props: Props) => {
         }}
       >
         <Box>
-          {/* <Heading level="2" size="small">
+          <Heading level="2" size="small">
             Units
-          </Heading> */}
+          </Heading>
           <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
             <Box />
             <PowerUnitFormField
@@ -193,9 +193,9 @@ const C20 = (props: Props) => {
             />
           </Grid>
         </Box>
-        {/* <Heading level="2" size="small">
+        <Heading level="2" size="small">
           Activities
-        </Heading> */}
+        </Heading>
 
         {activities.length > 0 ? (
           <Box margin={{ vertical: "medium" }}>
