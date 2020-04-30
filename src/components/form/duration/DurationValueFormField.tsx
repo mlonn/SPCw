@@ -90,7 +90,6 @@ const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Dura
               const minutes = parseInt(split[1]);
               const hours = parseInt(split[0]);
               const newDuration = { ...duration, hours, minutes, seconds };
-              console.log(newDuration);
               setDuration(newDuration);
               setDurationString(durationToString(newDuration));
             }

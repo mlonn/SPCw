@@ -15,7 +15,6 @@ LogRocket.init("spc/spcw");
 const state = window.localStorage.getItem("athlete");
 if (state) {
   const athlete = JSON.parse(state);
-  console.log(athlete.id);
   LogRocket.identify(athlete.id, {
     name: athlete.name,
   });
