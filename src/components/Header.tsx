@@ -2,17 +2,14 @@ import { Box, Header as GHeader, ResponsiveContext, Text } from "grommet";
 import { Home } from "grommet-icons";
 import React, { useContext, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import styled from "styled-components";
 import Search from "./Search";
-const StyledLink = styled(Link)`
-  text-decoration: none;
-`;
+
 const Header = () => {
   const [searchOpen, setSearchOpen] = useState<boolean>(false);
   const size = useContext(ResponsiveContext);
   const history = useHistory();
   return (
-    <Box>
+    <Box pad={{ horizontal: "medium" }}>
       <GHeader
         direction="row"
         justify="between"
