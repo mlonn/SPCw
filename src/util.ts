@@ -103,10 +103,11 @@ export const toStandardPower = (power: Power, weight?: Weight): StandardPower =>
 };
 
 export const toStandardDuration = (duration: Duration): StandardDuration => {
+  console.log(duration);
   if (!duration.unit) {
     throw Error(CALCULATION_ERRORS.NO_DURATION_UNIT);
   }
-  if (duration.unit === DurationUnit.SECONDS && !duration.value) {
+  if (duration.unit === DurationUnit.SECONDS) {
     if (!duration.value) {
       throw Error(CALCULATION_ERRORS.NO_DURATION);
     }

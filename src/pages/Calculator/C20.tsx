@@ -15,7 +15,7 @@ import {
 import { Clear, Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { calculateFTP } from "../../calculations/ftp";
+import { task20 } from "../../calculations/task";
 import Activity from "../../components/Activity";
 import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
 import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
@@ -86,7 +86,7 @@ const C20 = (props: Props) => {
   }
   const onCalculate = () => {
     try {
-      const newResult = calculateFTP(activities, weight, gender, powerMeter);
+      const newResult = task20(activities, calculator.requirements, weight, gender, powerMeter);
       setResult(newResult);
       if (showError) {
         setShowError(false);
@@ -115,10 +115,10 @@ const C20 = (props: Props) => {
             The durations should be between 2 and 40 minutes.
           </Paragraph>
           <Paragraph margin="small" fill>
-            Atleast one activity {"<="} 6 minutes.
+            Atleast one activity {"\u2264"} 6 minutes.
           </Paragraph>
           <Paragraph margin="small" fill>
-            Atleast one activity {">="} 15 minutes.
+            Atleast one activity {"\u2265"} 15 minutes.
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
@@ -172,9 +172,9 @@ const C20 = (props: Props) => {
         }}
       >
         <Box>
-          <Heading level="2" size="small">
+          {/* <Heading level="2" size="small">
             Units
-          </Heading>
+          </Heading> */}
           <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
             <Box />
             <PowerUnitFormField
@@ -193,15 +193,15 @@ const C20 = (props: Props) => {
             />
           </Grid>
         </Box>
-        <Heading level="2" size="small">
+        {/* <Heading level="2" size="small">
           Activities
-        </Heading>
+        </Heading> */}
 
         {activities.length > 0 ? (
           <Box margin={{ vertical: "medium" }}>
             {activities.map((activity, index) => (
               <Activity
-                date={true}
+                date
                 canDelete={activities.length > 2}
                 key={activity.id}
                 index={index}

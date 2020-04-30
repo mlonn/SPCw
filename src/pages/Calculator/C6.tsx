@@ -15,7 +15,7 @@ import {
 import { Clear, Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { calculateFTP } from "../../calculations/ftp";
+import { task6 } from "../../calculations/task";
 import Activity from "../../components/Activity";
 import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
 import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
@@ -82,7 +82,7 @@ const C6 = (props: Props) => {
   }
   const onCalculate = () => {
     try {
-      const newResult = calculateFTP(activities, weight, gender, powerMeter);
+      const newResult = task6(activities, calculator.requirements, weight, gender, powerMeter);
       setResult(newResult);
       if (showError) {
         setShowError(false);

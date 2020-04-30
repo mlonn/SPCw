@@ -1,5 +1,6 @@
 import regression from "regression";
 import {
+  ActivityRequirement,
   CALCULATION_ERRORS,
   DurationUnit,
   Gender,
@@ -15,30 +16,8 @@ import {
 } from "../types";
 import { round, timeToSeconds, toKg, toStandardDuration, toStandardPower, toStandardWeight } from "../util";
 import { rwcReference } from "./data";
-const filterActivites = (activity: IActivity) => {
-  if (!activity.power.unit) {
-    return false;
-  }
-  if (!activity.duration.unit) {
-    return false;
-  }
-  if (!activity.power.value) {
-    return false;
-  }
-  if (activity.duration.unit === DurationUnit.SECONDS && !activity.duration.value) {
-    return false;
-  }
-  if (
-    activity.duration.unit === DurationUnit.HH_MM_SS &&
-    !activity.duration.hours &&
-    !activity.duration.minutes &&
-    !activity.duration.seconds
-  ) {
-    return false;
-  }
-  return true;
-};
-const standardizeActivity = (activity: IActivity, weight?: Weight): StandardActivity => {
+
+export const standardizeActivity = (activity: IActivity, weight?: Weight): StandardActivity => {
   const power = toStandardPower(activity.power, weight);
   const duration = toStandardDuration(activity.duration);
 
@@ -53,19 +32,49 @@ const standardizeActivity = (activity: IActivity, weight?: Weight): StandardActi
     duration,
   };
 };
-const checkActivities = (activities: IActivity[], weight?: Weight): boolean => {
+export const checkActivities = (
+  activities: IActivity[],
+  requrements: ActivityRequirement,
+  weight?: Weight
+): boolean => {
   const seconds = activities.map((a) => timeToSeconds(a.duration).value || 0);
-
-  if (seconds.some((s) => s && s < 120) || seconds.some((s) => s && s > 1800)) {
+  const { date, minDuration, maxDuration, durationDistance, dateDistance, durationRange } = requrements;
+  if (
+    seconds.some((s) => s && minDuration && s < minDuration) ||
+    seconds.some((s) => s && maxDuration && s > maxDuration)
+  ) {
     throw Error(INPUT_ERRORS.DURATION_ERROR);
   }
-  if (activities.some((a) => a.date)) {
-    throw Error("hej");
+  if (date) {
+    if (activities.some((a) => !a.date)) {
+      throw Error(INPUT_ERRORS.NO_DATE);
+    }
+    if (dateDistance) {
+      const dates = activities.map((a) => new Date(a.date || "").valueOf());
+      const max = Math.max(...dates);
+      const min = Math.min(...dates);
+
+      console.log(max, min);
+      if ((max - min) / (1000 * 3600 * 24) > dateDistance) {
+        throw Error(`Dates should be within ${dateDistance} days of eachother`);
+      }
+    }
   }
+
   const max = Math.max(...seconds);
   const min = Math.min(...seconds);
-  if (max - min < 360) {
-    throw Error(INPUT_ERRORS.TO_CLOSE);
+  if (durationDistance) {
+    if (max - min < durationDistance) {
+      throw Error(`Min/max durations should be at least ${Math.round(durationDistance / 60)} minutes apart`);
+    }
+  }
+  if (durationRange) {
+    if (min > durationRange.min) {
+      throw Error(`Please enter atleast one activity shorter than  ${Math.round(durationRange.min / 60)}`);
+    }
+    if (max < durationRange.max) {
+      throw Error(`Please enter atleast one activity longer than  ${Math.round(durationRange.max / 60)} `);
+    }
   }
   activities.forEach((a) => {
     const { power } = a;
@@ -129,16 +138,18 @@ const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: Po
   return rating;
 };
 
-export const calculateFTP = (activities: IActivity[], weight?: Weight, gender?: Gender, powerMeter?: PowerMeter) => {
-  const filteredActivites = activities.filter(filterActivites);
-  if (filteredActivites.length < 2) {
+export const calculateFTP = (
+  activities: StandardActivity[],
+  weight?: Weight,
+  gender?: Gender,
+  powerMeter?: PowerMeter
+) => {
+  if (activities.length < 2) {
     throw Error(INPUT_ERRORS.NOT_ENOUGH);
   }
-  const convertedActivities = filteredActivites.map((activity) => standardizeActivity(activity, weight));
-  checkActivities(convertedActivities, weight);
 
   const constantRegression = regression.linear(
-    convertedActivities.map((a) => {
+    activities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
         throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
@@ -147,7 +158,7 @@ export const calculateFTP = (activities: IActivity[], weight?: Weight, gender?: 
     })
   );
   const valuesRegression = regression.linear(
-    convertedActivities.map((a) => {
+    activities.map((a) => {
       if (a.duration.unit !== DurationUnit.SECONDS) {
         throw Error(CALCULATION_ERRORS.EXPEXTED_SECONDS);
       } else {
