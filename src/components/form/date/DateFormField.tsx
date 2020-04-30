@@ -1,27 +1,25 @@
 import { Box, BoxProps, Button, Calendar, DropButton, FormField, Layer, Text, TextInput } from "grommet";
 import { Close, FormDown, StatusWarning } from "grommet-icons";
 import React, { useState } from "react";
-import { IActivity } from "../../../types";
 
 interface OwnProps {
-  activity: IActivity;
-  index: number;
-  onActivityChange: (index: number, activity: IActivity) => void;
+  date?: string;
+  setDate: (date: string) => void;
 }
 type Props = OwnProps & BoxProps;
 const DateFormField = (props: Props) => {
-  const { activity, onActivityChange, index, ...rest } = props;
+  const { date, setDate, gridArea } = props;
   const [showError, setShowError] = useState(false);
   const [open, setOpen] = useState<boolean>(false);
   const [dateString, setDateString] = useState("");
   const onSelect = (selectedDate: any) => {
     setOpen(false);
-    setDateString(new Date(selectedDate).toLocaleDateString());
-    const newActivity = { ...activity, date: selectedDate };
-    onActivityChange(index, newActivity);
+    const newDate = new Date(selectedDate);
+    setDateString(newDate.toLocaleDateString(navigator.language));
+    setDate(newDate.toISOString());
   };
   return (
-    <Box gap="small" direction="row" align="start" fill {...rest}>
+    <Box gap="small" direction="row" align="start" fill gridArea={gridArea}>
       <Box fill>
         <FormField label={"Date"}>
           <Box direction="row" align="start">
@@ -33,9 +31,8 @@ const DateFormField = (props: Props) => {
                 if (dateString.length > 0) {
                   const newDate = new Date(dateString);
                   if (newDate instanceof Date && !isNaN(newDate.valueOf())) {
-                    const newActivity = { ...activity, date: newDate.toISOString() };
-                    onActivityChange(index, newActivity);
-                    setDateString(new Date(dateString).toLocaleDateString());
+                    setDateString(newDate.toLocaleDateString(navigator.language));
+                    setDate(newDate.toISOString());
                   } else {
                     setShowError(true);
                   }
@@ -47,9 +44,7 @@ const DateFormField = (props: Props) => {
                 open={open}
                 onClose={() => setOpen(false)}
                 onOpen={() => setOpen(true)}
-                dropContent={
-                  <Calendar date={activity.date ? activity.date : new Date().toISOString()} onSelect={onSelect} />
-                }
+                dropContent={<Calendar date={date ? date : new Date().toISOString()} onSelect={onSelect} />}
               >
                 <Box direction="row" justify="center" align="start">
                   <FormDown color="brand" />

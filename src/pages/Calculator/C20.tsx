@@ -115,10 +115,10 @@ const C20 = (props: Props) => {
             The durations should be between 2 and 40 minutes.
           </Paragraph>
           <Paragraph margin="small" fill>
-            Atleast one activity {"\u2264"} 6 minutes.
+            at least one activity {"\u2264"} 6 minutes.
           </Paragraph>
           <Paragraph margin="small" fill>
-            Atleast one activity {"\u2265"} 15 minutes.
+            at least one activity {"\u2265"} 15 minutes.
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>

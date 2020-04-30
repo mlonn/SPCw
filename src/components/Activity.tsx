@@ -54,9 +54,17 @@ const Activity = (props: Props) => {
 
   return (
     <Box background={index % 2 === 0 ? "light-3" : ""}>
-      <Grid columns={columnsVal} areas={areasVal} pad={"small"} gap="small">
-        {date && <DateFormField gridArea="date" {...props} />}
-
+      <Grid columns={columnsVal} areas={areasVal} rows={[]} pad={"small"} gap="small">
+        {date && (
+          <DateFormField
+            gridArea="date"
+            date={activity.date}
+            setDate={(newDate) => {
+              const newActivity = { ...activity, date: newDate };
+              onActivityChange(index, newActivity);
+            }}
+          />
+        )}
         <PowerValueFormField
           power={activity.power}
           gridArea="power"

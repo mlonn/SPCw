@@ -56,7 +56,7 @@ export const checkActivities = (
 
       console.log(max, min);
       if ((max - min) / (1000 * 3600 * 24) > dateDistance) {
-        throw Error(`Dates should be within ${dateDistance} days of eachother`);
+        throw Error(`Dates should be within ${dateDistance} days of each other`);
       }
     }
   }
@@ -70,10 +70,10 @@ export const checkActivities = (
   }
   if (durationRange) {
     if (min > durationRange.min) {
-      throw Error(`Please enter atleast one activity shorter than  ${Math.round(durationRange.min / 60)}`);
+      throw Error(`Please enter at least one activity shorter than  ${Math.round(durationRange.min / 60)} minutes`);
     }
     if (max < durationRange.max) {
-      throw Error(`Please enter atleast one activity longer than  ${Math.round(durationRange.max / 60)} `);
+      throw Error(`Please enter at least one activity longer than  ${Math.round(durationRange.max / 60)} minutes`);
     }
   }
   activities.forEach((a) => {
