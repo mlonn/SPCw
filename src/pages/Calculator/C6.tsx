@@ -10,7 +10,6 @@ import {
   RadioButtonGroup,
   ResponsiveContext,
   Text,
-  ThemeContext,
 } from "grommet";
 import { Clear, Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useEffect, useState } from "react";
@@ -154,76 +153,67 @@ const C6 = () => {
           </Box>
         </Box>
       </Grid>
-      <ThemeContext.Extend
-        value={{
-          textInput: {
-            // extend: `padding: 11px 0`,
-          },
-          maskedInput: {
-            // extend: `padding: 11px 0`,
-          },
-        }}
-      >
-        <Box>
-          <Heading level="2" size="small">
-            Activities
-          </Heading>
-          <Grid columns={["1fr", "1fr"]} gap="small">
-            <FormField label="Power unit">
-              <RadioButtonGroup
-                direction="row"
-                name="powerunitforallactivities"
-                wrap
-                value={power.unit}
-                options={[...Object.values(PowerUnit)]}
-                onChange={(e) => {
-                  setActivities((state) =>
-                    state.map((a) => ({ ...a, power: { ...a.power, unit: e.target.value as PowerUnit } }))
-                  );
-                  setPower({ ...power, unit: e.target.value as PowerUnit });
-                }}
-              />
-            </FormField>
-            <FormField label="Duration unit">
-              <RadioButtonGroup
-                direction="row"
-                name="durationunitforallactivities"
-                wrap
-                value={duration.unit}
-                options={[...Object.values(DurationUnit)]}
-                onChange={(e) => {
-                  setActivities((state) =>
-                    state.map((a) => ({ ...a, duration: { ...a.duration, unit: e.target.value as DurationUnit } }))
-                  );
-                  setDuration({ ...duration, unit: e.target.value as DurationUnit });
-                }}
-              />
-            </FormField>
-          </Grid>
-        </Box>
+
+      <Box>
         <Heading level="2" size="small">
           Activities
         </Heading>
-        {activities.length > 0 ? (
-          <Box margin={{ vertical: "medium" }}>
-            {activities.map((activity, index) => (
-              <Activity
-                canDelete={activities.length > 2}
-                key={activity.id}
-                index={index}
-                activity={activity}
-                weight={weight}
-                onActivityChange={onActivityChange}
-                onDelete={onDelete}
-              />
-            ))}
-          </Box>
-        ) : (
-          <Box align="center">
-            <Heading level="3">No activities</Heading>
-          </Box>
-        )}
-      </ThemeContext.Extend>
+        <Grid columns={["1fr", "1fr"]} gap="small">
+          <FormField label="Power unit">
+            <RadioButtonGroup
+              direction="row"
+              name="powerunitforallactivities"
+              wrap
+              value={power.unit}
+              options={[...Object.values(PowerUnit)]}
+              onChange={(e) => {
+                setActivities((state) =>
+                  state.map((a) => ({ ...a, power: { ...a.power, unit: e.target.value as PowerUnit } }))
+                );
+                setPower({ ...power, unit: e.target.value as PowerUnit });
+              }}
+            />
+          </FormField>
+          <FormField label="Duration unit">
+            <RadioButtonGroup
+              direction="row"
+              name="durationunitforallactivities"
+              wrap
+              value={duration.unit}
+              options={[...Object.values(DurationUnit)]}
+              onChange={(e) => {
+                setActivities((state) =>
+                  state.map((a) => ({ ...a, duration: { ...a.duration, unit: e.target.value as DurationUnit } }))
+                );
+                setDuration({ ...duration, unit: e.target.value as DurationUnit });
+              }}
+            />
+          </FormField>
+        </Grid>
+      </Box>
+      <Heading level="2" size="small">
+        Activities
+      </Heading>
+      {activities.length > 0 ? (
+        <Box margin={{ vertical: "medium" }}>
+          {activities.map((activity, index) => (
+            <Activity
+              canDelete={activities.length > 2}
+              key={activity.id}
+              index={index}
+              activity={activity}
+              weight={weight}
+              onActivityChange={onActivityChange}
+              onDelete={onDelete}
+            />
+          ))}
+        </Box>
+      ) : (
+        <Box align="center">
+          <Heading level="3">No activities</Heading>
+        </Box>
+      )}
+
       <Box>
         <Box justify="center" align="end">
           <Button
