@@ -13,15 +13,12 @@ import {
 import { Clear } from "grommet-icons";
 import React, { useContext, useState } from "react";
 import DurationFormField from "../components/form/duration/DurationFormField";
-import DurationUnitFormField from "../components/form/duration/DurationUnitFormField";
 import PowerFormField from "../components/form/power/PowerFormField";
-import PowerUnitFormField from "../components/form/power/PowerUnitFormField";
 import WeightFormField from "../components/form/weight/WeightFormField";
-import WeightUnitFormField from "../components/form/weight/WeightUnitFormField";
 import { TypeKeys } from "../hooks/useAthlete/types";
 import useAthleteAction from "../hooks/useAthleteAction";
 import useAthleteState from "../hooks/useAthleteState";
-import { Gender, PowerMeter } from "../types";
+import { DurationUnit, Gender, PowerMeter, PowerUnit, WeightUnit } from "../types";
 interface Props {}
 
 const Profile = (props: Props) => {
@@ -47,21 +44,6 @@ const Profile = (props: Props) => {
   const dispatch = useAthleteAction();
 
   const size = useContext(ResponsiveContext);
-  // const setWeight = (newWeight2: Weight) => {
-  //   dispatch({ type: TypeKeys.SET_WEIGHT, weight: newWeight2 });
-  // };
-
-  // const setUnits = (newUnits2: Units) => {
-  //   dispatch({ type: TypeKeys.SET_UNITS, units: newUnits2 });
-  // };
-
-  // const setTte = (newTte2: Duration) => {
-  //   dispatch({ type: TypeKeys.SET_TTE, tte: newTte2 });
-  // };
-
-  // const setFtp = (newPower2: Power) => {
-  //   dispatch({ type: TypeKeys.SET_FTP, ftp: newPower2 });
-  // };
 
   return (
     <Box alignSelf="center" width="xlarge">
@@ -69,13 +51,13 @@ const Profile = (props: Props) => {
       <Form
         onReset={() => {
           dispatch({ type: TypeKeys.CLEAR_PROFILE });
-          setWeight(initialWeight);
-          setTte(initialTte);
-          setFtp(initialFtp);
-          setName(initialName);
-          setGender(initialGender);
-          setPowerMeter(initialPowerMeter);
-          setUnits(initialUnits);
+          setWeight(undefined);
+          setTte({ hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS });
+          setFtp(undefined);
+          setName(undefined);
+          setGender(undefined);
+          setPowerMeter(undefined);
+          setUnits(undefined);
         }}
         onSubmit={() => {
           dispatch({
@@ -139,29 +121,58 @@ const Profile = (props: Props) => {
           </Box>
           <Box>
             <Heading level="3">Standard Units</Heading>
-            <WeightUnitFormField
-              name="weightUnit"
-              weight={{ unit: units?.weight }}
-              setWeight={(w) => {
-                setUnits({ ...units, weight: w?.unit });
-              }}
-            />
-            <PowerUnitFormField
-              name="powerUnit"
-              power={{ unit: units?.power }}
-              setPower={(p) => {
-                setUnits({ ...units, power: p?.unit });
-              }}
-              weight={weight}
-            />
-            <DurationUnitFormField
-              name="durationUnit"
-              duration={{ unit: units?.duration }}
-              unitLabel="Duration unit"
-              setDuration={(newDuration) => {
-                setUnits({ ...units, duration: newDuration?.unit });
-              }}
-            />
+            <Box direction="row" align="center">
+              <Box fill>
+                <FormField label="Weight unit">
+                  <RadioButtonGroup
+                    direction="row"
+                    name="powerunitforallactivities"
+                    wrap
+                    value={units?.weight || ""}
+                    options={[...Object.values(WeightUnit)]}
+                    onChange={(e) => {
+                      setUnits({ ...units, weight: e.target.value as WeightUnit });
+                    }}
+                  />
+                </FormField>
+              </Box>
+              <Button icon={<Clear />} onClick={() => setUnits({ ...units, weight: undefined })} />
+            </Box>
+            <Box direction="row" align="center">
+              <Box fill>
+                <FormField label="Power unit">
+                  <RadioButtonGroup
+                    direction="row"
+                    width="medium"
+                    name="powerunitforallactivities"
+                    wrap
+                    value={units?.power || ""}
+                    options={[...Object.values(PowerUnit)]}
+                    onChange={(e) => {
+                      setUnits({ ...units, power: e.target.value as PowerUnit });
+                    }}
+                  />
+                </FormField>
+              </Box>
+              <Button icon={<Clear />} onClick={() => setUnits({ ...units, power: undefined })} />
+            </Box>
+            <Box direction="row" align="center">
+              <Box fill>
+                <FormField label="Duration unit">
+                  <RadioButtonGroup
+                    direction="row"
+                    name="durationunitforallactivities"
+                    wrap
+                    value={units?.duration || ""}
+                    options={[...Object.values(DurationUnit)]}
+                    onChange={(e) => {
+                      setUnits({ ...units, duration: e.target.value as DurationUnit });
+                    }}
+                  />
+                </FormField>
+              </Box>
+              <Button icon={<Clear />} onClick={() => setUnits({ ...units, duration: undefined })} />
+            </Box>
           </Box>
         </Grid>
         <Box gap="medium" direction="row">

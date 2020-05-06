@@ -10,19 +10,26 @@ import {
   RadioButtonGroup,
   ResponsiveContext,
   Text,
-  ThemeContext,
 } from "grommet";
 import { Clear, Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { task20 } from "../../calculations/task";
 import Activity from "../../components/Activity";
-import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
-import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Duration, Gender, IActivity, Power, PowerMeter, RwcRating, Weight } from "../../types";
+import {
+  Duration,
+  DurationUnit,
+  Gender,
+  IActivity,
+  Power,
+  PowerMeter,
+  PowerUnit,
+  RwcRating,
+  Weight,
+} from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
 interface Props {}
 
@@ -36,8 +43,8 @@ const C20 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit ? athlete.weight.unit : athlete.units?.weight,
   });
-  const [power, setPowerUnit] = useState<Power>({ unit: athlete.units?.power });
-  const [duration, setDurationUnit] = useState<Duration>({ unit: athlete.units?.duration });
+  const [power, setPower] = useState<Power>({ unit: athlete.units?.power });
+  const [duration, setDuration] = useState<Duration>({ unit: athlete.units?.duration });
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
   const [calculationError, setCalculationError] = useState("");
@@ -64,18 +71,17 @@ const C20 = (props: Props) => {
   const [result, setResult] = useState<any>();
 
   const onActivityChange = (index: number, activity: IActivity) => {
-    const newState = [...activities];
-    newState[index] = activity;
-    setActivities(newState);
-    // setResult(undefined);
+    setActivities((oldState) => {
+      const newState = [...oldState];
+      newState[index] = activity;
+      return newState;
+    });
   };
 
   const onDelete = (index: number) => {
     setActivities((state) => {
       const newState = [...state];
-
       newState.splice(index, 1);
-
       return newState;
     });
   };
@@ -160,63 +166,66 @@ const C20 = (props: Props) => {
           </Form>
         </Box>
       </Grid>
-      <ThemeContext.Extend
-        value={{
-          textInput: {
-            extend: `padding: 11px 0`,
-          },
-          maskedInput: {
-            extend: `padding: 11px 0`,
-          },
-        }}
-      >
-        <Box>
-          <Heading level="2" size="small">
-            Units
-          </Heading>
-          <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
-            <Box />
-            <PowerUnitFormField
-              power={power}
-              setPower={(newPower) => {
-                setActivities(activities.map((a) => ({ ...a, power: { ...a.power, unit: newPower.unit } })));
-                setPowerUnit(newPower);
-              }}
-            />
-            <DurationUnitFormField
-              duration={duration}
-              setDuration={(newDuration) => {
-                setActivities(activities.map((a) => ({ ...a, duration: { ...a.duration, unit: newDuration.unit } })));
-                setDurationUnit(newDuration);
-              }}
-            />
-          </Grid>
-        </Box>
+      <Box>
         <Heading level="2" size="small">
           Activities
         </Heading>
+        <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
+          <Box />
+          <FormField label="Power unit">
+            <RadioButtonGroup
+              direction="row"
+              name="powerunitforallactivities"
+              wrap
+              value={power.unit}
+              options={[...Object.values(PowerUnit)]}
+              onChange={(e) => {
+                setActivities((state) =>
+                  state.map((a) => ({ ...a, power: { ...a.power, unit: e.target.value as PowerUnit } }))
+                );
+                setPower({ ...power, unit: e.target.value as PowerUnit });
+              }}
+            />
+          </FormField>
+          <FormField label="Duration unit">
+            <RadioButtonGroup
+              direction="row"
+              name="durationunitforallactivities"
+              wrap
+              value={duration.unit}
+              options={[...Object.values(DurationUnit)]}
+              onChange={(e) => {
+                setActivities((state) =>
+                  state.map((a) => ({ ...a, duration: { ...a.duration, unit: e.target.value as DurationUnit } }))
+                );
+                setDuration({ ...duration, unit: e.target.value as DurationUnit });
+              }}
+            />
+          </FormField>
+        </Grid>
+      </Box>
 
-        {activities.length > 0 ? (
-          <Box margin={{ vertical: "medium" }}>
-            {activities.map((activity, index) => (
-              <Activity
-                date
-                canDelete={activities.length > 2}
-                key={activity.id}
-                index={index}
-                activity={activity}
-                weight={weight}
-                onActivityChange={onActivityChange}
-                onDelete={onDelete}
-              />
-            ))}
-          </Box>
-        ) : (
-          <Box align="center">
-            <Heading level="3">No activities</Heading>
-          </Box>
-        )}
-      </ThemeContext.Extend>
+      {activities.length > 0 ? (
+        <Box margin={{ vertical: "medium" }}>
+          {activities.map((activity, index) => (
+            <Activity
+              date
+              canDelete={activities.length > 2}
+              key={activity.id}
+              index={index}
+              activity={activity}
+              weight={weight}
+              onActivityChange={onActivityChange}
+              onDelete={onDelete}
+            />
+          ))}
+        </Box>
+      ) : (
+        <Box align="center">
+          <Heading level="3">No activities</Heading>
+        </Box>
+      )}
+
       <Box>
         <Box justify="center" align="end">
           <Button

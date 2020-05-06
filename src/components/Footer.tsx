@@ -1,5 +1,5 @@
+import { Anchor, Box, Footer as GFooter } from "grommet";
 import React from "react";
-import { Footer as GFooter, Box, Anchor } from "grommet";
 
 interface Props {}
 

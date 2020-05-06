@@ -1,4 +1,4 @@
-import { Box, BoxProps, Button, Calendar, DropButton, FormField, Layer, Text, TextInput } from "grommet";
+import { Box, BoxProps, Button, Calendar, DropButton, FormField, Layer, Text, TextInput, ThemeContext } from "grommet";
 import { Close, FormDown, StatusWarning } from "grommet-icons";
 import React, { useState } from "react";
 
@@ -15,30 +15,25 @@ const DateFormField = (props: Props) => {
   const onSelect = (selectedDate: any) => {
     setOpen(false);
     const newDate = new Date(selectedDate);
-    setDateString(newDate.toLocaleDateString(navigator.language));
+    setDateString(newDate.toLocaleDateString());
     setDate(newDate.toISOString());
   };
   return (
     <Box gap="small" direction="row" align="start" fill gridArea={gridArea}>
       <Box fill>
         <FormField label={"Date"}>
-          <Box direction="row" align="start">
-            <TextInput
-              value={dateString}
-              plain
-              onChange={(e) => setDateString(e.target.value)}
-              onBlur={() => {
-                if (dateString.length > 0) {
-                  const newDate = new Date(dateString);
-                  if (newDate instanceof Date && !isNaN(newDate.valueOf())) {
-                    setDateString(newDate.toLocaleDateString(navigator.language));
-                    setDate(newDate.toISOString());
-                  } else {
-                    setShowError(true);
-                  }
-                }
+          <Box direction="row" align="center">
+            <ThemeContext.Extend
+              value={{
+                textInput: {
+                  disabled: {
+                    opacity: 1,
+                  },
+                },
               }}
-            />
+            >
+              <TextInput value={dateString} plain disabled />
+            </ThemeContext.Extend>
             <Box margin={{ horizontal: "small" }}>
               <DropButton
                 open={open}
@@ -46,7 +41,7 @@ const DateFormField = (props: Props) => {
                 onOpen={() => setOpen(true)}
                 dropContent={<Calendar date={date ? date : new Date().toISOString()} onSelect={onSelect} />}
               >
-                <Box direction="row" justify="center" align="start">
+                <Box direction="row" justify="end" align="start">
                   <FormDown color="brand" />
                 </Box>
               </DropButton>
