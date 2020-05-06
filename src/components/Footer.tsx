@@ -1,5 +1,5 @@
+import { Anchor, Box, Footer as GFooter } from "grommet";
 import React from "react";
-import { Footer as GFooter, Box, Anchor } from "grommet";
 
 interface Props {}
 
@@ -20,7 +20,7 @@ const Footer = (props: Props) => {
             {`, `}
             <Anchor target="_blank" label="Alex Tran" href="https://www.powerpacing.run/" />
             {` and `}
-            <Anchor target="_blank" label="Mikael Lönn" href="https://mikaellonn.se" />
+            <Anchor target="_blank" label="Mikael Lönn!" href="https://mikaellonn.se" />
           </div>
         </Box>
       </GFooter>
