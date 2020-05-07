@@ -32,6 +32,8 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
         setPower({ ...power, value: newValue });
         setValue(newValue);
       }
+    } else {
+      setValue(power?.value);
     }
   }, [power, prevUnit, setPower, weight]);
   return (
