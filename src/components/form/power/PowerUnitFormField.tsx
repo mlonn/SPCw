@@ -16,7 +16,7 @@ const PowerUnitFormField = ({
   power,
   setPower,
   ref,
-
+  name = "powerunit",
   unitLabel = "‎Power unit",
   ...rest
 }: Props) => {
@@ -24,6 +24,7 @@ const PowerUnitFormField = ({
     <Box justify="end">
       <FormField label={unitLabel} {...rest}>
         <Select
+          name={name}
           value={power?.unit}
           onChange={({ option }) => {
             setPower({ ...power, unit: option });

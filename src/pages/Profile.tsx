@@ -21,7 +21,7 @@ import WeightUnitFormField from "../components/form/weight/WeightUnitFormField";
 import { TypeKeys } from "../hooks/useAthlete/types";
 import useAthleteAction from "../hooks/useAthleteAction";
 import useAthleteState from "../hooks/useAthleteState";
-import { Gender, PowerMeter } from "../types";
+import { DurationUnit, Gender, PowerMeter } from "../types";
 interface Props {}
 
 const Profile = (props: Props) => {
@@ -47,21 +47,6 @@ const Profile = (props: Props) => {
   const dispatch = useAthleteAction();
 
   const size = useContext(ResponsiveContext);
-  // const setWeight = (newWeight2: Weight) => {
-  //   dispatch({ type: TypeKeys.SET_WEIGHT, weight: newWeight2 });
-  // };
-
-  // const setUnits = (newUnits2: Units) => {
-  //   dispatch({ type: TypeKeys.SET_UNITS, units: newUnits2 });
-  // };
-
-  // const setTte = (newTte2: Duration) => {
-  //   dispatch({ type: TypeKeys.SET_TTE, tte: newTte2 });
-  // };
-
-  // const setFtp = (newPower2: Power) => {
-  //   dispatch({ type: TypeKeys.SET_FTP, ftp: newPower2 });
-  // };
 
   return (
     <Box alignSelf="center" width="xlarge">
@@ -70,13 +55,13 @@ const Profile = (props: Props) => {
       <Form
         onReset={() => {
           dispatch({ type: TypeKeys.CLEAR_PROFILE });
-          setWeight(initialWeight);
-          setTte(initialTte);
-          setFtp(initialFtp);
-          setName(initialName);
-          setGender(initialGender);
-          setPowerMeter(initialPowerMeter);
-          setUnits(initialUnits);
+          setWeight(undefined);
+          setTte({ hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS });
+          setFtp(undefined);
+          setName(undefined);
+          setGender(undefined);
+          setPowerMeter(undefined);
+          setUnits(undefined);
         }}
         onSubmit={() => {
           dispatch({
