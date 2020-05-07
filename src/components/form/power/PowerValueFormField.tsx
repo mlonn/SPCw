@@ -1,4 +1,4 @@
-import { FormField, FormFieldProps, TextInput } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, TextInput } from "grommet";
 import React, { useEffect, useRef, useState } from "react";
 import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
 import { round, toKg } from "../../../util";
@@ -10,9 +10,9 @@ interface OwnProps {
   setPower: (power: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", ...rest }: Props) => {
+const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", gridArea, ...rest }: Props) => {
   const [value, setValue] = useState(power?.value);
   const prevUnitRef = useRef<PowerUnit>();
   useEffect(() => {
@@ -37,17 +37,19 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
     }
   }, [power, prevUnit, setPower, weight]);
   return (
-    <FormField label={valueLabel} required {...rest}>
-      <TextInput
-        onChange={(e) => {
-          setValue(parseFloat(e.target.value));
-        }}
-        onBlur={() => setPower({ ...power, value })}
-        value={value ? round(value, 2) : ""}
-        type="number"
-        step="any"
-      />
-    </FormField>
+    <Box gridArea={gridArea}>
+      <FormField label={valueLabel} required {...rest}>
+        <TextInput
+          onChange={(e) => {
+            setValue(parseFloat(e.target.value));
+          }}
+          onBlur={() => setPower({ ...power, value })}
+          value={value ? round(value, 2) : ""}
+          type="number"
+          step="any"
+        />
+      </FormField>
+    </Box>
   );
 };
 

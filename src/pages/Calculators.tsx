@@ -1,6 +1,6 @@
+import { Box, Button, Heading } from "grommet";
 import React from "react";
-import { Heading, Box, Button } from "grommet";
-import { Link, useRouteMatch, Switch, Route } from "react-router-dom";
+import { Link, Route, Switch, useRouteMatch } from "react-router-dom";
 import calculators from "../resources/calculators";
 import Calculator from "./Calculator";
 
@@ -18,15 +18,15 @@ const Calculators = (props: Props) => {
           <Box alignSelf="center" width="xlarge">
             <Heading>Calculators</Heading>
             <ul>
-              <li>
-                {calculators
-                  .filter((c) => c.active)
-                  .map((c) => (
+              {calculators
+                .filter((c) => c.active)
+                .map((c) => (
+                  <li>
                     <Link key={c.id} to={`/calculators/${c.id}`}>
                       <Button plain label={c.title} />
                     </Link>
-                  ))}
-              </li>
+                  </li>
+                ))}
             </ul>
           </Box>
         </Route>
