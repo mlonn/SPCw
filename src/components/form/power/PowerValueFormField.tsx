@@ -1,7 +1,7 @@
 import { Box, BoxProps, FormField, FormFieldProps, TextInput } from "grommet";
 import React, { useEffect, useRef, useState } from "react";
 import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { round, toKg } from "../../../util";
+import { round, toStandardWeight } from "../../../util";
 
 interface OwnProps {
   weight?: Weight;
@@ -20,8 +20,8 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
   }, [power]);
   const prevUnit = prevUnitRef.current;
   useEffect(() => {
-    if (weight?.value && power?.value) {
-      const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toKg(weight).value!;
+    if (weight?.value && weight?.unit && power?.value) {
+      const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toStandardWeight(weight).value;
       if (prevUnit === PowerUnit.WATTS && power?.unit === PowerUnit.WATTS_KG) {
         const newValue = power?.value / kgWeight;
         setPower({ ...power, value: newValue });

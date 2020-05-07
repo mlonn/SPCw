@@ -1,12 +1,13 @@
 export enum CALCULATION_ERRORS {
   TOO_SIMILAR = "Activities too similar",
   EXPEXTED_SECONDS = "Needs duration in seconds",
-  NO_POWER = "No power value found",
-  NO_POWER_UNIT = "No power unit found",
-  NO_DURATION = "No duration value found",
-  NO_DURATION_UNIT = "No duration unit found",
-  NO_WEIGHT = "Please enter weight when using W/kg",
-
+  NO_POWER = "Please enter power",
+  NO_POWER_UNIT = "Please enter power unit",
+  NO_DURATION = "Please enter duration",
+  NO_DURATION_UNIT = "Please select duration unit",
+  NO_DISTANCE = "Please enter distance",
+  NO_DISTANCE_UNIT = "Please select distance unit",
+  NO_WEIGHT = "Please enter weight",
   POWER_ERROR = "POWER_ERROR",
 }
 export enum CALCULATION_TYPE {

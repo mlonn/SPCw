@@ -34,8 +34,20 @@ export const calculateScenarios = (
   tte: Duration,
   ftp: Power
 ) => {
+  if (refrom > reto) {
+    throw Error("From RE must be lower than to RE");
+  }
+
+  if (riegelfrom > riegelto) {
+    throw Error("From riegel exponent must be lower than to riegel exponent");
+  }
+
   const startDuration = 3600;
   const standardTte = toStandardDuration(tte);
+  if (standardTte.value < 20 * 60 || standardTte.value > 80 * 60) {
+    throw Error("Time to exhaustion error expecting 0:20:00-1:20:00");
+  }
+
   const standardWeight = toStandardWeight(weight);
   const stdDistance = toStandardDistance(distance);
   const stdFtp = toStandardPower(ftp, weight);

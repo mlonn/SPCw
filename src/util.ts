@@ -88,7 +88,7 @@ export const toLbs = (weight: Weight) => {
 
 export const toStandardDistance = (distance: Distance): StandardDistance => {
   if (!distance.unit) {
-    throw Error(CALCULATION_ERRORS.NO_POWER);
+    throw Error(CALCULATION_ERRORS.NO_DISTANCE_UNIT);
   }
   if (
     distance.unit === DistanceUnit.METERS ||
@@ -97,7 +97,7 @@ export const toStandardDistance = (distance: Distance): StandardDistance => {
     distance.unit === DistanceUnit.FEET
   ) {
     if (!distance.value) {
-      throw Error(CALCULATION_ERRORS.NO_POWER);
+      throw Error(CALCULATION_ERRORS.NO_DISTANCE);
     }
     switch (distance.unit) {
       case DistanceUnit.FEET:
@@ -109,7 +109,7 @@ export const toStandardDistance = (distance: Distance): StandardDistance => {
       case DistanceUnit.KM:
         return { value: distance.value * 1000, unit: DistanceUnit.METERS };
       default:
-        throw Error(CALCULATION_ERRORS.NO_POWER);
+        throw Error(CALCULATION_ERRORS.NO_DISTANCE);
     }
   } else {
     switch (distance.unit) {
@@ -122,7 +122,7 @@ export const toStandardDistance = (distance: Distance): StandardDistance => {
       case DistanceUnit.TEN_K:
         return { value: 1000, unit: DistanceUnit.METERS };
       default:
-        throw Error(CALCULATION_ERRORS.NO_POWER);
+        throw Error(CALCULATION_ERRORS.NO_DISTANCE);
     }
   }
 };
@@ -142,7 +142,7 @@ export const toStandardPower = (power: Power, weight?: Weight): StandardPower =>
     }
     let weightValue = weight.value;
     if (weight.unit === WeightUnit.LBS) {
-      weightValue = toKg(weight).value!;
+      weightValue = toStandardWeight(weight).value;
     }
     power = {
       value: power.value * weightValue,
