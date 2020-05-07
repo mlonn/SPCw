@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Form,
   FormField,
   Grid,
   Heading,
@@ -117,10 +116,7 @@ const C6 = () => {
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
-          <Form validate="blur">
-            <WeightFormField weight={weight} setWeight={setWeight} />
-          </Form>
-
+          <WeightFormField weight={weight} setWeight={setWeight} />
           <Box direction="row" align="center">
             <Box fill>
               <FormField label="Gender">

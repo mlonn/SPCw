@@ -27,17 +27,7 @@ const WeightValueFormField = ({
   }, [setWeight, weight]);
 
   return (
-    <FormField
-      label={valueLabel}
-      name={name}
-      validate={[
-        () => {
-          if (weight?.value && weight?.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
-          if (weight?.value && weight?.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
-        },
-      ]}
-      {...rest}
-    >
+    <FormField label={valueLabel} name={name} {...rest}>
       <TextInput
         value={value ? round(value, 2) : ""}
         name={name}
