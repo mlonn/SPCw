@@ -1,4 +1,4 @@
-import { Calculator } from "../types";
+import { CALCULATION_TYPE, Calculator } from "../types";
 
 const calculators: Calculator[] = [
   {
@@ -10,6 +10,7 @@ const calculators: Calculator[] = [
       maxDuration: 1800,
       durationDistance: 360,
     },
+    type: CALCULATION_TYPE.FTP_CP,
   },
   {
     id: 20,
@@ -25,6 +26,14 @@ const calculators: Calculator[] = [
         max: 900,
       },
     },
+    type: CALCULATION_TYPE.FTP_CP,
+  },
+  {
+    id: 11,
+    title: "Generate Race Power Scenarios using pairs of Riegel Exponents and Running Effectiveness",
+    active: true,
+    requirements: {},
+    type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
 ];
 export default calculators;
