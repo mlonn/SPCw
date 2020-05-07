@@ -9,6 +9,7 @@ interface OwnProps {
   valueLabel?: string;
   unitLabel?: string;
   altitude?: boolean;
+  distance?: Distance;
   setDistance: (value: Distance) => void;
 }
 

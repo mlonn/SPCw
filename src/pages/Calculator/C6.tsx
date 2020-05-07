@@ -187,9 +187,7 @@ const C6 = () => {
           </FormField>
         </Grid>
       </Box>
-      <Heading level="2" size="small">
-        Activities
-      </Heading>
+
       {activities.length > 0 ? (
         <Box margin={{ vertical: "medium" }}>
           {activities.map((activity, index) => (
@@ -211,7 +209,7 @@ const C6 = () => {
       )}
 
       <Box>
-        <Box justify="center" align="end">
+        <Box justify="center" gap="medium" align="end">
           <Button
             label="Add activity"
             onClick={() => {
@@ -219,12 +217,8 @@ const C6 = () => {
               setActivities([...activities, { id, power, duration }]);
             }}
           />
+          {!result && <Button label="Calculate" onClick={onCalculate} />}
         </Box>
-        {!result && (
-          <Box justify="center" align="end" margin={{ vertical: "medium" }}>
-            <Button label="Calculate" onClick={onCalculate} />
-          </Box>
-        )}
       </Box>
 
       {result && (

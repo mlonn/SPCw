@@ -14,7 +14,7 @@ import {
   Weight,
   WeightUnit,
 } from "../types";
-import { round, timeToSeconds, toKg, toStandardDuration, toStandardPower, toStandardWeight } from "../util";
+import { round, timeToSeconds, toStandardDuration, toStandardPower, toStandardWeight } from "../util";
 import { rwcReference } from "./data";
 
 export const standardizeActivity = (activity: IActivity, weight?: Weight): StandardActivity => {
@@ -82,7 +82,7 @@ export const checkActivities = (
         throw Error("Please enter Watts/kg between 1 and 10");
       }
       if (weight.value && power.unit === PowerUnit.WATTS) {
-        const kgs = toKg(weight).value!;
+        const kgs = toStandardWeight(weight).value;
         if (power.value < Math.floor(kgs) || power.value > Math.ceil(kgs * 10)) {
           throw Error(
             `Power (Pt): Expecting ${Math.floor(kgs)}-${Math.ceil(kgs * 10)} Watts (check value and/or Unit of Measure)`
@@ -114,7 +114,7 @@ const checkRwc = (rwc: number, weight?: Weight, gender?: Gender, powerMeter?: Po
   }
   let rating;
   if (weight?.value) {
-    const kg = toKg(weight).value!;
+    const kg = toStandardWeight(weight).value;
     rating = rwcReference.find(
       (ref) =>
         ref.gender === genderToUse &&
@@ -173,7 +173,7 @@ export const calculateFTP = (
   let ftpkg, rwckg;
   let weightValue = weight ? weight.value : undefined;
   if (weight?.value && weight.unit === WeightUnit.LBS) {
-    weightValue = toKg(weight).value!;
+    weightValue = toStandardWeight(weight).value;
   }
   ftpkg = weightValue ? Math.round((ftp / weightValue) * 100) / 100 : undefined;
   const rwc = Math.round(valuesRegression.equation[1]) / 1000;

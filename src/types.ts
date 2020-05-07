@@ -1,15 +1,22 @@
 export enum CALCULATION_ERRORS {
   TOO_SIMILAR = "Activities too similar",
   EXPEXTED_SECONDS = "Needs duration in seconds",
-  NO_POWER = "No power value found",
-  NO_POWER_UNIT = "No power unit found",
-  NO_DURATION = "No duration value found",
-  NO_DURATION_UNIT = "No duration unit found",
-  NO_WEIGHT = "Please enter weight when using W/kg",
-
+  NO_POWER = "Please enter power",
+  NO_POWER_UNIT = "Please enter power unit",
+  NO_DURATION = "Please enter duration",
+  NO_DURATION_UNIT = "Please select duration unit",
+  NO_DISTANCE = "Please enter distance",
+  NO_DISTANCE_UNIT = "Please select distance unit",
+  NO_WEIGHT = "Please enter weight",
   POWER_ERROR = "POWER_ERROR",
 }
-
+export enum CALCULATION_TYPE {
+  FTP_CP = "Calculate FTP/CP",
+  RACE_POWER_PLANNING = "Race Power Planning",
+  WHAT_IF = "What if?",
+  OTHER = "Other",
+  ADVANCED = "Advanced",
+}
 export enum INPUT_ERRORS {
   NOT_ENOUGH = "Please enter Power+Duration for 2 or more activities",
   HIGH_LONG_POWER = "Power should be higher at shorter durations",
@@ -23,6 +30,7 @@ export interface Calculator {
   title: string;
   active: boolean;
   requirements: ActivityRequirement;
+  type: CALCULATION_TYPE;
 }
 export interface ActivityRequirement {
   date?: boolean;
@@ -152,4 +160,15 @@ export interface Temperature {
 export interface Distance {
   value?: number;
   unit?: DistanceUnit;
+}
+
+export interface StandardDistance {
+  value: number;
+  unit: DistanceUnit.METERS;
+}
+export interface Scenario {
+  power: StandardPower;
+  riegel: number;
+  re: number;
+  time: StandardDuration;
 }
