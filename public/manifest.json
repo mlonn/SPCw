@@ -1,6 +1,6 @@
 {
-  "short_name": "Power calculator",
-  "name": "Power calculator",
+  "short_name": "SPCw",
+  "name": "SuperPower Calculator for Web",
   "icons": [
     {
       "src": "favicon.ico",
