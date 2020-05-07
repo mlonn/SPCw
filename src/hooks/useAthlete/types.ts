@@ -1,16 +1,19 @@
-import { Weight, Gender, PowerMeter, Power, Duration } from "../../types";
+import { Duration, Gender, Power, PowerMeter, Units, Weight } from "../../types";
 
 export interface AthleteState {
+  id: string;
   name?: string;
   gender?: Gender;
   powerMeter?: PowerMeter;
-  weight: Weight;
-  ftp: Power;
+  weight?: Weight;
+  ftp?: Power;
   tte: Duration;
+  units?: Units;
 }
 
 export type Action =
   | ClearProfileAction
+  | SetProfileAction
   | SetWeightAction
   | SetGenderAction
   | ClearGenderAction
@@ -18,10 +21,16 @@ export type Action =
   | ClearPowerMeterAction
   | SetFtpAction
   | SetTteAction
-  | SetNameAction;
+  | SetNameAction
+  | SetUnitsAction
+  | ClearUnitsAction;
 
 export interface ClearProfileAction {
   type: TypeKeys.CLEAR_PROFILE;
+}
+export interface SetProfileAction {
+  type: TypeKeys.SET_PROFILE;
+  profile: AthleteState;
 }
 
 export interface SetWeightAction {
@@ -36,7 +45,9 @@ export interface SetGenderAction {
 export interface ClearGenderAction {
   type: TypeKeys.CLEAR_GENDER;
 }
-
+export interface ClearUnitsAction {
+  type: TypeKeys.CLEAR_UNITS;
+}
 export interface SetPowerMeterAction {
   type: TypeKeys.SET_POWER_METER;
   powerMeter: PowerMeter;
@@ -60,9 +71,13 @@ export interface SetNameAction {
   type: TypeKeys.SET_NAME;
   name: string;
 }
-
+export interface SetUnitsAction {
+  type: TypeKeys.SET_UNITS;
+  units: Units;
+}
 export enum TypeKeys {
   CLEAR_PROFILE = "CLEAR_PROFILE",
+  SET_PROFILE = "SET_PROFILE",
   SET_WEIGHT = "SET_WEIGHT",
   SET_GENDER = "SET_GENDER",
   CLEAR_GENDER = "CLEAR_GENDER",
@@ -70,5 +85,7 @@ export enum TypeKeys {
   CLEAR_POWER_METER = "CLEAR_POWER_METER",
   SET_FTP = "SET_FTP",
   SET_TTE = "SET_TTE",
-  SET_NAME = "SET_NAME"
+  SET_NAME = "SET_NAME",
+  SET_UNITS = "SET_UNITS",
+  CLEAR_UNITS = "CLEAR_UNITS",
 }

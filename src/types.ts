@@ -3,7 +3,7 @@ export enum CALCULATION_ERRORS {
   EXPEXTED_SECONDS = "Needs duration in seconds",
   NO_POWER = "No power value found",
   NO_DURATION = "No duration value found",
-  NO_WEIGHT = "No weight value found",
+  NO_WEIGHT = "Please enter weight when using W/kg",
   RWC_TOO_HIGH = "",
   RWC_HIGH = "",
   RWC_LOW = "",
@@ -63,23 +63,28 @@ export interface IActivity {
 
 export interface Weight {
   value?: number;
-  unit: WeightUnit;
+  unit?: WeightUnit;
 }
 
 export interface Power {
   value?: number;
-  unit: PowerUnit;
+  unit?: PowerUnit;
 }
 
 export type Duration = SecondDuration | TimeDuration;
 
 export interface SecondDuration {
   value?: number;
-  unit: DurationUnit.SECONDS;
+  unit?: DurationUnit.SECONDS;
 }
 export interface TimeDuration {
   hours?: number;
   minutes?: number;
   seconds?: number;
-  unit: DurationUnit.HH_MM_SS;
+  unit?: DurationUnit.HH_MM_SS;
+}
+export interface Units {
+  weight?: WeightUnit;
+  power?: PowerUnit;
+  duration?: DurationUnit;
 }

@@ -1,15 +1,19 @@
-import { useReducer, Dispatch } from "react";
-import { AthleteState, TypeKeys, Action } from "./types";
-import { WeightUnit, PowerUnit, DurationUnit } from "../../types";
+import { Dispatch, useReducer } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { DurationUnit } from "../../types";
+import { Action, AthleteState, TypeKeys } from "./types";
 const initialState: AthleteState = {
-  weight: { unit: WeightUnit.KG },
-  ftp: { unit: PowerUnit.WATTS },
+  id: uuidv4(),
+  weight: {},
+  ftp: {},
   tte: { hours: 0, minutes: 50, seconds: 0, unit: DurationUnit.HH_MM_SS },
 };
 const modalReducer = (state: AthleteState, action: Action) => {
   switch (action.type) {
     case TypeKeys.CLEAR_PROFILE:
       return updateStorage({ ...initialState });
+    case TypeKeys.SET_PROFILE:
+      return updateStorage({ ...action.profile });
     case TypeKeys.SET_NAME:
       return updateStorage({ ...state, name: action.name });
     case TypeKeys.SET_FTP:
@@ -26,6 +30,8 @@ const modalReducer = (state: AthleteState, action: Action) => {
       return updateStorage({ ...state, tte: action.tte });
     case TypeKeys.SET_WEIGHT:
       return updateStorage({ ...state, weight: action.weight });
+    case TypeKeys.SET_UNITS:
+      return updateStorage({ ...state, units: action.units });
     default:
       break;
   }

@@ -1,56 +1,29 @@
 import {
   Box,
   Button,
-  Collapsible,
-  Form,
   FormField,
   Grid,
   Heading,
   Layer,
+  Paragraph,
   RadioButtonGroup,
+  ResponsiveContext,
   Text,
   ThemeContext,
-  Paragraph,
-  ResponsiveContext,
 } from "grommet";
-import { Clear, Edit, FormClose, StatusWarning, Trash } from "grommet-icons";
-import React, { memo, Fragment, useState, useContext } from "react";
-import styled from "styled-components";
+import { Clear, Close, StatusWarning } from "grommet-icons";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { calculateFTP } from "../../calculations/ftp";
+import Activity from "../../components/Activity";
 import DurationUnitFormField from "../../components/form/duration/DurationUnitFormField";
-import DurationValueFormField from "../../components/form/duration/DurationValueFormField";
 import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
-import PowerValueFormField from "../../components/form/power/PowerValueFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import debounce from "lodash.debounce";
-import { IActivity, DurationUnit, Gender, PowerMeter, PowerUnit, RwcRating, Weight, WeightUnit } from "../../types";
-import { durationToString, getFtpError, getRwcError, round } from "../../util";
-import Activity from "../Activity";
+import { Duration, Gender, IActivity, Power, PowerMeter, RwcRating, Weight } from "../../types";
+import { getFtpError, getRwcError, round } from "../../util";
 interface Props {}
-
-const ActivityContainer = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr auto;
-  grid-template-areas: "value value value value edit delete";
-  grid-gap: 10px;
-  @media only screen and (max-width: 600px) {
-    grid-template-columns: 1fr 1fr auto;
-    grid-template-areas:
-      "value value delete"
-      "value value delete";
-  }
-  align-items: center;
-  margin-bottom: 10px;
-`;
-const EditButton = styled.div`
-  grid-area: edit;
-`;
-const DeleteButton = styled.div`
-  grid-area: delete;
-`;
 
 const C6 = (props: Props) => {
   const TASK_ID = 6;
@@ -58,8 +31,12 @@ const C6 = (props: Props) => {
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
   const size = useContext(ResponsiveContext);
-  const [edit, setEdit] = useState<string>();
-  const [weight, setWeight] = useState<Weight>(athlete.weight || { unit: WeightUnit.KG });
+  const [weight, setWeight] = useState<Weight>({
+    value: athlete.weight?.value,
+    unit: athlete.weight?.unit ? athlete.weight.unit : athlete.units?.weight,
+  });
+  const [power, setPowerUnit] = useState<Power>({ unit: athlete.units?.power });
+  const [duration, setDurationUnit] = useState<Duration>({ unit: athlete.units?.duration });
   const [gender, setGender] = useState(athlete.gender);
   const [powerMeter, setPowerMeter] = useState(athlete.powerMeter);
   const [calculationError, setCalculationError] = useState("");
@@ -67,50 +44,61 @@ const C6 = (props: Props) => {
   const initialActivities: IActivity[] = [
     {
       id: uuidv4(),
-      power: { unit: PowerUnit.WATTS },
-      duration: { unit: DurationUnit.HH_MM_SS },
+      power: { unit: athlete.units?.power },
+      duration: { unit: athlete.units?.duration },
     },
     {
       id: uuidv4(),
-      power: { unit: PowerUnit.WATTS },
-      duration: { unit: DurationUnit.HH_MM_SS },
+      power: { unit: athlete.units?.power },
+      duration: { unit: athlete.units?.duration },
     },
   ];
 
-  const [activities, setActivities] = useState<IActivity[]>([...initialActivities]);
-  const debouncedSetActivites = debounce(setActivities, 100);
-  const updateActivity = (newActivity: IActivity) => {
-    console.log(newActivity.id);
-    debouncedSetActivites(activities.map((activity) => (activity.id === newActivity.id ? newActivity : activity)));
+  const [activities, setActivities] = useState<IActivity[]>(initialActivities);
+  useEffect(() => {
+    setResult(undefined);
+  }, [activities, weight, gender, powerMeter]);
+  const [result, setResult] = useState<any>();
+
+  const onActivityChange = (index: number, activity: IActivity) => {
+    setActivities((oldState) => {
+      const newState = [...oldState];
+      newState[index] = activity;
+      return newState;
+    });
+    // setResult(undefined);
   };
-  const removeActivity = (activityToRemove: IActivity) => {
-    setActivities(activities.filter((activity) => activityToRemove.id !== activity.id));
+
+  const onDelete = (index: number) => {
+    setActivities((state) => {
+      const newState = [...state];
+      newState.splice(index, 1);
+      return newState;
+    });
   };
-  let result;
+
   if (!calculator) {
     return <Heading>Calcualtor not found</Heading>;
   }
-
-  try {
-    if (activities.length > 0) {
-      result = calculateFTP(activities, weight, gender, powerMeter);
+  const onCalculate = () => {
+    try {
+      const newResult = calculateFTP(activities, weight, gender, powerMeter);
+      setResult(newResult);
       if (showError) {
         setShowError(false);
         setCalculationError("");
       }
-    }
-  } catch (error) {
-    if (calculationError !== error.message) {
+    } catch (error) {
       setShowError(true);
       setCalculationError(error.message);
     }
-  }
-
+  };
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading alignSelf="center" textAlign="center" level="1" size="small">
         {calculator.title}
       </Heading>
+
       <Grid columns={size !== "small" ? ["1fr", "1fr"] : undefined} gap="medium">
         <Box>
           <Heading level="2" size="small">
@@ -122,91 +110,108 @@ const C6 = (props: Props) => {
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
-          <Form validate="blur">
-            <WeightFormField weight={weight} setWeight={setWeight} name={"weightunit"} label={"Weight unit"} />
-          </Form>
-          <Form onReset={() => setGender(undefined)}>
-            <Box direction="row" align="center">
-              <Box fill>
-                <FormField label="Gender">
-                  <RadioButtonGroup
-                    direction="row"
-                    name="gender"
-                    wrap
-                    value={gender}
-                    options={[...Object.values(Gender)]}
-                    onChange={(e) => setGender(e.target.value as Gender)}
-                  />
-                </FormField>
-              </Box>
-              <Button type="reset" icon={<Clear />} />
+          <WeightFormField weight={weight} setWeight={setWeight} />
+          <Box direction="row" align="center">
+            <Box fill>
+              <FormField label="Gender">
+                <RadioButtonGroup
+                  direction="row"
+                  name="gender"
+                  wrap
+                  value={gender || ""}
+                  options={[...Object.values(Gender)]}
+                  onChange={(e) => setGender(e.target.value as Gender)}
+                />
+              </FormField>
             </Box>
-          </Form>
-          <Form onReset={() => setPowerMeter(undefined)}>
-            <Box direction="row" align="center" justify="center">
-              <Box fill>
-                <FormField label="Power meter">
-                  <RadioButtonGroup
-                    direction="row"
-                    name="powermeter"
-                    wrap
-                    value={powerMeter}
-                    options={[...Object.values(PowerMeter)]}
-                    onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
-                  />
-                </FormField>
-              </Box>
-              <Button icon={<Clear />} type="reset" />
+            <Button icon={<Clear />} onClick={() => setGender(undefined)} />
+          </Box>
+          <Box direction="row" align="center" justify="center">
+            <Box fill>
+              <FormField label="Power meter">
+                <RadioButtonGroup
+                  direction="row"
+                  name="powermeter"
+                  wrap
+                  value={powerMeter || ""}
+                  options={[...Object.values(PowerMeter)]}
+                  onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
+                />
+              </FormField>
             </Box>
-          </Form>
+            <Button icon={<Clear />} onClick={() => setPowerMeter(undefined)} />
+          </Box>
         </Box>
       </Grid>
-      <Heading level="2" size="small">
-        Activities
-      </Heading>
-      {activities.length > 0 ? (
-        <ThemeContext.Extend
-          value={{
-            textInput: {
-              extend: `padding: 11px 0`,
-            },
-            maskedInput: {
-              extend: `padding: 11px 0`,
-            },
-          }}
-        >
+      <ThemeContext.Extend
+        value={{
+          textInput: {
+            extend: `padding: 11px 0`,
+          },
+          maskedInput: {
+            extend: `padding: 11px 0`,
+          },
+        }}
+      >
+        <Box>
+          <Heading level="2" size="small">
+            Units
+          </Heading>
+          <Grid columns={["1fr", "1fr"]} gap="small">
+            <PowerUnitFormField
+              power={power}
+              setPower={(newPower) => {
+                setActivities(activities.map((a) => ({ ...a, power: { ...a.power, unit: newPower.unit } })));
+                setPowerUnit(newPower);
+              }}
+            />
+            <DurationUnitFormField
+              duration={duration}
+              setDuration={(newDuration) => {
+                setActivities(activities.map((a) => ({ ...a, duration: { ...a.duration, unit: newDuration.unit } })));
+                setDurationUnit(newDuration);
+              }}
+            />
+          </Grid>
+        </Box>
+        <Heading level="2" size="small">
+          Activities
+        </Heading>
+        {activities.length > 0 ? (
           <Box margin={{ vertical: "medium" }}>
-            {activities.map((activity) => (
+            {activities.map((activity, index) => (
               <Activity
                 canDelete={activities.length > 2}
                 key={activity.id}
+                index={index}
                 activity={activity}
                 weight={weight}
-                updateActivity={updateActivity}
-                removeActivity={removeActivity}
+                onActivityChange={onActivityChange}
+                onDelete={onDelete}
               />
             ))}
           </Box>
-        </ThemeContext.Extend>
-      ) : (
-        <Box align="center">
-          <Heading level="3">No activities</Heading>
-        </Box>
-      )}
+        ) : (
+          <Box align="center">
+            <Heading level="3">No activities</Heading>
+          </Box>
+        )}
+      </ThemeContext.Extend>
       <Box>
         <Box justify="center" align="end">
           <Button
             label="Add activity"
-            type="submit"
             onClick={() => {
-              const duration = { unit: DurationUnit.HH_MM_SS };
-              const power = { unit: PowerUnit.WATTS };
               const id = uuidv4();
-              setEdit(id);
               setActivities([...activities, { id, power, duration }]);
             }}
           />
         </Box>
+        {!result && (
+          <Box justify="center" align="end" margin={{ vertical: "medium" }}>
+            <Button label="Calculate" onClick={onCalculate} />
+          </Box>
+        )}
       </Box>
 
       {result && (
@@ -268,14 +273,14 @@ const C6 = (props: Props) => {
             justify="between"
             round="medium"
             elevation="medium"
-            pad={{ vertical: "xsmall", horizontal: "small" }}
+            pad={{ vertical: "small", horizontal: "medium" }}
             background="status-critical"
           >
             <Box align="center" direction="row" gap="xsmall">
               <StatusWarning />
               <Text>{calculationError}</Text>
             </Box>
-            <Button icon={<FormClose />} onClick={() => setShowError(false)} plain />
+            <Button icon={<Close />} onClick={() => setShowError(false)} />
           </Box>
         </Layer>
       )}

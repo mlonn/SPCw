@@ -1,11 +1,10 @@
 import { Box, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { round, toKg } from "../../../util";
+import { Power, PowerUnit, Weight } from "../../../types";
 
 interface OwnProps {
-  weight: Weight;
-  power: Power;
+  weight?: Weight;
+  power?: Power;
   unitLabel?: string;
   setPower: (value: Power) => void;
 }
@@ -18,27 +17,17 @@ const PowerUnitFormField = ({
   setPower,
   ref,
   name = "powerunit",
-  unitLabel = "‎\u00A0‎‎‎",
+  unitLabel = "‎Power unit",
   ...rest
 }: Props) => {
   return (
     <Box justify="end">
-      <FormField label={unitLabel} name={name} {...rest}>
+      <FormField label={unitLabel} {...rest}>
         <Select
           name={name}
-          value={power.unit}
+          value={power?.unit}
           onChange={({ option }) => {
-            if (weight.value && power.value) {
-              const kgWeight = weight.unit === WeightUnit.KG ? weight.value : toKg(weight).value!;
-              if (option === PowerUnit.WATTS) {
-                setPower({ value: round(power.value * kgWeight, 2), unit: option });
-              }
-              if (option === PowerUnit.WATTS_KG) {
-                setPower({ value: round(power.value / kgWeight, 2), unit: option });
-              }
-            } else {
-              setPower({ value: undefined, unit: option });
-            }
+            setPower({ ...power, unit: option });
           }}
           options={[...Object.values(PowerUnit)]}
         />

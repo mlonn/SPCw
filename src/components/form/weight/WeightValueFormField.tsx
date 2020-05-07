@@ -1,11 +1,11 @@
-import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React from "react";
+import { FormField, FormFieldProps, TextInput } from "grommet";
+import React, { useEffect, useState } from "react";
 import { Weight } from "../../../types";
+import { round } from "../../../util";
 
 interface OwnProps {
-  weight: Weight;
+  weight?: Weight;
   valueLabel?: string;
-
   setWeight: (value: Weight) => void;
 }
 
@@ -20,28 +20,23 @@ const WeightValueFormField = ({
   label,
   ...rest
 }: Props) => {
+  const [value, setValue] = useState(weight?.value);
+
+  useEffect(() => {
+    setValue(weight?.value);
+  }, [setWeight, weight]);
+
   return (
-    <Box fill>
-      <FormField
-        label={valueLabel}
+    <FormField label={valueLabel} name={name} {...rest}>
+      <TextInput
+        value={value ? round(value, 2) : ""}
         name={name}
-        validate={[
-          () => {
-            if (weight.value && weight.value < 40) return "WARNING: Weight to low, Expecting 40-200Kg";
-            if (weight.value && weight.value > 200) return "WARNING: Weight to low, Expecting 40-200Kg";
-          },
-        ]}
-        {...rest}
-      >
-        <TextInput
-          value={weight.value}
-          name={name}
-          type="number"
-          step="any"
-          onChange={(e) => setWeight({ ...weight, value: parseFloat(e.target.value) })}
-        />
-      </FormField>
-    </Box>
+        type="number"
+        step="any"
+        onChange={(e) => setValue(parseFloat(e.target.value))}
+        onBlur={() => setWeight({ ...weight, value: value })}
+      />
+    </FormField>
   );
 };
 

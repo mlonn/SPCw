@@ -1,7 +1,8 @@
-import React, { createRef, useEffect, useState } from "react";
-import { Keyboard, TextInput, Button, Box } from "grommet";
+import { Box, Button, Keyboard, TextInput } from "grommet";
 import { Search as SearchIcon } from "grommet-icons";
+import React, { createRef, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import calculators from "../resources/calculators";
 interface Props {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -9,17 +10,19 @@ interface Props {
 
 const Search = ({ open, setOpen }: Props) => {
   const history = useHistory();
-  const [value, setValue] = useState("");
-  const [suggestions, setSuggestions] = useState([
-    {
-      label: (
-        <Box align="start" pad="small">
-          Calculate FTP/CP and RWC (W') from a CP test
-        </Box>
-      ),
-      value: "ftp",
-    },
-  ]);
+  const [value] = useState("");
+  const [suggestions] = useState(
+    calculators
+      .filter((c) => c.active)
+      .map((calculator) => ({
+        label: (
+          <Box align="start" pad="small">
+            {calculator.title}
+          </Box>
+        ),
+        value: calculator.id,
+      }))
+  );
   const inputRef = createRef<HTMLInputElement>();
 
   useEffect(() => {
@@ -33,7 +36,7 @@ const Search = ({ open, setOpen }: Props) => {
   const onEnter = () => {};
 
   const onSelect = (event: any) => {
-    history.push(event.suggestion.value);
+    history.push(`/calculators/${event.suggestion.value}`);
   };
 
   if (open) {

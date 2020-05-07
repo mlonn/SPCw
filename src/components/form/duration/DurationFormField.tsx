@@ -13,11 +13,11 @@ interface OwnProps {
 
 type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ ref, ...rest }: Props) => {
+const DurationFormField = ({ ref, unitLabel = "\u00A0", ...rest }: Props) => {
   return (
     <Box gap="small" direction="row" align="start">
       <DurationValueFormField {...rest} />
-      <DurationUnitFormField {...rest} />
+      <DurationUnitFormField unitLabel={unitLabel} {...rest} />
     </Box>
   );
 };

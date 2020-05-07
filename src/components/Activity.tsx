@@ -2,9 +2,9 @@ import { Button } from "grommet";
 import { Trash } from "grommet-icons";
 import React, { memo } from "react";
 import styled from "styled-components";
-import DurationFormField from "../components/form/duration/DurationFormField";
-import PowerFormField from "../components/form/power/PowerFormField";
 import { IActivity, Weight } from "../types";
+import DurationValueFormField from "./form/duration/DurationValueFormField";
+import PowerValueFormField from "./form/power/PowerValueFormField";
 
 const ActivityContainer = styled.div`
   display: grid;
@@ -20,35 +20,36 @@ const ActivityContainer = styled.div`
   align-items: center;
   margin-bottom: 10px;
 `;
-const EditButton = styled.div`
-  grid-area: edit;
-`;
+
 const DeleteButton = styled.div`
   grid-area: delete;
 `;
 interface Props {
   activity: IActivity;
+  index: number;
   canDelete?: boolean;
-  weight: Weight;
-  updateActivity: (activity: IActivity) => void;
-  removeActivity: (activity: IActivity) => void;
+  weight?: Weight;
+  onActivityChange: (index: number, activity: IActivity) => void;
+  onDelete: (index: number) => void;
 }
-const Activity = ({ activity, weight, updateActivity, removeActivity, canDelete = true }: Props) => {
+const Activity = (props: Props) => {
+  const { activity, weight, onActivityChange, onDelete, canDelete = true, index } = props;
+
   return (
-    <ActivityContainer key={activity.id}>
-      <PowerFormField
+    <ActivityContainer>
+      <PowerValueFormField
         power={activity.power}
-        label=""
-        setPower={(newPower) => updateActivity({ ...activity, power: newPower })}
+        setPower={(newPower) => {
+          const newActivity = { ...activity, power: newPower };
+          onActivityChange(index, newActivity);
+        }}
         weight={weight}
       />
-
-      <DurationFormField
+      <DurationValueFormField
         duration={activity.duration}
-        label=""
         setDuration={(newDuration) => {
-          console.log(newDuration);
-          updateActivity({ ...activity, duration: newDuration });
+          const newActivity = { ...activity, duration: newDuration };
+          onActivityChange(index, newActivity);
         }}
       />
       <DeleteButton>
@@ -57,7 +58,7 @@ const Activity = ({ activity, weight, updateActivity, removeActivity, canDelete 
             plain
             icon={<Trash />}
             onClick={() => {
-              removeActivity(activity);
+              onDelete(index);
             }}
           />
         )}
@@ -66,4 +67,4 @@ const Activity = ({ activity, weight, updateActivity, removeActivity, canDelete 
   );
 };
 
-export default Activity;
+export default memo(Activity);

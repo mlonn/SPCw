@@ -1,11 +1,11 @@
+import { Anchor, Box, Footer as GFooter } from "grommet";
 import React from "react";
-import { Footer as GFooter, Box, Anchor } from "grommet";
 
 interface Props {}
 
 const Footer = (props: Props) => {
   return (
-    <Box background="dark-2">
+    <Box margin={{ top: "medium" }} background="dark-2">
       <GFooter background="dark-2">
         <Box pad="medium" align="center" fill>
           <div>
