@@ -75,7 +75,7 @@ const C8 = (props: Props) => {
             Instructions
           </Heading>
           <Paragraph fill>Fill Weight to see results in Watts and Watts/kg</Paragraph>
-          <Paragraph fill>Fill Race Power, Race Time, Target Time and Riegel Exponent</Paragraph>
+          <Paragraph fill>Fill CP/FTP, Time to exhaustion, Target Time and Riegel Exponent</Paragraph>
 
           <Box direction="row" justify="between" wrap>
             <Heading level="2" size="small">
