@@ -1,4 +1,5 @@
 import { deepFreeze } from "grommet/utils";
+import { css } from "styled-components";
 
 export const theme = deepFreeze({
   global: {
@@ -24,5 +25,10 @@ export const theme = deepFreeze({
     border: {
       radius: "9px",
     },
+  },
+  formField: {
+    extend: () => css`
+      white-space: nowrap;
+    `,
   },
 });

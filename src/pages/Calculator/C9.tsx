@@ -7,6 +7,7 @@ import {
   Heading,
   Layer,
   Paragraph,
+  RadioButtonGroup,
   ResponsiveContext,
   Text,
   TextInput,
@@ -15,12 +16,11 @@ import { Close, StatusWarning } from "grommet-icons";
 import React, { useContext, useState } from "react";
 import DurationFormField from "../../components/form/duration/DurationFormField";
 import PowerFormField from "../../components/form/power/PowerFormField";
-import PowerUnitFormField from "../../components/form/power/PowerUnitFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Duration, Power, Weight } from "../../types";
-import { round, toStandardDuration, toStandardPower } from "../../util";
+import { Duration, Power, PowerUnit, Weight, WeightUnit } from "../../types";
+import { round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
 interface Props {}
 
 const C9 = (props: Props) => {
@@ -76,6 +76,33 @@ const C9 = (props: Props) => {
           </Heading>
           <Paragraph>Fill Weight to see results in Watts and Watts/kg</Paragraph>
           <Paragraph>Fill Race Power, Race Time, Target Time and Riegel Exponent</Paragraph>
+
+          <Box direction="row" justify="between" wrap>
+            <Heading level="2" size="small">
+              Target power: {outputPower.value ? round(outputPower.value, 2).toFixed(2) : ""}
+            </Heading>
+
+            <RadioButtonGroup
+              direction="row"
+              name="powerunitforallactivities"
+              wrap
+              value={outputPower.unit || ""}
+              options={[...Object.values(PowerUnit)]}
+              onChange={(e) => {
+                if (weight?.value && weight?.unit && outputPower?.value) {
+                  const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toStandardWeight(weight).value;
+                  if (e.target.value === PowerUnit.WATTS && outputPower?.unit === PowerUnit.WATTS_KG) {
+                    const newValue = outputPower?.value * kgWeight;
+                    setOutputPower({ ...outputPower, value: newValue, unit: e.target.value });
+                  }
+                  if (e.target.value === PowerUnit.WATTS_KG && outputPower?.unit === PowerUnit.WATTS) {
+                    const newValue = outputPower?.value / kgWeight;
+                    setOutputPower({ ...outputPower, value: newValue, unit: e.target.value });
+                  }
+                }
+              }}
+            />
+          </Box>
         </Box>
         <Box margin={{ top: "medium" }}>
           <Form validate="blur">
@@ -117,49 +144,35 @@ const C9 = (props: Props) => {
                 name="riegel"
               />
             </FormField>
-          </Form>
-        </Box>
-      </Grid>
+            <PowerFormField
+              valueLabel="Prior Race Avg Power (Pt)"
+              weight={weight}
+              power={priorPower}
+              setPower={(next) => {
+                setPriorPower(next);
+              }}
+            />
+            <DurationFormField
+              valueLabel="Prior Race Time"
+              duration={priorDuration}
+              setDuration={(next) => {
+                setPriorDuration(next);
+              }}
+            />
 
-      <Box direction="row" gap="medium">
-        <Box>
-          <PowerFormField
-            valueLabel="Prior Race Avg Power (Pt)"
-            weight={weight}
-            power={priorPower}
-            setPower={(next) => {
-              setPriorPower(next);
-            }}
-          />
-          <DurationFormField
-            valueLabel="Prior Race Time"
-            duration={priorDuration}
-            setDuration={(next) => {
-              setPriorDuration(next);
-            }}
-          />
-        </Box>
-        <Box>
-          <DurationFormField
-            valueLabel="Target Time"
-            duration={targetDuration}
-            setDuration={(next) => {
-              setTargetDuration(next);
-            }}
-          />
-          <Box direction="row" align="end">
-            <Box fill justify="end">
-              <Heading level="2" size="small">
-                Target power: {outputPower.value ? round(outputPower.value, 2).toFixed(2) : ""}
-              </Heading>
-            </Box>
-            <PowerUnitFormField power={outputPower} weight={weight} setPower={setOutputPower} />
+            <DurationFormField
+              valueLabel="Target Time"
+              duration={targetDuration}
+              setDuration={(next) => {
+                setTargetDuration(next);
+              }}
+            />
+          </Form>
+          <Box justify="center" align="end" margin={{ vertical: "medium" }}>
+            <Button label="Calculate" onClick={onCalculate} />
           </Box>
         </Box>
-      </Box>
-      <Box justify="center" align="end" margin={{ vertical: "medium" }}>
-        <Button label="Calculate" onClick={onCalculate} />
-      </Box>
+      </Grid>
 
       {showError && (
         <Layer
