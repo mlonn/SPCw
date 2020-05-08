@@ -1,4 +1,4 @@
-import { Box, Button, Layer, Main } from "grommet";
+import { Box, Layer, Main } from "grommet";
 import NetlifyIdentityWidget from "netlify-identity-widget";
 import React from "react";
 import { useIdentityContext } from "react-netlify-identity";
@@ -6,7 +6,6 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
-import { useServiceWorker } from "./hooks/useServiceWorker";
 import Calculators from "./pages/Calculators";
 import Home from "./pages/Home";
 import { LogIn } from "./pages/Login";
@@ -20,7 +19,7 @@ const AppContainer = styled.div`
 
 function App() {
   const { isLoggedIn } = useIdentityContext();
-  const { isUpdateAvailable, updateAssets } = useServiceWorker();
+  // const { isUpdateAvailable, updateAssets } = useServiceWorker();
   if (isLoggedIn) {
     NetlifyIdentityWidget.close();
   }
@@ -42,7 +41,7 @@ function App() {
         ) : (
           <LogIn />
         )}
-        {isUpdateAvailable && (
+        {false && (
           <Layer
             position="bottom"
             modal={false}
@@ -62,7 +61,7 @@ function App() {
             >
               <Box align="center" direction="row" gap="xsmall" />
               An updated version is available
-              <Button label="Update now" onClick={updateAssets} />
+              {/* <Button label="Update now" onClick={updateAssets} /> */}
             </Box>
           </Layer>
         )}
