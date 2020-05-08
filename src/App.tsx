@@ -20,12 +20,13 @@ const AppContainer = styled.div`
 
 function App() {
   const { isLoggedIn } = useIdentityContext();
-  const { isUpdateAvailable, updateAssets } = useServiceWorker();
+  const { isUpdateAvailable, updateAssets, unregister } = useServiceWorker();
   if (
     !isLoggedIn &&
     window.location.hostname !== "superpowercalculator.com" &&
     window.location.hostname !== "localhost"
   ) {
+    unregister();
     return <LogIn />;
   } else {
     NetlifyIdentityWidget.close();
