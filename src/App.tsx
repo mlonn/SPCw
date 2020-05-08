@@ -11,7 +11,7 @@ import Calculators from "./pages/Calculators";
 import Home from "./pages/Home";
 import { LogIn } from "./pages/Login";
 import Profile from "./pages/Profile";
-
+import * as serviceWorker from "./serviceWorker";
 const AppContainer = styled.div`
   min-height: 100vh;
   display: grid;
@@ -26,6 +26,7 @@ function App() {
     window.location.hostname !== "superpowercalculator.com" &&
     window.location.hostname !== "localhost"
   ) {
+    serviceWorker.unregister();
     return <LogIn />;
   } else {
     NetlifyIdentityWidget.close();
