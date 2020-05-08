@@ -3,12 +3,15 @@ import { Redirect, useParams } from "react-router-dom";
 import C11 from "./C11";
 import C20 from "./C20";
 import C6 from "./C6";
+import C7 from "./C7";
 import C9 from "./C9";
 const Calculator = () => {
   let { calculatorId } = useParams();
   switch (calculatorId) {
     case "6":
       return <C6 />;
+    case "7":
+      return <C7 />;
     case "9":
       return <C9 />;
     case "20":

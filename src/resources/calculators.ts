@@ -36,6 +36,13 @@ const calculators: Calculator[] = [
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
   {
+    id: 7,
+    title: "Calculate FTP/CP from a Prior Race Power/Time and Riegel Exponent",
+    active: true,
+    requirements: {},
+    type: CALCULATION_TYPE.FTP_CP,
+  },
+  {
     id: 9,
     title: "Calculate Race Target Power from a Prior Race, Target Time and Riegel Exponent",
     active: true,

@@ -74,8 +74,8 @@ const C9 = (props: Props) => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph>Fill Weight to see results in Watts and Watts/kg</Paragraph>
-          <Paragraph>Fill Race Power, Race Time, Target Time and Riegel Exponent</Paragraph>
+          <Paragraph fill>Fill Weight to see results in Watts and Watts/kg</Paragraph>
+          <Paragraph fill>Fill Race Power, Race Time, Target Time and Riegel Exponent</Paragraph>
 
           <Box direction="row" justify="between" wrap>
             <Heading level="2" size="small">
@@ -84,7 +84,7 @@ const C9 = (props: Props) => {
 
             <RadioButtonGroup
               direction="row"
-              name="powerunitforallactivities"
+              name="powerunit"
               wrap
               value={outputPower.unit || ""}
               options={[...Object.values(PowerUnit)]}
@@ -110,6 +110,7 @@ const C9 = (props: Props) => {
               weight={weight}
               setWeight={(next) => {
                 setWeight(next);
+                setOutputPower({ ...outputPower, value: undefined });
               }}
             />
             <FormField
@@ -138,7 +139,10 @@ const C9 = (props: Props) => {
             >
               <TextInput
                 value={riegel}
-                onChange={(e) => setRiegel(e.target.value)}
+                onChange={(e) => {
+                  setRiegel(e.target.value);
+                  setOutputPower({ ...outputPower, value: undefined });
+                }}
                 step="0.01"
                 type="number"
                 name="riegel"
@@ -150,6 +154,7 @@ const C9 = (props: Props) => {
               power={priorPower}
               setPower={(next) => {
                 setPriorPower(next);
+                setOutputPower({ ...outputPower, value: undefined });
               }}
             />
             <DurationFormField
@@ -157,6 +162,7 @@ const C9 = (props: Props) => {
               duration={priorDuration}
               setDuration={(next) => {
                 setPriorDuration(next);
+                setOutputPower({ ...outputPower, value: undefined });
               }}
             />
 
@@ -165,6 +171,7 @@ const C9 = (props: Props) => {
               duration={targetDuration}
               setDuration={(next) => {
                 setTargetDuration(next);
+                setOutputPower({ ...outputPower, value: undefined });
               }}
             />
           </Form>
