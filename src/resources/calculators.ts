@@ -49,5 +49,12 @@ const calculators: Calculator[] = [
     requirements: {},
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
+  {
+    id: 10,
+    title: "Calculate Race Target Power from a Prior Race, Target Distance and Riegel Exponent",
+    active: true,
+    requirements: {},
+    type: CALCULATION_TYPE.RACE_POWER_PLANNING,
+  },
 ];
 export default calculators;

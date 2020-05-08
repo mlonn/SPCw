@@ -52,7 +52,7 @@ const C7 = (props: Props) => {
         toStandardDuration(tte).value / toStandardDuration(priorDuration).value,
         parseFloat(riegel)
       );
-      const powerToUse = toStandardPower(priorPower).value;
+      const powerToUse = toStandardPower(priorPower, weight).value;
 
       setOutputPower({ ...outputPower, value: powerToUse * multiplier });
       if (showError) {

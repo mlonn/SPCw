@@ -14,17 +14,17 @@ import {
 } from "grommet";
 import { Close, StatusWarning } from "grommet-icons";
 import React, { useContext, useState } from "react";
-import DurationFormField from "../../components/form/duration/DurationFormField";
+import DistanceFormField from "../../components/form/distance/DistanceFormField";
 import PowerFormField from "../../components/form/power/PowerFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Duration, Power, PowerUnit, Weight, WeightUnit } from "../../types";
-import { round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
+import { Distance, Power, PowerUnit, Weight, WeightUnit } from "../../types";
+import { round, toStandardDistance, toStandardPower, toStandardWeight } from "../../util";
 interface Props {}
 
-const C9 = (props: Props) => {
-  const TASK_ID = 9;
+const C10 = (props: Props) => {
+  const TASK_ID = 10;
   const calculator = calculators.find((c) => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
@@ -35,8 +35,9 @@ const C9 = (props: Props) => {
   });
   const [priorPower, setPriorPower] = useState<Power>({ unit: athlete.units?.power });
   const [outputPower, setOutputPower] = useState<Power>({ unit: athlete.units?.power });
-  const [priorDuration, setPriorDuration] = useState<Duration>({ unit: athlete.units?.duration });
-  const [targetDuration, setTargetDuration] = useState<Duration>({ unit: athlete.units?.duration });
+  const [priorDistance, setPriorDistance] = useState<Distance>();
+  const [targetDistance, setTargetDistance] = useState<Distance>();
+
   const [calculationError, setCalculationError] = useState("");
   const [riegel, setRiegel] = useState(athlete.riegel?.toString());
   if (!calculator) {
@@ -47,10 +48,18 @@ const C9 = (props: Props) => {
       if (!riegel) {
         throw Error("Please enter Riegel Exponent");
       }
+      if (!priorDistance) {
+        throw Error("Please enter prior race distance");
+      }
+      if (!targetDistance) {
+        throw Error("Please enter target distance");
+      }
+      console.log(toStandardDistance(targetDistance).value, toStandardDistance(priorDistance).value);
       const multiplier = Math.pow(
-        toStandardDuration(targetDuration).value / toStandardDuration(priorDuration).value,
+        toStandardDistance(targetDistance).value / toStandardDistance(priorDistance).value,
         parseFloat(riegel)
       );
+      console.log(multiplier);
       const powerToUse = toStandardPower(priorPower, weight).value;
 
       setOutputPower({ ...outputPower, value: powerToUse * multiplier });
@@ -157,20 +166,19 @@ const C9 = (props: Props) => {
                 setOutputPower({ ...outputPower, value: undefined });
               }}
             />
-            <DurationFormField
-              valueLabel="Prior Race Time"
-              duration={priorDuration}
-              setDuration={(next) => {
-                setPriorDuration(next);
+            <DistanceFormField
+              valueLabel="Prior Race distance"
+              distance={priorDistance}
+              setDistance={(next) => {
+                setPriorDistance(next);
                 setOutputPower({ ...outputPower, value: undefined });
               }}
             />
-
-            <DurationFormField
-              valueLabel="Target Time"
-              duration={targetDuration}
-              setDuration={(next) => {
-                setTargetDuration(next);
+            <DistanceFormField
+              valueLabel="Target distance"
+              distance={targetDistance}
+              setDistance={(next) => {
+                setTargetDistance(next);
                 setOutputPower({ ...outputPower, value: undefined });
               }}
             />
@@ -212,4 +220,4 @@ const C9 = (props: Props) => {
   );
 };
 
-export default C9;
+export default C10;

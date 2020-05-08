@@ -1,5 +1,6 @@
 import React from "react";
 import { Redirect, useParams } from "react-router-dom";
+import C10 from "./C10";
 import C11 from "./C11";
 import C20 from "./C20";
 import C6 from "./C6";
@@ -14,6 +15,8 @@ const Calculator = () => {
       return <C7 />;
     case "9":
       return <C9 />;
+    case "10":
+      return <C10 />;
     case "20":
       return <C20 />;
     case "11":

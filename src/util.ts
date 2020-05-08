@@ -120,7 +120,7 @@ export const toStandardDistance = (distance: Distance): StandardDistance => {
       case DistanceUnit.FIVE_K:
         return { value: 5000, unit: DistanceUnit.METERS };
       case DistanceUnit.TEN_K:
-        return { value: 1000, unit: DistanceUnit.METERS };
+        return { value: 10000, unit: DistanceUnit.METERS };
       default:
         throw Error(CALCULATION_ERRORS.NO_DISTANCE);
     }

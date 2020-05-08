@@ -50,10 +50,10 @@ const C11 = (props: Props) => {
   const onCalculate = (refrom: number, reto: number, riegelfrom: number, riegelto: number) => {
     try {
       if (!distance) {
-        throw Error("Enter target distance");
+        throw Error("Please enter target distance");
       }
       if (!ftp.value || !ftp.unit) {
-        throw Error("Enter FTP/CP");
+        throw Error("Please enter FTP/CP");
       }
       const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, tte, ftp);
       console.log(s);
