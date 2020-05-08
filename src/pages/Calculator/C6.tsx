@@ -217,7 +217,7 @@ const C6 = () => {
               setActivities([...activities, { id, power, duration }]);
             }}
           />
-          {!result && <Button label="Calculate" onClick={onCalculate} />}
+          <Button label="Calculate" onClick={onCalculate} />
         </Box>
       </Box>
 

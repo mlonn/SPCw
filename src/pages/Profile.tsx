@@ -8,6 +8,7 @@ import {
   Layer,
   RadioButtonGroup,
   ResponsiveContext,
+  Text,
   TextInput,
 } from "grommet";
 import { Clear } from "grommet-icons";
@@ -28,6 +29,7 @@ const Profile = (props: Props) => {
     tte: initialTte,
     ftp: initialFtp,
     name: initialName,
+    riegel: initialRiegel,
     gender: initialGender,
     powerMeter: initialPowerMeter,
     units: initialUnits,
@@ -39,6 +41,7 @@ const Profile = (props: Props) => {
   const [gender, setGender] = useState(initialGender);
   const [powerMeter, setPowerMeter] = useState(initialPowerMeter);
   const [units, setUnits] = useState(initialUnits);
+  const [riegel, setRiegel] = useState(initialRiegel);
   const [showDialog, setShowDialog] = useState(false);
 
   const dispatch = useAthleteAction();
@@ -58,6 +61,7 @@ const Profile = (props: Props) => {
           setGender(undefined);
           setPowerMeter(undefined);
           setUnits(undefined);
+          setRiegel(undefined);
         }}
         onSubmit={() => {
           dispatch({
@@ -67,6 +71,7 @@ const Profile = (props: Props) => {
               weight,
               tte,
               ftp,
+              riegel,
               name,
               gender,
               powerMeter,
@@ -86,7 +91,37 @@ const Profile = (props: Props) => {
             <WeightFormField weight={weight} setWeight={setWeight} />
             <PowerFormField power={ftp} setPower={setFtp} weight={weight} valueLabel={"FTP/CP"} />
             <DurationFormField duration={tte} setDuration={setTte} valueLabel={"Time To Exhaustion"} />
-
+            <FormField
+              label="Riegel Exponent"
+              validate={[
+                (number) =>
+                  number < -0.25 ? (
+                    <Box>
+                      <Text color="status-critical">Riegel to low</Text>
+                      <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
+                    </Box>
+                  ) : (
+                    undefined
+                  ),
+                (number) =>
+                  number > -0.02 ? (
+                    <Box>
+                      <Text color="status-critical">Riegel to high</Text>
+                      <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
+                    </Box>
+                  ) : (
+                    undefined
+                  ),
+              ]}
+            >
+              <TextInput
+                value={riegel}
+                onChange={(e) => setRiegel(parseFloat(e.target.value))}
+                step="0.01"
+                type="number"
+                name="riegelfrom"
+              />
+            </FormField>
             <Box direction="row" align="center">
               <Box fill>
                 <FormField label="Gender">

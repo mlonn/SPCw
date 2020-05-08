@@ -236,11 +236,9 @@ const C20 = (props: Props) => {
             }}
           />
         </Box>
-        {!result && (
-          <Box justify="center" align="end" margin={{ vertical: "medium" }}>
-            <Button label="Calculate" onClick={onCalculate} />
-          </Box>
-        )}
+        <Box justify="center" align="end" margin={{ vertical: "medium" }}>
+          <Button label="Calculate" onClick={onCalculate} />
+        </Box>
       </Box>
 
       {result && (

@@ -258,7 +258,6 @@ const C11 = (props: Props) => {
               </Box>
             </Box>
           </Box>
-
           <Box justify="center" align="end" margin={{ vertical: "medium" }}>
             <Button label="Calculate" type="submit" />
           </Box>

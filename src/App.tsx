@@ -21,53 +21,51 @@ const AppContainer = styled.div`
 function App() {
   const { isLoggedIn } = useIdentityContext();
   const { isUpdateAvailable, updateAssets } = useServiceWorker();
-  if (
-    !isLoggedIn &&
-    window.location.hostname !== "superpowercalculator.com" &&
-    window.location.hostname !== "localhost"
-  ) {
-    return <LogIn />;
-  } else {
+  if (isLoggedIn) {
     NetlifyIdentityWidget.close();
   }
   return (
     <Main>
       <Router>
-        <AppContainer>
-          <Header />
-          <Box pad={{ horizontal: "medium", bottom: "medium " }}>
-            <Switch>
-              <Route path="/profile" component={Profile} />
-              <Route path="/calculators" component={Calculators} />
-              <Route path="/" component={Home} />
-            </Switch>
-          </Box>
-          <Footer />
-          {isUpdateAvailable && (
-            <Layer
-              position="bottom"
-              modal={false}
-              margin={{ vertical: "xlarge", horizontal: "small" }}
-              responsive={false}
-              plain
+        {isLoggedIn ? (
+          <AppContainer>
+            <Header />
+            <Box pad={{ horizontal: "medium", bottom: "medium " }}>
+              <Switch>
+                <Route path="/profile" component={Profile} />
+                <Route path="/calculators" component={Calculators} />
+                <Route path="/" component={Home} />
+              </Switch>
+            </Box>
+            <Footer />
+          </AppContainer>
+        ) : (
+          <LogIn />
+        )}
+        {isUpdateAvailable && (
+          <Layer
+            position="bottom"
+            modal={false}
+            margin={{ vertical: "xlarge", horizontal: "small" }}
+            responsive={false}
+            plain
+          >
+            <Box
+              align="center"
+              direction="row"
+              gap="small"
+              justify="between"
+              round="medium"
+              elevation="medium"
+              pad={{ vertical: "small", horizontal: "medium" }}
+              background="brand"
             >
-              <Box
-                align="center"
-                direction="row"
-                gap="small"
-                justify="between"
-                round="medium"
-                elevation="medium"
-                pad={{ vertical: "small", horizontal: "medium" }}
-                background="brand"
-              >
-                <Box align="center" direction="row" gap="xsmall" />
-                An updated version is available
-                <Button label="Update now" onClick={updateAssets} />
-              </Box>
-            </Layer>
-          )}
-        </AppContainer>
+              <Box align="center" direction="row" gap="xsmall" />
+              An updated version is available
+              <Button label="Update now" onClick={updateAssets} />
+            </Box>
+          </Layer>
+        )}
       </Router>
     </Main>
   );
