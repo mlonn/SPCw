@@ -1,5 +1,6 @@
 import React from "react";
 import { Redirect, useParams } from "react-router-dom";
+import calculators from "../../resources/calculators";
 import C10 from "./C10";
 import C11 from "./C11";
 import C20 from "./C20";
@@ -9,6 +10,13 @@ import C8 from "./C8";
 import C9 from "./C9";
 const Calculator = () => {
   let { calculatorId } = useParams();
+  if (!calculatorId) {
+    return <Redirect to="/calculators" />;
+  }
+  const calculator = calculators.find((c) => c.id === parseInt(calculatorId || ""));
+  if (!calculator?.active) {
+    return <Redirect to="/calculators" />;
+  }
   switch (calculatorId) {
     case "6":
       return <C6 />;

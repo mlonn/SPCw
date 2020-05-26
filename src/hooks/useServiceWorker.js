@@ -43,6 +43,7 @@ export const ServiceWorkerProvider = ({ children }) => {
           waitingServiceWorker.postMessage({ type: "SKIP_WAITING" });
         }
       },
+      unregister: serviceWorker.unregister,
     }),
     [isUpdateAvailable, waitingServiceWorker]
   );
