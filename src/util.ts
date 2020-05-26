@@ -1,4 +1,7 @@
 import {
+  CALCULATION_ERRORS,
+  Distance,
+  DistanceUnit,
   Duration,
   DurationUnit,
   Gender,
@@ -7,6 +10,10 @@ import {
   PowerUnit,
   RwcRating,
   SecondDuration,
+  StandardDistance,
+  StandardDuration,
+  StandardPower,
+  StandardWeight,
   TimeDuration,
   Weight,
   WeightUnit,
@@ -56,23 +63,131 @@ export const getFtpError = (rating: RwcRating) => {
 };
 export const toKg = (weight: Weight) => {
   if (!weight.value) {
-    return weight;
+    return { ...weight, unit: WeightUnit.KG };
   }
   if (weight.unit === WeightUnit.KG) {
     return weight;
   }
-  return { ...weight, value: weight.value / 2.205 };
+  if (weight.unit === WeightUnit.LBS) {
+    return { ...weight, unit: WeightUnit.KG, value: weight.value / 2.205 };
+  }
+  throw Error("No weight unit");
 };
 export const toLbs = (weight: Weight) => {
   if (!weight.value) {
-    return weight;
+    return { ...weight, unit: WeightUnit.LBS };
   }
   if (weight.unit === WeightUnit.LBS) {
     return weight;
   }
-  return { ...weight, value: weight.value * 2.205 };
+  if (weight.unit === WeightUnit.KG) {
+    return { ...weight, unit: WeightUnit.LBS, value: weight.value * 2.205 };
+  }
+  throw Error("No weight unit");
 };
 
+export const toStandardDistance = (distance: Distance): StandardDistance => {
+  if (!distance.unit) {
+    throw Error(CALCULATION_ERRORS.NO_DISTANCE_UNIT);
+  }
+  if (
+    distance.unit === DistanceUnit.METERS ||
+    distance.unit === DistanceUnit.MILES ||
+    distance.unit === DistanceUnit.KM ||
+    distance.unit === DistanceUnit.FEET
+  ) {
+    if (!distance.value) {
+      throw Error(CALCULATION_ERRORS.NO_DISTANCE);
+    }
+    switch (distance.unit) {
+      case DistanceUnit.FEET:
+        return { value: distance.value / 3.28084, unit: DistanceUnit.METERS };
+      case DistanceUnit.MILES:
+        return { value: distance.value * 1609.34, unit: DistanceUnit.METERS };
+      case DistanceUnit.METERS:
+        return { value: distance.value, unit: DistanceUnit.METERS };
+      case DistanceUnit.KM:
+        return { value: distance.value * 1000, unit: DistanceUnit.METERS };
+      default:
+        throw Error(CALCULATION_ERRORS.NO_DISTANCE);
+    }
+  } else {
+    switch (distance.unit) {
+      case DistanceUnit.MARATHON:
+        return { value: 42195, unit: DistanceUnit.METERS };
+      case DistanceUnit.HALF_MARATHON:
+        return { value: 21098, unit: DistanceUnit.METERS };
+      case DistanceUnit.FIVE_K:
+        return { value: 5000, unit: DistanceUnit.METERS };
+      case DistanceUnit.TEN_K:
+        return { value: 10000, unit: DistanceUnit.METERS };
+      default:
+        throw Error(CALCULATION_ERRORS.NO_DISTANCE);
+    }
+  }
+};
+
+export const toStandardPower = (power: Power, weight?: Weight): StandardPower => {
+  if (!power.value) {
+    throw Error(CALCULATION_ERRORS.NO_POWER);
+  }
+  if (!power.unit) {
+    throw Error(CALCULATION_ERRORS.NO_POWER_UNIT);
+  }
+  let stdPower: StandardPower;
+  stdPower = { value: power.value, unit: PowerUnit.WATTS };
+  if (power.unit === PowerUnit.WATTS_KG) {
+    if (!weight || !weight.value) {
+      throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+    }
+    let weightValue = weight.value;
+    if (weight.unit === WeightUnit.LBS) {
+      weightValue = toStandardWeight(weight).value;
+    }
+    power = {
+      value: power.value * weightValue,
+      unit: PowerUnit.WATTS,
+    };
+  }
+  return stdPower;
+};
+
+export const toStandardDuration = (duration: Duration): StandardDuration => {
+  if (!duration.unit) {
+    throw Error(CALCULATION_ERRORS.NO_DURATION_UNIT);
+  }
+  if (duration.unit === DurationUnit.SECONDS) {
+    if (!duration.value) {
+      throw Error(CALCULATION_ERRORS.NO_DURATION);
+    }
+    return { value: duration.value, unit: DurationUnit.SECONDS };
+  }
+  if (duration.unit === DurationUnit.HH_MM_SS) {
+    if (duration.unit === DurationUnit.HH_MM_SS && !duration.hours && !duration.minutes && !duration.seconds) {
+      throw Error(CALCULATION_ERRORS.NO_DURATION);
+    }
+    duration = timeToSeconds(duration);
+    return { value: duration.value!, unit: DurationUnit.SECONDS };
+  }
+  throw Error(`${CALCULATION_ERRORS.NO_DURATION} or ${CALCULATION_ERRORS.NO_DURATION_UNIT}`);
+};
+
+export const toStandardWeight = (weight: Weight): StandardWeight => {
+  if (!weight.unit) {
+    throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+  }
+  if (!weight.value) {
+    throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+  }
+  if (weight.unit === WeightUnit.LBS) {
+    const kgWeight = toKg(weight);
+    return { value: kgWeight.value!, unit: WeightUnit.KG };
+  }
+  if (weight.unit === WeightUnit.KG) {
+    return { value: weight.value, unit: WeightUnit.KG };
+  }
+  throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+};
 export const durationToString = (duration: Duration) => {
   try {
     const timeDuration = duration.unit === DurationUnit.HH_MM_SS ? duration : secondsToTime(duration);
@@ -109,7 +224,7 @@ export const timeToSeconds = (duration: Duration): SecondDuration => {
     const seconds = duration.seconds ? duration.seconds : 0;
     return { unit: DurationUnit.SECONDS, value: hours + minutes + seconds };
   } else {
-    throw Error("No unit");
+    throw Error(CALCULATION_ERRORS.NO_DURATION_UNIT);
   }
 };
 

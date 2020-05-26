@@ -1,5 +1,5 @@
 import * as Sentry from "@sentry/browser";
-import { Grommet, grommet } from "grommet";
+import { generate, Grommet, grommet } from "grommet";
 import { deepMerge } from "grommet/utils";
 import LogRocket from "logrocket";
 import React from "react";
@@ -73,7 +73,7 @@ const url = "https://superpowercalculator.com";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Grommet theme={deepMerge(grommet, theme)}>
+    <Grommet theme={deepMerge(generate(22), grommet, theme)}>
       <IdentityContextProvider url={url}>
         <ServiceWorkerProvider>
           <AthleteProvider>

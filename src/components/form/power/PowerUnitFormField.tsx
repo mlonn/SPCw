@@ -1,4 +1,4 @@
-import { Box, FormField, FormFieldProps, Select } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
 import { Power, PowerUnit, Weight } from "../../../types";
 
@@ -9,7 +9,7 @@ interface OwnProps {
   setPower: (value: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
 const PowerUnitFormField = ({
   weight,
@@ -17,11 +17,12 @@ const PowerUnitFormField = ({
   setPower,
   ref,
   name = "powerunit",
+  gridArea,
   unitLabel = "‎Power unit",
   ...rest
 }: Props) => {
   return (
-    <Box justify="end">
+    <Box justify="end" gridArea={gridArea}>
       <FormField label={unitLabel} {...rest}>
         <Select
           name={name}

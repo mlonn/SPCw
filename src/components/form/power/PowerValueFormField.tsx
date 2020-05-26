@@ -1,7 +1,7 @@
-import { FormField, FormFieldProps, TextInput } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, TextInput } from "grommet";
 import React, { useEffect, useRef, useState } from "react";
 import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { round, toKg } from "../../../util";
+import { round, toStandardWeight } from "../../../util";
 
 interface OwnProps {
   weight?: Weight;
@@ -10,9 +10,9 @@ interface OwnProps {
   setPower: (power: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", ...rest }: Props) => {
+const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", gridArea, ...rest }: Props) => {
   const [value, setValue] = useState(power?.value);
   const prevUnitRef = useRef<PowerUnit>();
   useEffect(() => {
@@ -20,8 +20,8 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
   }, [power]);
   const prevUnit = prevUnitRef.current;
   useEffect(() => {
-    if (weight?.value && power?.value) {
-      const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toKg(weight).value!;
+    if (weight?.value && weight?.unit && power?.value) {
+      const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toStandardWeight(weight).value;
       if (prevUnit === PowerUnit.WATTS && power?.unit === PowerUnit.WATTS_KG) {
         const newValue = power?.value / kgWeight;
         setPower({ ...power, value: newValue });
@@ -37,17 +37,19 @@ const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power
     }
   }, [power, prevUnit, setPower, weight]);
   return (
-    <FormField label={valueLabel} required {...rest}>
-      <TextInput
-        onChange={(e) => {
-          setValue(parseFloat(e.target.value));
-        }}
-        onBlur={() => setPower({ ...power, value })}
-        value={value ? round(value, 2) : ""}
-        type="number"
-        step="any"
-      />
-    </FormField>
+    <Box gridArea={gridArea}>
+      <FormField label={valueLabel} required {...rest}>
+        <TextInput
+          onChange={(e) => {
+            setValue(parseFloat(e.target.value));
+          }}
+          onBlur={() => setPower({ ...power, value })}
+          value={value ? round(value, 2) : ""}
+          type="number"
+          step="any"
+        />
+      </FormField>
+    </Box>
   );
 };
 

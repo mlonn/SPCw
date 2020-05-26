@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Form,
   FormField,
   Grid,
   Heading,
@@ -13,7 +14,7 @@ import {
 import { Clear, Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { task6 } from "../../calculations/task";
+import { task20 } from "../../calculations/task";
 import Activity from "../../components/Activity";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
@@ -30,9 +31,10 @@ import {
   Weight,
 } from "../../types";
 import { getFtpError, getRwcError, round } from "../../util";
+interface Props {}
 
-const C6 = () => {
-  const TASK_ID = 6;
+const C20 = (props: Props) => {
+  const TASK_ID = 20;
   const calculator = calculators.find((c) => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
@@ -52,11 +54,13 @@ const C6 = () => {
       id: uuidv4(),
       power: { unit: athlete.units?.power },
       duration: { unit: athlete.units?.duration },
+      date: "",
     },
     {
       id: uuidv4(),
       power: { unit: athlete.units?.power },
       duration: { unit: athlete.units?.duration },
+      date: "",
     },
   ];
 
@@ -87,7 +91,7 @@ const C6 = () => {
   }
   const onCalculate = () => {
     try {
-      const newResult = task6(activities, calculator.requirements, weight, gender, powerMeter);
+      const newResult = task20(activities, calculator.requirements, weight, gender, powerMeter);
       setResult(newResult);
       if (showError) {
         setShowError(false);
@@ -98,7 +102,6 @@ const C6 = () => {
       setCalculationError(error.message);
     }
   };
-
   return (
     <Box alignSelf="center" width="xlarge">
       <Heading alignSelf="center" textAlign="center" level="1" size="small">
@@ -110,51 +113,65 @@ const C6 = () => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph fill>Enter at least two maximal effort power & duration pairs from the same day.</Paragraph>
-          <Paragraph fill>
-            The durations should be between 2 and 30 minutes, and have at least 6 minutes difference between them.
+          <Paragraph margin="small" fill>
+            Enter at least two maximal effort power & duration pairs within a two week period.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            The durations should be between 2 and 40 minutes.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            at least one activity {"\u2264"} 6 minutes.
+          </Paragraph>
+          <Paragraph margin="small" fill>
+            at least one activity {"\u2265"} 15 minutes.
           </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
-          <WeightFormField weight={weight} setWeight={setWeight} />
-          <Box direction="row" align="center">
-            <Box fill>
-              <FormField label="Gender">
-                <RadioButtonGroup
-                  direction="row"
-                  name="gender"
-                  wrap
-                  value={gender || ""}
-                  options={[...Object.values(Gender)]}
-                  onChange={(e) => setGender(e.target.value as Gender)}
-                />
-              </FormField>
+          <Form validate="blur">
+            <WeightFormField weight={weight} setWeight={setWeight} />
+          </Form>
+          <Form onReset={() => setGender(undefined)}>
+            <Box direction="row" align="center">
+              <Box fill>
+                <FormField label="Gender">
+                  <RadioButtonGroup
+                    direction="row"
+                    name="gender"
+                    wrap
+                    value={gender}
+                    options={[...Object.values(Gender)]}
+                    onChange={(e) => setGender(e.target.value as Gender)}
+                  />
+                </FormField>
+              </Box>
+              <Button type="reset" icon={<Clear />} />
             </Box>
-            <Button icon={<Clear />} onClick={() => setGender(undefined)} />
-          </Box>
-          <Box direction="row" align="center" justify="center">
-            <Box fill>
-              <FormField label="Power meter">
-                <RadioButtonGroup
-                  direction="row"
-                  name="powermeter"
-                  wrap
-                  value={powerMeter || ""}
-                  options={[...Object.values(PowerMeter)]}
-                  onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
-                />
-              </FormField>
+          </Form>
+          <Form onReset={() => setPowerMeter(undefined)}>
+            <Box direction="row" align="center" justify="center">
+              <Box fill>
+                <FormField label="Power meter">
+                  <RadioButtonGroup
+                    direction="row"
+                    name="powermeter"
+                    wrap
+                    value={powerMeter}
+                    options={[...Object.values(PowerMeter)]}
+                    onChange={(e) => setPowerMeter(e.target.value as PowerMeter)}
+                  />
+                </FormField>
+              </Box>
+              <Button icon={<Clear />} type="reset" />
             </Box>
-            <Button icon={<Clear />} onClick={() => setPowerMeter(undefined)} />
-          </Box>
+          </Form>
         </Box>
       </Grid>
-
       <Box>
         <Heading level="2" size="small">
           Activities
         </Heading>
-        <Grid columns={["1fr", "1fr"]} gap="small">
+        <Grid columns={["1fr", "2fr", "2fr"]} gap="small">
+          <Box />
           <FormField label="Power unit">
             <RadioButtonGroup
               direction="row"
@@ -192,6 +209,7 @@ const C6 = () => {
         <Box margin={{ vertical: "medium" }}>
           {activities.map((activity, index) => (
             <Activity
+              date
               canDelete={activities.length > 2}
               key={activity.id}
               index={index}
@@ -209,14 +227,16 @@ const C6 = () => {
       )}
 
       <Box>
-        <Box justify="center" gap="medium" align="end">
+        <Box justify="center" align="end">
           <Button
             label="Add activity"
             onClick={() => {
               const id = uuidv4();
-              setActivities([...activities, { id, power, duration }]);
+              setActivities([...activities, { id, power, duration, date: "" }]);
             }}
           />
+        </Box>
+        <Box justify="center" align="end" margin={{ vertical: "medium" }}>
           <Button label="Calculate" onClick={onCalculate} />
         </Box>
       </Box>
@@ -295,4 +315,4 @@ const C6 = () => {
   );
 };
 
-export default C6;
+export default C20;

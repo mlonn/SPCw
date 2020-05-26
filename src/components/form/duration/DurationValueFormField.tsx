@@ -1,4 +1,4 @@
-import { FormField, FormFieldProps, MaskedInput, TextInput } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, MaskedInput, TextInput } from "grommet";
 import React, { useEffect, useRef, useState } from "react";
 import { Duration, DurationUnit } from "../../../types";
 import { durationToString, secondsToTime, timeToSeconds } from "../../../util";
@@ -9,9 +9,9 @@ interface OwnProps {
   setDuration: (value: Duration) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Duration", ...rest }: Props) => {
+const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Duration", gridArea, ...rest }: Props) => {
   const [durationString, setDurationString] = useState(durationToString(duration));
   const [value, setValue] = useState<string>("");
   const prevUnitRef = useRef<DurationUnit>();
@@ -35,70 +35,72 @@ const DurationValueFormField = ({ duration, setDuration, ref, valueLabel = "Dura
   }, [duration, prevUnit, setDuration]);
 
   return (
-    <FormField label={valueLabel} required {...rest}>
-      {duration?.unit === DurationUnit.SECONDS ? (
-        <TextInput
-          plain
-          type="number"
-          value={value}
-          onChange={(e) => {
-            setValue(e.target.value);
-          }}
-          onBlur={() => {
-            const v = parseFloat(value || "");
-            if (!isNaN(v)) {
-              const newDuration = { ...duration, value: v };
-              setDuration(newDuration);
-              setDurationString(durationToString(newDuration));
-              setValue(v.toString());
-            } else {
-              setDuration({ ...duration, value: undefined });
-              setValue(v.toString());
-            }
-          }}
-        />
-      ) : duration?.unit === DurationUnit.HH_MM_SS ? (
-        <MaskedInput
-          plain
-          mask={[
-            {
-              length: [1, 2],
-              regexp: /^[0-9]{1,2}$/,
-              placeholder: "hh",
-            },
-            { fixed: ":" },
-            {
-              length: [1, 2],
-              regexp: /^[0-5][0-9]$|^[0-9]$/,
-              placeholder: "mm",
-            },
-            { fixed: ":" },
-            {
-              length: [1, 2],
-              regexp: /^[0-5][0-9]$|^[0-9]$/,
-              placeholder: "ss",
-            },
-          ]}
-          value={durationString}
-          onChange={(e) => {
-            setDurationString(e.target.value);
-          }}
-          onBlur={() => {
-            const split = durationString.split(":");
-            if (split.length > 0) {
-              const seconds = parseInt(split[2]);
-              const minutes = parseInt(split[1]);
-              const hours = parseInt(split[0]);
-              const newDuration = { ...duration, hours, minutes, seconds };
-              setDuration(newDuration);
-              setDurationString(durationToString(newDuration));
-            }
-          }}
-        />
-      ) : (
-        <TextInput disabled value={"Select a unit"} />
-      )}
-    </FormField>
+    <Box gridArea={gridArea}>
+      <FormField label={valueLabel} required {...rest}>
+        {duration?.unit === DurationUnit.SECONDS ? (
+          <TextInput
+            plain
+            type="number"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
+            onBlur={() => {
+              const v = parseFloat(value || "");
+              if (!isNaN(v)) {
+                const newDuration = { ...duration, value: v };
+                setDuration(newDuration);
+                setDurationString(durationToString(newDuration));
+                setValue(v.toString());
+              } else {
+                setDuration({ ...duration, value: undefined });
+                setValue(v.toString());
+              }
+            }}
+          />
+        ) : duration?.unit === DurationUnit.HH_MM_SS ? (
+          <MaskedInput
+            plain
+            mask={[
+              {
+                length: [1, 2],
+                regexp: /^[0-9]{1,2}$/,
+                placeholder: "hh",
+              },
+              { fixed: ":" },
+              {
+                length: [1, 2],
+                regexp: /^[0-5][0-9]$|^[0-9]$/,
+                placeholder: "mm",
+              },
+              { fixed: ":" },
+              {
+                length: [1, 2],
+                regexp: /^[0-5][0-9]$|^[0-9]$/,
+                placeholder: "ss",
+              },
+            ]}
+            value={durationString}
+            onChange={(e) => {
+              setDurationString(e.target.value);
+            }}
+            onBlur={() => {
+              const split = durationString.split(":");
+              if (split.length > 0) {
+                const seconds = parseInt(split[2]);
+                const minutes = parseInt(split[1]);
+                const hours = parseInt(split[0]);
+                const newDuration = { ...duration, hours, minutes, seconds };
+                setDuration(newDuration);
+                setDurationString(durationToString(newDuration));
+              }
+            }}
+          />
+        ) : (
+          <TextInput disabled value={"Select a unit"} />
+        )}
+      </FormField>
+    </Box>
   );
 };
 
