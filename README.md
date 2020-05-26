@@ -1,4 +1,8 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# SuperPower Calculator
+
+The SuperPower Calculator (SPC) contains a comprehensive suite of calculators and converters useful to anyone
+training, racing, and running with power. There are two versions: SPC Web (SPCw) and SPC Sheets (SPCs). This
+site is for SPCw and supports the most popular SPCs features. For more information about SPCs, please visit the [SPCs site](https://www.powerpacing.run/superpower-calculator/)
 
 ## Available Scripts
 

@@ -1,4 +1,4 @@
-import { Box, FormFieldProps } from "grommet";
+import { Box, BoxProps, FormFieldProps } from "grommet";
 import React from "react";
 import { Duration } from "../../../types";
 import DurationUnitFormField from "./DurationUnitFormField";
@@ -6,16 +6,18 @@ import DurationValueFormField from "./DurationValueFormField";
 
 interface OwnProps {
   duration: Duration;
+  valueLabel?: string;
+  unitLabel?: string;
   setDuration: (value: Duration) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name, label, ...rest }: Props) => {
+const DurationFormField = ({ ref, unitLabel = "\u00A0", gridArea, ...rest }: Props) => {
   return (
-    <Box gap="small" direction="row" align="start">
-      <DurationValueFormField duration={duration} setDuration={setDuration} />
-      <DurationUnitFormField duration={duration} setDuration={setDuration} />
+    <Box gap="small" direction="row" align="start" gridArea={gridArea}>
+      <DurationValueFormField {...rest} />
+      <DurationUnitFormField unitLabel={unitLabel} {...rest} />
     </Box>
   );
 };

@@ -1,15 +1,15 @@
-import { Box, FormField, FormFieldProps, Select } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
-import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
-import { lbsToKg, round } from "../../../util";
+import { Power, PowerUnit, Weight } from "../../../types";
 
 interface OwnProps {
-  weight: Weight;
-  power: Power;
+  weight?: Weight;
+  power?: Power;
+  unitLabel?: string;
   setPower: (value: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
 const PowerUnitFormField = ({
   weight,
@@ -17,27 +17,18 @@ const PowerUnitFormField = ({
   setPower,
   ref,
   name = "powerunit",
-  label = "Power unit",
+  gridArea,
+  unitLabel = "‎Power unit",
   ...rest
 }: Props) => {
   return (
-    <Box justify="end">
-      <FormField label={label} name={name} {...rest}>
+    <Box justify="end" gridArea={gridArea}>
+      <FormField label={unitLabel} {...rest}>
         <Select
           name={name}
-          value={power.unit}
+          value={power?.unit}
           onChange={({ option }) => {
-            if (weight.value && power.value) {
-              const kgWeight = weight.unit === WeightUnit.KG ? weight.value : lbsToKg(weight.value);
-              if (option === PowerUnit.WATTS) {
-                setPower({ value: round(power.value * kgWeight, 2), unit: option });
-              }
-              if (option === PowerUnit.WATTS_KG) {
-                setPower({ value: round(power.value / kgWeight, 2), unit: option });
-              }
-            } else {
-              setPower({ value: undefined, unit: option });
-            }
+            setPower({ ...power, unit: option });
           }}
           options={[...Object.values(PowerUnit)]}
         />

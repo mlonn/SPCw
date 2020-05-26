@@ -1,36 +1,50 @@
-import { Box, FormField, FormFieldProps, TextInput } from "grommet";
-import React from "react";
-import { Power, PowerUnit, Weight } from "../../../types";
+import { Box, BoxProps, FormField, FormFieldProps, TextInput } from "grommet";
+import React, { useEffect, useRef, useState } from "react";
+import { Power, PowerUnit, Weight, WeightUnit } from "../../../types";
+import { round, toStandardWeight } from "../../../util";
 
 interface OwnProps {
-  weight: Weight;
-  power: Power;
+  weight?: Weight;
+  power?: Power;
+  valueLabel?: string;
   setPower: (power: Power) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const PowerValueFormField = ({ weight, power, setPower, ref, name = "power", label = "Power", ...rest }: Props) => {
+const PowerValueFormField = ({ weight, power, setPower, ref, valueLabel = "Power (Pt)", gridArea, ...rest }: Props) => {
+  const [value, setValue] = useState(power?.value);
+  const prevUnitRef = useRef<PowerUnit>();
+  useEffect(() => {
+    prevUnitRef.current = power?.unit;
+  }, [power]);
+  const prevUnit = prevUnitRef.current;
+  useEffect(() => {
+    if (weight?.value && weight?.unit && power?.value) {
+      const kgWeight = weight?.unit === WeightUnit.KG ? weight?.value : toStandardWeight(weight).value;
+      if (prevUnit === PowerUnit.WATTS && power?.unit === PowerUnit.WATTS_KG) {
+        const newValue = power?.value / kgWeight;
+        setPower({ ...power, value: newValue });
+        setValue(newValue);
+      }
+      if (prevUnit === PowerUnit.WATTS_KG && power?.unit === PowerUnit.WATTS) {
+        const newValue = power?.value * kgWeight;
+        setPower({ ...power, value: newValue });
+        setValue(newValue);
+      }
+    } else {
+      setValue(power?.value);
+    }
+  }, [power, prevUnit, setPower, weight]);
   return (
-    <Box fill>
-      <FormField
-        label={label}
-        required
-        name={name}
-        validate={[
-          () => {
-            if (!weight && power.unit === PowerUnit.WATTS_KG) return "Please enter stryd weight if using Watts/kg";
-            return undefined;
-          }
-        ]}
-        {...rest}
-      >
+    <Box gridArea={gridArea}>
+      <FormField label={valueLabel} required {...rest}>
         <TextInput
-          name={name}
-          onChange={e => {
-            setPower({ ...power, value: parseFloat(e.target.value) });
+          onChange={(e) => {
+            setValue(parseFloat(e.target.value));
           }}
-          value={power.value ? power.value : ""}
+          onBlur={() => setPower({ ...power, value })}
+          value={value ? round(value, 2) : ""}
           type="number"
           step="any"
         />

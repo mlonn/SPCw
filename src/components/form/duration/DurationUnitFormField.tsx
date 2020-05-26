@@ -1,29 +1,30 @@
-import { Box, FormField, FormFieldProps, Select } from "grommet";
+import { Box, BoxProps, FormField, FormFieldProps, Select } from "grommet";
 import React from "react";
 import { Duration, DurationUnit } from "../../../types";
-import { secondsToTime, timeToSeconds } from "../../../util";
 
 interface OwnProps {
-  duration: Duration;
+  duration?: Duration;
+  unitLabel?: string;
   setDuration: (value: Duration) => void;
 }
 
-type Props = OwnProps & FormFieldProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
+type Props = OwnProps & FormFieldProps & BoxProps & Omit<JSX.IntrinsicElements["input"], "placeholder">;
 
-const DurationFormField = ({ duration, setDuration, ref, name = "timeunit", label = "Time unit", ...rest }: Props) => {
+const DurationUnitFormField = ({
+  duration,
+  setDuration,
+  ref,
+  gridArea,
+  unitLabel = "Duration unit",
+  ...rest
+}: Props) => {
   return (
-    <Box justify="end">
-      <FormField {...rest} label={label} name={name}>
+    <Box justify="end" gridArea={gridArea}>
+      <FormField label={unitLabel} {...rest}>
         <Select
-          name={name}
-          value={duration?.unit}
+          value={duration?.unit || ""}
           onChange={({ option }) => {
-            if (option === DurationUnit.HH_MM_SS && duration.unit === DurationUnit.SECONDS) {
-              setDuration(secondsToTime(duration));
-            }
-            if (option === DurationUnit.SECONDS && duration.unit === DurationUnit.HH_MM_SS) {
-              setDuration(timeToSeconds(duration));
-            }
+            setDuration({ ...duration, unit: option });
           }}
           options={[...Object.values(DurationUnit)]}
         />
@@ -32,4 +33,4 @@ const DurationFormField = ({ duration, setDuration, ref, name = "timeunit", labe
   );
 };
 
-export default DurationFormField;
+export default DurationUnitFormField;
