@@ -23,8 +23,8 @@ import { Distance, Power, Scenario, Weight } from "../../types";
 import { durationToString, round, toStandardPower, toStandardWeight } from "../../util";
 interface Props {}
 
-const C11 = (props: Props) => {
-  const TASK_ID = 11;
+const C21 = (props: Props) => {
+  const TASK_ID = 21;
   const calculator = calculators.find((c) => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
@@ -33,10 +33,7 @@ const C11 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit || athlete.units?.weight,
   });
-  const [ftp, setFtp] = useState<Power>({
-    value: athlete.ftp?.value,
-    unit: athlete.ftp?.unit || athlete.units?.power,
-  });
+  const [priorPower, setProirPower] = useState<Power>({ unit: athlete.units?.power });
   const [distance, setDistance] = useState<Distance>();
 
   const [calculationError, setCalculationError] = useState("");
@@ -51,10 +48,10 @@ const C11 = (props: Props) => {
       if (!distance) {
         throw Error("Please enter target distance");
       }
-      if (!ftp.value || !ftp.unit) {
-        throw Error("Please enter FTP/CP");
+      if (!priorPower.value || !priorPower.unit) {
+        throw Error("Please enter prior race data");
       }
-      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, athlete.tte, ftp);
+      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, athlete.tte, priorPower);
       console.log(s);
       setScenarios(s);
       if (showError) {
@@ -77,7 +74,7 @@ const C11 = (props: Props) => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph fill>Enter Weight, FTP/CP and target distance</Paragraph>
+          <Paragraph fill>Enter Weight, prior race data</Paragraph>
           <Paragraph fill>Enter a range of riegel exponents from -0.25 to -0.02</Paragraph>
           <Paragraph fill>Enter a range of target RE from 0.6 to 1.2</Paragraph>
           <Paragraph fill>
@@ -95,17 +92,17 @@ const C11 = (props: Props) => {
               }}
             />
             <PowerFormField
-              valueLabel="FTP/CP"
+              valueLabel="Race power"
               weight={weight}
-              power={ftp}
+              power={priorPower}
               setPower={(next) => {
                 setScenarios(undefined);
-                setFtp(next);
+                setProirPower(next);
               }}
             />
 
             <DistanceFormField
-              valueLabel="Target distance"
+              valueLabel="Race distance"
               distance={distance}
               setDistance={(next) => {
                 setScenarios(undefined);
@@ -270,7 +267,7 @@ const C11 = (props: Props) => {
               <Box>{round(s.power.value / toStandardWeight(weight).value, 2).toFixed(2)}</Box>
               <Box>{round(s.power.value, 2).toFixed(2)}</Box>
               <Box>{durationToString(s.time)}</Box>
-              <Box>{round((s.power.value / toStandardPower(ftp, weight).value) * 100, 2).toFixed(2)}%</Box>
+              <Box>{round((s.power.value / toStandardPower(priorPower, weight).value) * 100, 2).toFixed(2)}%</Box>
             </Fragment>
           ))}
         </Grid>
@@ -306,4 +303,4 @@ const C11 = (props: Props) => {
   );
 };
 
-export default C11;
+export default C21;
