@@ -35,7 +35,7 @@ const C8 = (props: Props) => {
   });
   const [ftp, setFtp] = useState<Power>({ value: athlete.ftp?.value, unit: athlete.ftp?.unit || athlete.units?.power });
   const [outputPower, setOutputPower] = useState<Power>({ unit: athlete.units?.power });
-  const [tte, setTte] = useState(athlete.tte);
+
   const [targetDuration, setTargetDuration] = useState<Duration>({ unit: athlete.units?.duration });
   const [calculationError, setCalculationError] = useState("");
   const [riegel, setRiegel] = useState(athlete.riegel?.toString());
@@ -48,7 +48,7 @@ const C8 = (props: Props) => {
         throw Error("Please enter Riegel Exponent");
       }
       const multiplier = Math.pow(
-        toStandardDuration(targetDuration).value / toStandardDuration(tte).value,
+        toStandardDuration(targetDuration).value / toStandardDuration(athlete.tte).value,
         parseFloat(riegel)
       );
       const powerToUse = toStandardPower(ftp, weight).value;
@@ -75,7 +75,7 @@ const C8 = (props: Props) => {
             Instructions
           </Heading>
           <Paragraph fill>Fill Weight to see results in Watts and Watts/kg</Paragraph>
-          <Paragraph fill>Fill CP/FTP, Time to exhaustion, Target Time and Riegel Exponent</Paragraph>
+          <Paragraph fill>Fill CP/FTP, Target Time and Riegel Exponent</Paragraph>
 
           <Box direction="row" justify="between" wrap>
             <Heading level="2" size="small">
@@ -123,18 +123,14 @@ const C8 = (props: Props) => {
                       <Text color="status-critical">Riegel to low</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
                 (number) =>
                   number > -0.02 ? (
                     <Box>
                       <Text color="status-critical">Riegel to high</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
               ]}
             >
               <TextInput
@@ -154,14 +150,6 @@ const C8 = (props: Props) => {
               power={ftp}
               setPower={(next) => {
                 setFtp(next);
-                setOutputPower({ ...outputPower, value: undefined });
-              }}
-            />
-            <DurationFormField
-              valueLabel="Time To Exhaustion"
-              duration={tte}
-              setDuration={(next) => {
-                setTte(next);
                 setOutputPower({ ...outputPower, value: undefined });
               }}
             />

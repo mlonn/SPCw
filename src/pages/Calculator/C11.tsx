@@ -15,7 +15,6 @@ import { Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useState } from "react";
 import { calculateScenarios } from "../../calculations/scenarios";
 import DistanceFormField from "../../components/form/distance/DistanceFormField";
-import DurationFormField from "../../components/form/duration/DurationFormField";
 import PowerFormField from "../../components/form/power/PowerFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
@@ -39,7 +38,7 @@ const C11 = (props: Props) => {
     unit: athlete.ftp?.unit || athlete.units?.power,
   });
   const [distance, setDistance] = useState<Distance>();
-  const [tte, setTte] = useState(athlete.tte);
+
   const [calculationError, setCalculationError] = useState("");
 
   const [scenarios, setScenarios] = useState<Scenario[]>();
@@ -55,7 +54,7 @@ const C11 = (props: Props) => {
       if (!ftp.value || !ftp.unit) {
         throw Error("Please enter FTP/CP");
       }
-      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, tte, ftp);
+      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, athlete.tte, ftp);
       console.log(s);
       setScenarios(s);
       if (showError) {
@@ -78,9 +77,13 @@ const C11 = (props: Props) => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph fill>Enter Weight, FTP/CP, Time to Exhaustion and target distance</Paragraph>
+          <Paragraph fill>Enter Weight, FTP/CP and target distance</Paragraph>
           <Paragraph fill>Enter a range of riegel exponents from -0.25 to -0.02</Paragraph>
           <Paragraph fill>Enter a range of target RE from 0.6 to 1.2</Paragraph>
+          <Paragraph fill>
+            This calculator should be used with caution as race time progressively gets lower than about 30 minutes, and
+            certainly below 15 minutes.
+          </Paragraph>
         </Box>
         <Box margin={{ top: "medium" }}>
           <Form validate="blur">
@@ -100,14 +103,7 @@ const C11 = (props: Props) => {
                 setFtp(next);
               }}
             />
-            <DurationFormField
-              valueLabel="Time To Exhaustion"
-              duration={tte}
-              setDuration={(next) => {
-                setScenarios(undefined);
-                setTte(next);
-              }}
-            />
+
             <DistanceFormField
               valueLabel="Target distance"
               distance={distance}
@@ -144,18 +140,14 @@ const C11 = (props: Props) => {
                             <Text color="status-critical">Riegel to low</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                       (number) =>
                         number > -0.02 ? (
                           <Box>
                             <Text color="status-critical">Riegel to high</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                     ]}
                   >
                     <TextInput onChange={() => setScenarios(undefined)} step="0.01" type="number" name="riegelfrom" />
@@ -173,18 +165,14 @@ const C11 = (props: Props) => {
                             <Text color="status-critical">Riegel to low</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                       (number) =>
                         number > -0.02 ? (
                           <Box>
                             <Text color="status-critical">Riegel to high</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                     ]}
                   >
                     <TextInput onChange={() => setScenarios(undefined)} step="0.01" type="number" name="riegleto" />
@@ -209,18 +197,14 @@ const C11 = (props: Props) => {
                             <Text color="status-critical">RE to low</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                       (number) =>
                         number > 1.2 ? (
                           <Box>
                             <Text color="status-critical">RE to high</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                     ]}
                   >
                     <TextInput onChange={() => setScenarios(undefined)} step="0.01" type="number" name="refrom" />
@@ -238,18 +222,14 @@ const C11 = (props: Props) => {
                             <Text color="status-critical">RE to low</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                       (number) =>
                         number > 1.2 ? (
                           <Box>
                             <Text color="status-critical">RE to high</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
-                        ) : (
-                          undefined
-                        ),
+                        ) : undefined,
                     ]}
                   >
                     <TextInput onChange={() => setScenarios(undefined)} step="0.01" type="number" name="reto" />
