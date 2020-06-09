@@ -30,7 +30,15 @@ const calculators: Calculator[] = [
   },
   {
     id: 11,
-    title: "Generate Race Power Scenarios using pairs of Riegel Exponents and Running Effectiveness",
+    title: "Generate Race Power Scenarios using CP and pairs of Riegel Exponents and Running Effectiveness",
+    active: true,
+    requirements: {},
+    type: CALCULATION_TYPE.RACE_POWER_PLANNING,
+  },
+  {
+    id: 21,
+    title:
+      "Generate Race Power Scenarios using Prior Race Data and pairs of Riegel Exponents and Running Effectiveness",
     active: true,
     requirements: {},
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
