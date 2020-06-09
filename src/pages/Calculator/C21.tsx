@@ -15,12 +15,13 @@ import { Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useState } from "react";
 import { calculateScenarios } from "../../calculations/scenarios";
 import DistanceFormField from "../../components/form/distance/DistanceFormField";
+import DurationFormField from "../../components/form/duration/DurationFormField";
 import PowerFormField from "../../components/form/power/PowerFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Distance, Power, Scenario, Weight } from "../../types";
-import { durationToString, round, toStandardPower, toStandardWeight } from "../../util";
+import { Distance, Duration, Power, Scenario, Weight } from "../../types";
+import { durationToString, round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
 interface Props {}
 
 const C21 = (props: Props) => {
@@ -33,8 +34,9 @@ const C21 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit || athlete.units?.weight,
   });
-  const [priorPower, setProirPower] = useState<Power>({ unit: athlete.units?.power });
+  const [power, setPower] = useState<Power>({ unit: athlete.units?.power });
   const [distance, setDistance] = useState<Distance>();
+  const [duration, setDuration] = useState<Duration>({ unit: athlete.units?.duration });
 
   const [calculationError, setCalculationError] = useState("");
 
@@ -48,10 +50,15 @@ const C21 = (props: Props) => {
       if (!distance) {
         throw Error("Please enter target distance");
       }
-      if (!priorPower.value || !priorPower.unit) {
-        throw Error("Please enter prior race data");
+      if (!power.value || !power.unit) {
+        throw Error("Please enter prior race power");
       }
-      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, athlete.tte, priorPower);
+      if (!duration.unit) {
+        throw Error("Please enter prior race duration");
+      } else {
+        toStandardDuration(duration);
+      }
+      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, duration, power);
       console.log(s);
       setScenarios(s);
       if (showError) {
@@ -94,15 +101,22 @@ const C21 = (props: Props) => {
             <PowerFormField
               valueLabel="Race power"
               weight={weight}
-              power={priorPower}
+              power={power}
               setPower={(next) => {
                 setScenarios(undefined);
-                setProirPower(next);
+                setPower(next);
               }}
             />
-
+            <DurationFormField
+              valueLabel="Prior Race Time"
+              duration={duration}
+              setDuration={(next) => {
+                setDuration(next);
+                setScenarios(undefined);
+              }}
+            />
             <DistanceFormField
-              valueLabel="Race distance"
+              valueLabel="Target distance"
               distance={distance}
               setDistance={(next) => {
                 setScenarios(undefined);
@@ -267,7 +281,7 @@ const C21 = (props: Props) => {
               <Box>{round(s.power.value / toStandardWeight(weight).value, 2).toFixed(2)}</Box>
               <Box>{round(s.power.value, 2).toFixed(2)}</Box>
               <Box>{durationToString(s.time)}</Box>
-              <Box>{round((s.power.value / toStandardPower(priorPower, weight).value) * 100, 2).toFixed(2)}%</Box>
+              <Box>{round((s.power.value / toStandardPower(power, weight).value) * 100, 2).toFixed(2)}%</Box>
             </Fragment>
           ))}
         </Grid>
