@@ -15,7 +15,7 @@ const calculators: Calculator[] = [
   {
     id: 20,
     title: "Calculate FTP/CP and RWC (W') using maximal efforts from different activities",
-    active: true,
+    active: false,
     requirements: {
       date: true,
       minDuration: 120,
@@ -45,28 +45,28 @@ const calculators: Calculator[] = [
   {
     id: 7,
     title: "Calculate FTP/CP from a Prior Race Power/Time and Riegel Exponent",
-    active: true,
+    active: false,
     requirements: {},
     type: CALCULATION_TYPE.FTP_CP,
   },
   {
     id: 8,
     title: "Calculate Race Target Power using FTP/CP, Target Time and Riegel Exponent",
-    active: true,
+    active: false,
     requirements: {},
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
   {
     id: 9,
     title: "Calculate Race Target Power from a Prior Race, Target Time and Riegel Exponent",
-    active: true,
+    active: false,
     requirements: {},
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
   {
     id: 10,
     title: "Calculate Race Target Power from a Prior Race, Target Distance and Riegel Exponent",
-    active: true,
+    active: false,
     requirements: {},
     type: CALCULATION_TYPE.RACE_POWER_PLANNING,
   },
