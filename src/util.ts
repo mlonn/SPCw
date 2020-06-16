@@ -144,7 +144,7 @@ export const toStandardPower = (power: Power, weight?: Weight): StandardPower =>
     if (weight.unit === WeightUnit.LBS) {
       weightValue = toStandardWeight(weight).value;
     }
-    power = {
+    stdPower = {
       value: power.value * weightValue,
       unit: PowerUnit.WATTS,
     };
