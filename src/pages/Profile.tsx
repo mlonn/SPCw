@@ -96,14 +96,14 @@ const Profile = (props: Props) => {
                 (number) =>
                   number < -0.25 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to low</Text>
+                      <Text color="status-critical">Riegel too low</Text>
                       <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                     </Box>
                   ) : undefined,
                 (number) =>
                   number > -0.02 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to high</Text>
+                      <Text color="status-critical">Riegel too high</Text>
                       <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                     </Box>
                   ) : undefined,

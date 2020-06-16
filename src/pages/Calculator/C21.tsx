@@ -99,7 +99,7 @@ const C21 = (props: Props) => {
               }}
             />
             <PowerFormField
-              valueLabel="Race power"
+              valueLabel="Prior race power"
               weight={weight}
               power={power}
               setPower={(next) => {
@@ -148,14 +148,14 @@ const C21 = (props: Props) => {
                       (number) =>
                         number < -0.25 ? (
                           <Box>
-                            <Text color="status-critical">Riegel to low</Text>
+                            <Text color="status-critical">Riegel too low</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
                         ) : undefined,
                       (number) =>
                         number > -0.02 ? (
                           <Box>
-                            <Text color="status-critical">Riegel to high</Text>
+                            <Text color="status-critical">Riegel too high</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
                         ) : undefined,
@@ -173,14 +173,14 @@ const C21 = (props: Props) => {
                       (number) =>
                         number < -0.25 ? (
                           <Box>
-                            <Text color="status-critical">Riegel to low</Text>
+                            <Text color="status-critical">Riegel too low</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
                         ) : undefined,
                       (number) =>
                         number > -0.02 ? (
                           <Box>
-                            <Text color="status-critical">Riegel to high</Text>
+                            <Text color="status-critical">Riegel too high</Text>
                             <Text color="status-critical">Valid range (-0.25 to -0.02)</Text>
                           </Box>
                         ) : undefined,
@@ -205,14 +205,14 @@ const C21 = (props: Props) => {
                       (number) =>
                         number < 0.6 ? (
                           <Box>
-                            <Text color="status-critical">RE to low</Text>
+                            <Text color="status-critical">RE too low</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
                         ) : undefined,
                       (number) =>
                         number > 1.2 ? (
                           <Box>
-                            <Text color="status-critical">RE to high</Text>
+                            <Text color="status-critical">RE too high</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
                         ) : undefined,
@@ -230,14 +230,14 @@ const C21 = (props: Props) => {
                       (number) =>
                         number < 0.6 ? (
                           <Box>
-                            <Text color="status-critical">RE to low</Text>
+                            <Text color="status-critical">RE too low</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
                         ) : undefined,
                       (number) =>
                         number > 1.2 ? (
                           <Box>
-                            <Text color="status-critical">RE to high</Text>
+                            <Text color="status-critical">RE too high</Text>
                             <Text color="status-critical">Valid range (0.6 to 1.2)</Text>
                           </Box>
                         ) : undefined,

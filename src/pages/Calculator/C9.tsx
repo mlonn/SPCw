@@ -120,21 +120,17 @@ const C9 = (props: Props) => {
                 (number) =>
                   number < -0.14 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to low</Text>
+                      <Text color="status-critical">Riegel too low</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
                 (number) =>
                   number > -0.02 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to high</Text>
+                      <Text color="status-critical">Riegel too high</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
               ]}
             >
               <TextInput
