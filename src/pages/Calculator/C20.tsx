@@ -114,7 +114,7 @@ const C20 = (props: Props) => {
             Instructions
           </Heading>
           <Paragraph margin="small" fill>
-            Enter at least two maximal effort power & duration pairs within a two week period.
+            Enter at least two maximal effort power & duration pairs within a three week period.
           </Paragraph>
           <Paragraph margin="small" fill>
             The durations should be between 2 and 40 minutes.

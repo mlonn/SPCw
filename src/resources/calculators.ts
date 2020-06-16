@@ -20,7 +20,7 @@ const calculators: Calculator[] = [
       date: true,
       minDuration: 120,
       maxDuration: 2400,
-      dateDistance: 14,
+      dateDistance: 21,
       durationRange: {
         min: 360,
         max: 900,
