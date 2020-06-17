@@ -20,7 +20,7 @@ import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
 import { Distance, Power, PowerUnit, Weight, WeightUnit } from "../../types";
-import { round, toStandardDistance, toStandardPower, toStandardWeight } from "../../util";
+import { round, toStandardDistance, toStandardPower, toStandardWeight, toWkg } from "../../util";
 interface Props {}
 
 const C10 = (props: Props) => {
@@ -54,15 +54,18 @@ const C10 = (props: Props) => {
       if (!targetDistance) {
         throw Error("Please enter target distance");
       }
-      console.log(toStandardDistance(targetDistance).value, toStandardDistance(priorDistance).value);
+
       const multiplier = Math.pow(
         toStandardDistance(targetDistance).value / toStandardDistance(priorDistance).value,
         parseFloat(riegel)
       );
-      console.log(multiplier);
-      const powerToUse = toStandardPower(priorPower, weight).value;
-
-      setOutputPower({ ...outputPower, value: powerToUse * multiplier });
+      const standardPower = toStandardPower(priorPower, weight);
+      if (outputPower.unit === PowerUnit.WATTS_KG) {
+        const newPower = toWkg({ ...standardPower, value: standardPower.value * multiplier }, weight);
+        setOutputPower(newPower);
+      } else {
+        setOutputPower({ ...outputPower, value: standardPower.value * multiplier });
+      }
       if (showError) {
         setShowError(false);
         setCalculationError("");

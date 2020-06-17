@@ -86,6 +86,54 @@ export const toLbs = (weight: Weight) => {
   throw Error("No weight unit");
 };
 
+export const toWkg = (power: Power, weight: Weight) => {
+  if (!power.value) {
+    throw Error(CALCULATION_ERRORS.NO_POWER);
+  }
+  if (!power.unit) {
+    throw Error(CALCULATION_ERRORS.NO_POWER_UNIT);
+  }
+
+  if (power.unit === PowerUnit.WATTS) {
+    if (!weight || !weight.value) {
+      throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+    }
+    let weightValue = weight.value;
+    if (weight.unit === WeightUnit.LBS) {
+      weightValue = toStandardWeight(weight).value;
+    }
+    return {
+      value: power.value / weightValue,
+      unit: PowerUnit.WATTS_KG,
+    };
+  }
+  return power;
+};
+
+export const toW = (power: Power, weight: Weight) => {
+  if (!power.value) {
+    throw Error(CALCULATION_ERRORS.NO_POWER);
+  }
+  if (!power.unit) {
+    throw Error(CALCULATION_ERRORS.NO_POWER_UNIT);
+  }
+
+  if (power.unit === PowerUnit.WATTS_KG) {
+    if (!weight || !weight.value) {
+      throw Error(CALCULATION_ERRORS.NO_WEIGHT);
+    }
+    let weightValue = weight.value;
+    if (weight.unit === WeightUnit.LBS) {
+      weightValue = toStandardWeight(weight).value;
+    }
+    return {
+      value: power.value * weightValue,
+      unit: PowerUnit.WATTS,
+    };
+  }
+  return power;
+};
+
 export const toStandardDistance = (distance: Distance): StandardDistance => {
   if (!distance.unit) {
     throw Error(CALCULATION_ERRORS.NO_DISTANCE_UNIT);

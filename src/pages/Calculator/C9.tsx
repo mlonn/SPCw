@@ -20,7 +20,7 @@ import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
 import { Duration, Power, PowerUnit, Weight, WeightUnit } from "../../types";
-import { round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
+import { round, toStandardDuration, toStandardPower, toStandardWeight, toWkg } from "../../util";
 interface Props {}
 
 const C9 = (props: Props) => {
@@ -51,9 +51,13 @@ const C9 = (props: Props) => {
         toStandardDuration(targetDuration).value / toStandardDuration(priorDuration).value,
         parseFloat(riegel)
       );
-      const powerToUse = toStandardPower(priorPower, weight).value;
-
-      setOutputPower({ ...outputPower, value: powerToUse * multiplier });
+      const standardPower = toStandardPower(priorPower, weight);
+      if (outputPower.unit === PowerUnit.WATTS_KG) {
+        const newPower = toWkg({ ...standardPower, value: standardPower.value * multiplier }, weight);
+        setOutputPower(newPower);
+      } else {
+        setOutputPower({ ...outputPower, value: standardPower.value * multiplier });
+      }
       if (showError) {
         setShowError(false);
         setCalculationError("");
