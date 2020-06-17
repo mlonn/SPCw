@@ -37,9 +37,7 @@ const C21 = (props: Props) => {
   const [power, setPower] = useState<Power>({ unit: athlete.units?.power });
   const [distance, setDistance] = useState<Distance>();
   const [duration, setDuration] = useState<Duration>({ unit: athlete.units?.duration });
-
   const [calculationError, setCalculationError] = useState("");
-
   const [scenarios, setScenarios] = useState<Scenario[]>();
 
   if (!calculator) {
@@ -99,7 +97,7 @@ const C21 = (props: Props) => {
               }}
             />
             <PowerFormField
-              valueLabel="Prior race power"
+              valueLabel="Prior Race Power"
               weight={weight}
               power={power}
               setPower={(next) => {
@@ -116,7 +114,7 @@ const C21 = (props: Props) => {
               }}
             />
             <DistanceFormField
-              valueLabel="Target distance"
+              valueLabel="Target Distance"
               distance={distance}
               setDistance={(next) => {
                 setScenarios(undefined);

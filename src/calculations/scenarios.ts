@@ -47,12 +47,14 @@ export const calculateScenarios = (
   debugger;
 
   const riegelStep = riegelfrom < riegelto ? 0.01 : -0.01;
-  const riegels = Array.from({ length: Math.abs(riegelfrom * 100 - riegelto * 100) + 1 }, (v, k) =>
+  const riegels = Array.from({ length: Math.ceil(Math.abs(riegelfrom * 100 - riegelto * 100)) + 1 }, (v, k) =>
     round(k * riegelStep + riegelfrom, 2)
   );
 
   const restep = refrom < reto ? 0.01 : -0.01;
-  const res = Array.from({ length: Math.abs(refrom * 100 - reto * 100) + 1 }, (v, k) => round(k * restep + refrom, 2));
+  const res = Array.from({ length: Math.ceil(Math.abs(refrom * 100 - reto * 100)) + 1 }, (v, k) =>
+    round(k * restep + refrom, 2)
+  );
 
   for (let riegel of riegels) {
     for (let re of res) {
