@@ -20,7 +20,7 @@ import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
 import { Duration, Power, PowerUnit, Weight, WeightUnit } from "../../types";
-import { round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
+import { round, toStandardDuration, toStandardPower, toStandardWeight, toWkg } from "../../util";
 interface Props {}
 
 const C7 = (props: Props) => {
@@ -33,7 +33,7 @@ const C7 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit || athlete.units?.weight,
   });
-  const [tte, setTte] = useState(athlete.tte);
+
   const [priorPower, setPriorPower] = useState<Power>({ unit: athlete.units?.power });
   const [outputPower, setOutputPower] = useState<Power>({ unit: athlete.units?.power });
   const [priorDuration, setPriorDuration] = useState<Duration>({ unit: athlete.units?.duration });
@@ -49,12 +49,17 @@ const C7 = (props: Props) => {
         throw Error("Please enter Riegel Exponent");
       }
       const multiplier = Math.pow(
-        toStandardDuration(tte).value / toStandardDuration(priorDuration).value,
+        toStandardDuration(athlete.tte).value / toStandardDuration(priorDuration).value,
         parseFloat(riegel)
       );
-      const powerToUse = toStandardPower(priorPower, weight).value;
+      const standardPower = toStandardPower(priorPower, weight);
+      if (outputPower.unit === PowerUnit.WATTS_KG) {
+        const newPower = toWkg({ ...standardPower, value: standardPower.value * multiplier }, weight);
+        setOutputPower(newPower);
+      } else {
+        setOutputPower({ ...outputPower, value: standardPower.value * multiplier });
+      }
 
-      setOutputPower({ ...outputPower, value: powerToUse * multiplier });
       if (showError) {
         setShowError(false);
         setCalculationError("");
@@ -76,7 +81,7 @@ const C7 = (props: Props) => {
             Instructions
           </Heading>
           <Paragraph fill>Fill Weight to see results in Watts and Watts/kg</Paragraph>
-          <Paragraph fill>Fill Race Power, Race Time, Time to exhaustion and Riegel Exponent</Paragraph>
+          <Paragraph fill>Fill Race Power, Race Time and Riegel Exponent</Paragraph>
 
           <Box direction="row" justify="between" wrap>
             <Heading level="2" size="small">
@@ -121,21 +126,17 @@ const C7 = (props: Props) => {
                 (number) =>
                   number < -0.14 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to low</Text>
+                      <Text color="status-critical">Riegel too low</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
                 (number) =>
                   number > -0.02 ? (
                     <Box>
-                      <Text color="status-critical">Riegel to high</Text>
+                      <Text color="status-critical">Riegel too high</Text>
                       <Text color="status-critical">Valid range (-0.14 to -0.02)</Text>
                     </Box>
-                  ) : (
-                    undefined
-                  ),
+                  ) : undefined,
               ]}
             >
               <TextInput
@@ -149,14 +150,7 @@ const C7 = (props: Props) => {
                 name="riegel"
               />
             </FormField>
-            <DurationFormField
-              valueLabel="Time To Exhaustion"
-              duration={tte}
-              setDuration={(next) => {
-                setTte(next);
-                setOutputPower({ ...outputPower, value: undefined });
-              }}
-            />
+
             <PowerFormField
               valueLabel="Prior Race Avg Power (Pt)"
               weight={weight}

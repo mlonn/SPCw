@@ -4,6 +4,7 @@ import calculators from "../../resources/calculators";
 import C10 from "./C10";
 import C11 from "./C11";
 import C20 from "./C20";
+import C21 from "./C21";
 import C6 from "./C6";
 import C7 from "./C7";
 import C8 from "./C8";
@@ -30,6 +31,8 @@ const Calculator = () => {
       return <C10 />;
     case "20":
       return <C20 />;
+    case "21":
+      return <C21 />;
     case "11":
       return <C11 />;
     default:

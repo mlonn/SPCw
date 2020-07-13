@@ -15,16 +15,17 @@ import { Close, StatusWarning } from "grommet-icons";
 import React, { Fragment, useContext, useState } from "react";
 import { calculateScenarios } from "../../calculations/scenarios";
 import DistanceFormField from "../../components/form/distance/DistanceFormField";
+import DurationFormField from "../../components/form/duration/DurationFormField";
 import PowerFormField from "../../components/form/power/PowerFormField";
 import WeightFormField from "../../components/form/weight/WeightFormField";
 import useAthleteState from "../../hooks/useAthleteState";
 import calculators from "../../resources/calculators";
-import { Distance, Power, Scenario, Weight } from "../../types";
-import { durationToString, round, toStandardPower, toStandardWeight } from "../../util";
+import { Distance, Duration, Power, Scenario, Weight } from "../../types";
+import { durationToString, round, toStandardDuration, toStandardPower, toStandardWeight } from "../../util";
 interface Props {}
 
-const C11 = (props: Props) => {
-  const TASK_ID = 11;
+const C21 = (props: Props) => {
+  const TASK_ID = 21;
   const calculator = calculators.find((c) => c.id === TASK_ID);
   const athlete = useAthleteState();
   const [showError, setShowError] = useState(false);
@@ -33,14 +34,10 @@ const C11 = (props: Props) => {
     value: athlete.weight?.value,
     unit: athlete.weight?.unit || athlete.units?.weight,
   });
-  const [ftp, setFtp] = useState<Power>({
-    value: athlete.ftp?.value,
-    unit: athlete.ftp?.unit || athlete.units?.power,
-  });
+  const [power, setPower] = useState<Power>({ unit: athlete.units?.power });
   const [distance, setDistance] = useState<Distance>();
-
+  const [duration, setDuration] = useState<Duration>({ unit: athlete.units?.duration });
   const [calculationError, setCalculationError] = useState("");
-
   const [scenarios, setScenarios] = useState<Scenario[]>();
 
   if (!calculator) {
@@ -51,10 +48,15 @@ const C11 = (props: Props) => {
       if (!distance) {
         throw Error("Please enter target distance");
       }
-      if (!ftp.value || !ftp.unit) {
-        throw Error("Please enter FTP/CP");
+      if (!power.value || !power.unit) {
+        throw Error("Please enter prior race power");
       }
-      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, athlete.tte, ftp);
+      if (!duration.unit) {
+        throw Error("Please enter prior race duration");
+      } else {
+        toStandardDuration(duration);
+      }
+      const s = calculateScenarios(refrom, reto, riegelfrom, riegelto, distance, weight, duration, power);
       console.log(s);
       setScenarios(s);
       if (showError) {
@@ -77,7 +79,7 @@ const C11 = (props: Props) => {
           <Heading level="2" size="small">
             Instructions
           </Heading>
-          <Paragraph fill>Enter Weight, FTP/CP and target distance</Paragraph>
+          <Paragraph fill>Enter Weight, prior race data</Paragraph>
           <Paragraph fill>Enter a range of riegel exponents from -0.25 to -0.02</Paragraph>
           <Paragraph fill>Enter a range of target RE from 0.6 to 1.2</Paragraph>
           <Paragraph fill>
@@ -95,17 +97,24 @@ const C11 = (props: Props) => {
               }}
             />
             <PowerFormField
-              valueLabel="FTP/CP"
+              valueLabel="Prior Race Power"
               weight={weight}
-              power={ftp}
+              power={power}
               setPower={(next) => {
                 setScenarios(undefined);
-                setFtp(next);
+                setPower(next);
               }}
             />
-
+            <DurationFormField
+              valueLabel="Prior Race Time"
+              duration={duration}
+              setDuration={(next) => {
+                setDuration(next);
+                setScenarios(undefined);
+              }}
+            />
             <DistanceFormField
-              valueLabel="Target distance"
+              valueLabel="Target Distance"
               distance={distance}
               setDistance={(next) => {
                 setScenarios(undefined);
@@ -270,7 +279,7 @@ const C11 = (props: Props) => {
               <Box>{round(s.power.value / toStandardWeight(weight).value, 2).toFixed(2)}</Box>
               <Box>{round(s.power.value, 2).toFixed(2)}</Box>
               <Box>{durationToString(s.time)}</Box>
-              <Box>{round((s.power.value / toStandardPower(ftp, weight).value) * 100, 2).toFixed(2)}%</Box>
+              <Box>{round((s.power.value / toStandardPower(power, weight).value) * 100, 2).toFixed(2)}%</Box>
             </Fragment>
           ))}
         </Grid>
@@ -306,4 +315,4 @@ const C11 = (props: Props) => {
   );
 };
 
-export default C11;
+export default C21;
