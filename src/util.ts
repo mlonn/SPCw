@@ -71,7 +71,7 @@ export const toKg = (weight: Weight) => {
   if (weight.unit === WeightUnit.LBS) {
     return { ...weight, unit: WeightUnit.KG, value: weight.value / 2.205 };
   }
-  throw Error("No weight unit");
+  throw Error("No Stryd Weight unit found");
 };
 export const toLbs = (weight: Weight) => {
   if (!weight.value) {
@@ -83,7 +83,7 @@ export const toLbs = (weight: Weight) => {
   if (weight.unit === WeightUnit.KG) {
     return { ...weight, unit: WeightUnit.LBS, value: weight.value * 2.205 };
   }
-  throw Error("No weight unit");
+  throw Error("No Stryd Weight unit found");
 };
 
 export const toWkg = (power: Power, weight: Weight) => {
