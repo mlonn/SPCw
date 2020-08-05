@@ -250,7 +250,7 @@ const C20 = (props: Props) => {
             <Text>Watts</Text>
 
             <Text>FTP/Critical Power/kg</Text>
-            {result.ftpkg ? <Text>{result.ftpkg} </Text> : <Text>Enter weight</Text>}
+            {result.ftpkg ? <Text>{result.ftpkg} </Text> : <Text>Enter Stryd Weight</Text>}
             <Text>Watts/kg</Text>
 
             <Text>RWC (W')</Text>
@@ -258,7 +258,7 @@ const C20 = (props: Props) => {
             <Text>kJ</Text>
 
             <Text>RWC (W')/kg</Text>
-            {result.rwckg ? <Text>{Math.round(result.rwckg)}</Text> : <Text>Enter weight</Text>}
+            {result.rwckg ? <Text>{Math.round(result.rwckg)}</Text> : <Text>Enter Stryd Weight</Text>}
             <Text>Joules/kg</Text>
 
             <Text>R^2 Coefficient</Text>

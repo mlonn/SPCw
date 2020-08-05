@@ -7,7 +7,7 @@ export enum CALCULATION_ERRORS {
   NO_DURATION_UNIT = "Please select duration unit",
   NO_DISTANCE = "Please enter distance",
   NO_DISTANCE_UNIT = "Please select distance unit",
-  NO_WEIGHT = "Please enter weight",
+  NO_WEIGHT = "Please enter Stryd Weight",
   POWER_ERROR = "POWER_ERROR",
 }
 export enum CALCULATION_TYPE {

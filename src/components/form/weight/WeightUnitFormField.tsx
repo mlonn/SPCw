@@ -16,7 +16,7 @@ const WeightUnitFormField = ({
   setWeight,
   ref,
   name = "weightunit",
-  unitLabel = "Weight unit",
+  unitLabel = "Stryd Weight unit",
   label,
   ...rest
 }: Props) => {
